@@ -10,7 +10,9 @@ spring:
     password: Zy@17623891105
   redis:
     port: 6379
-    host: 43.142.150.193
+    host: zzhay-redis.redis.rds.aliyuncs.com
     database: 0
+    username: r-bp12mq5ndal73dtjct
+    password: Zy@17623891105
 mybatis:
   mapper-locations: classpath:mapper/*.xml
