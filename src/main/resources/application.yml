@@ -1,0 +1,16 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: Edu-Project
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://zzhay-mysql.rwlb.rds.aliyuncs.com:3306/project?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: zzhay
+    password: Zy@17623891105
+  redis:
+    port: 6379
+    host: 43.142.150.193
+    database: 0
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
