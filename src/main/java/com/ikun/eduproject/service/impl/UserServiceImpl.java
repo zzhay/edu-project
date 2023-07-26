@@ -76,10 +76,10 @@ public class UserServiceImpl implements UserService {
                         return new ResultVO(StatusVo.REGIST_NO, "注册失败", null);
                     }
                 } else {
-                    return new ResultVO(StatusVo.REGIST_NO, "邮箱已被使用", null);
+                    return new ResultVO(StatusVo.REGIST_NO_EMAIL, "邮箱已被使用", null);
                 }
             } else {
-                return new ResultVO(StatusVo.REGIST_NO, "电话号码已被使用", null);
+                return new ResultVO(StatusVo.REGIST_NO_PHONE, "电话号码已被使用", null);
             }
 
         } else {

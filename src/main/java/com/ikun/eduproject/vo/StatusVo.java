@@ -10,6 +10,8 @@ public class StatusVo {
     //注册状态码
     public static final int REGIST_OK=2001;
     public static final int REGIST_NO=4001;
+    public static final int REGIST_NO_PHONE=4011;
+    public static final int REGIST_NO_EMAIL=4021;
 
     //登录状态码
     public static final int LOGIN_OK=2002;
