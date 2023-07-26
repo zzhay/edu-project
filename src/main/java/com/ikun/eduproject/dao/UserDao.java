@@ -22,7 +22,7 @@ public interface UserDao {
     int insertUser(User user);
 
     /**
-     * 按照username更新
+     * 按照username更新基础信息
      * @param user
      * @return
      */

@@ -22,4 +22,6 @@ public interface UserService {
      * @return
      */
     ResultVO regist(User user);
+
+
 }

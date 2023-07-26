@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
                 String md5Password = MD5Utils.md5(password);
                 if (md5Password.equals(user.getPassword())) {
                     //判断账号是否被锁定
-                    if (user.getRole() == 1) {
+                    if (user.getStatu() == 1) {
                         return new ResultVO(StatusVo.LOGIN_OK, "登录成功", user);
                     } else {
                         return new ResultVO(StatusVo.LOGIN_NO_STATU, "账号被锁定", null);
