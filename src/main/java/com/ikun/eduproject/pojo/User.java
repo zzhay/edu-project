@@ -19,8 +19,8 @@ import java.sql.Timestamp;
 @ApiModel(value = "用户对象",description = "用户信息")
 public class User implements Serializable {
 
-    @ApiModelProperty(dataType = "Integer",required = false)
-    private int id;
+    @ApiModelProperty(dataType = "Integer",required = false,value = "用户id")
+    private int userId;
 
     @ApiModelProperty(dataType = "String",required = true,value = "用户名")
     private String username;
@@ -37,13 +37,13 @@ public class User implements Serializable {
     @ApiModelProperty(dataType = "String",required = true,value = "邮件")
     private String email;
 
-    @ApiModelProperty(dataType = "int",required = true,value = "状态（0：锁定，1：未锁定）")
+    @ApiModelProperty(dataType = "int",required = false,value = "状态（0：锁定，1：未锁定）")
     private int statu;
 
-    @ApiModelProperty(dataType = "Timestamp",required = true,value = "创建时间")
+    @ApiModelProperty(dataType = "Timestamp",required = false,value = "创建时间")
     private Timestamp creatTime;
 
-    @ApiModelProperty(dataType = "Timestamp",required = true,value = "更新时间")
+    @ApiModelProperty(dataType = "Timestamp",required = false,value = "更新时间")
     private Timestamp updateTime;
 
 }
