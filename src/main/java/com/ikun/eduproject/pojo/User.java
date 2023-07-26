@@ -16,7 +16,7 @@ import java.sql.Timestamp;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "用户对象",description = "用户信息")
+@ApiModel(value = "评论对象",description = "评论信息")
 public class User implements Serializable {
 
     @ApiModelProperty(dataType = "Integer",required = false,value = "用户id")

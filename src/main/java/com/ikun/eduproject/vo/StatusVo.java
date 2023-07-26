@@ -6,7 +6,15 @@ package com.ikun.eduproject.vo;
  */
 
 public class StatusVo {
-    public static final int LOGIN_OK=1000;
-    public static final int LOGIN_NO=2000;
+
+    //注册状态码
+    public static final int REGIST_OK=2001;
+    public static final int REGIST_NO=4001;
+
+    //登录状态码
+    public static final int LOGIN_OK=2002;
+    public static final int LOGIN_NO=4002;
+
+
 
 }

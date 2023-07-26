@@ -1,8 +1,23 @@
 package com.ikun.eduproject.dao;
 
+import com.ikun.eduproject.pojo.User;
+
 /**
  * @Author zzhay
  * @Date 2023/7/26/026
  */
-public class UserDao {
+public interface UserDao {
+    /**
+     * 按照用户名查询
+     * @param username
+     * @return User对象
+     */
+    User selectByUsername(String username);
+
+    /**
+     * 新增用户
+     * @param user
+     * @return
+     */
+    int insertUser(User user);
 }
