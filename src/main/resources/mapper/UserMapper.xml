@@ -3,6 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ikun.eduproject.dao.UserDao">
+
     <select id="selectByUsername" parameterType="string" resultType="com.ikun.eduproject.pojo.User">
         select *
         from user
@@ -13,4 +14,12 @@
         insert into user (username, password, role, phone, email)
         values (#{username}, #{password}, #{role}, #{phone}, #{email})
     </insert>
+
+    <update id="updateByUsername" parameterType="com.ikun.eduproject.pojo.User">
+        update user
+        set password=#{password},
+            phone=#{phone},
+            email=#{email}
+        where username = #{username}
+    </update>
 </mapper>

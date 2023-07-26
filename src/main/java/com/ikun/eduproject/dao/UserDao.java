@@ -20,4 +20,11 @@ public interface UserDao {
      * @return
      */
     int insertUser(User user);
+
+    /**
+     * 按照username更新
+     * @param user
+     * @return
+     */
+    int updateByUsername(User user);
 }

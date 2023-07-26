@@ -14,6 +14,7 @@ public class StatusVo {
     //登录状态码
     public static final int LOGIN_OK=2002;
     public static final int LOGIN_NO=4002;
+    public static final int LOGIN_NO_STATU=4022;
 
 
 
