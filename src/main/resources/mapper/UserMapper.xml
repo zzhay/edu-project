@@ -17,7 +17,7 @@
 
     <update id="updateByUsername" parameterType="com.ikun.eduproject.pojo.User">
         update user
-        set password=#{password},
+        set
             phone=#{phone},
             email=#{email}
         where username = #{username}
