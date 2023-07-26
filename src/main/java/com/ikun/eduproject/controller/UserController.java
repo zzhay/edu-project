@@ -25,22 +25,20 @@ public class UserController {
      */
     @ApiOperation("注册接口")
     @PostMapping("/regist")
-    public ResultVO login(@RequestBody User user) {
+    public ResultVO regist(@RequestBody User user) {
         ResultVO result = userService.regist(user);
         return result;
     }
 
     /**
      * 登录
-     * @param username
-     * @param password
+     * @param user
      * @return
      */
     @ApiOperation("登录接口")
     @PostMapping("/login")
-    public ResultVO login(@RequestParam("username") String username,
-                          @RequestParam("password") String password) {
-        ResultVO result = userService.login(username, password);
+    public ResultVO login(@RequestBody User user) {
+        ResultVO result = userService.login(user.getUsername(), user.getPassword());
         return result;
     }
 
