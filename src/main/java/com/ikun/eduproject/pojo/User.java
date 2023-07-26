@@ -31,8 +31,8 @@ public class User implements Serializable {
     @ApiModelProperty(dataType = "int",required = true,value = "角色（（0：管理员，1：老师，2：学生））")
     private int role;
 
-    @ApiModelProperty(dataType = "Integer",required = true,value = "电话")
-    private Integer phone;
+    @ApiModelProperty(dataType = "String",required = true,value = "电话")
+    private String phone;
 
     @ApiModelProperty(dataType = "String",required = true,value = "邮件")
     private String email;
