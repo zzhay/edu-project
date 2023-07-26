@@ -16,7 +16,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class ResultVO<T> implements Serializable {
 
-    @ApiModelProperty("返回码")
+    @ApiModelProperty("返回状态码")
     private int code;
     @ApiModelProperty("返回信息")
     private String msg;
