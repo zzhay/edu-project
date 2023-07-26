@@ -22,3 +22,8 @@ mybatis:
   mapper-locations: classpath:mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
+
+#Mapper接口执行 打印Sql日志
+logging:
+  level:
+    com.jt.mapper: debug

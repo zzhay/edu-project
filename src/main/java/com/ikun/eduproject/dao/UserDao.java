@@ -48,4 +48,18 @@ public interface UserDao {
      * @return
      */
     List<User> selectTeacher();
+
+    /**
+     * 根据手机号查找
+     * @param phone
+     * @return
+     */
+    Integer selectByPhone(String phone);
+
+    /**
+     * 根据邮箱查找
+     * @param email
+     * @return
+     */
+    Integer selectByEmail(String email);
 }

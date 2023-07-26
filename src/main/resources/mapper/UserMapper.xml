@@ -32,9 +32,22 @@
         from user
         where role = 2;
     </select>
+
     <select id="selectTeacher" resultType="com.ikun.eduproject.pojo.User">
         select username, phone, email, statu
         from user
         where role = 1;
+    </select>
+
+    <select id="selectByPhone" parameterType="string" resultType="Integer">
+        select user_id
+        from user
+        where phone = #{phone}
+    </select>
+
+    <select id="selectByEmail" parameterType="string" resultType="Integer">
+        select user_id
+        from user
+        where email = #{email}
     </select>
 </mapper>

@@ -61,16 +61,25 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResultVO regist(User user) {
         //判断用户名是否已注册
-        if (userDao.selectByUsername(user.getUsername()) == null) {
-            //密码加密
-            String md5Password = MD5Utils.md5(user.getPassword());
-            user.setPassword(md5Password);
-            int i = userDao.insertUser(user);
-            if (i > 0) {
-                return new ResultVO(StatusVo.REGIST_OK, "注册成功", null);
+        if ( userDao.selectByUsername(user.getUsername()) == null) {
+            if (userDao.selectByPhone(user.getPhone()) == null) {
+                if (userDao.selectByEmail(user.getEmail()) == null) {
+                    //密码加密
+                    String md5Password = MD5Utils.md5(user.getPassword());
+                    user.setPassword(md5Password);
+                    int i = userDao.insertUser(user);
+                    if (i > 0) {
+                        return new ResultVO(StatusVo.REGIST_OK, "注册成功", null);
+                    } else {
+                        return new ResultVO(StatusVo.REGIST_NO, "注册失败", null);
+                    }
+                } else {
+                    return new ResultVO(StatusVo.REGIST_NO, "邮箱已被使用", null);
+                }
             } else {
-                return new ResultVO(StatusVo.REGIST_NO, "注册失败", null);
+                return new ResultVO(StatusVo.REGIST_NO, "电话号码已被使用", null);
             }
+
         } else {
             return new ResultVO(StatusVo.REGIST_NO, "用户名已被注册", null);
         }

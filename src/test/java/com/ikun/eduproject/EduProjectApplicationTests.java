@@ -14,9 +14,7 @@ class EduProjectApplicationTests {
 
     @Test
     void contextLoads() {
-        User user = userDao.selectByUsername("admin");
-        System.out.println(user);
-        System.out.println(user.getCreatTime());
+        System.out.println(userDao.selectByPhone("123"));
     }
 
 }
