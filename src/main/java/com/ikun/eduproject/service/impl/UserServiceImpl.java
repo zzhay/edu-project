@@ -62,7 +62,9 @@ public class UserServiceImpl implements UserService {
     public ResultVO regist(User user) {
         //判断用户名是否已注册
         if ( userDao.selectByUsername(user.getUsername()) == null) {
+            //判断电话是否被使用
             if (userDao.selectByPhone(user.getPhone()) == null) {
+                //判断邮箱是否被使用
                 if (userDao.selectByEmail(user.getEmail()) == null) {
                     //密码加密
                     String md5Password = MD5Utils.md5(user.getPassword());
