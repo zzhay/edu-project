@@ -39,7 +39,6 @@ public class UserController {
     @PostMapping("/login")
     public ResultVO login(@RequestBody User user) {
         ResultVO result = userService.login(user.getUsername(), user.getPassword());
-        System.out.println("111");
         return result;
     }
 
