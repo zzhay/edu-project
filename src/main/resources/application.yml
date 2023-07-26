@@ -5,7 +5,7 @@ spring:
     name: Edu-Project
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://zzhay-mysql.rwlb.rds.aliyuncs.com:3306/project?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://zzhay-mysql.rwlb.rds.aliyuncs.com:3306/demo_mybatis?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
     username: zzhay
     password: Zy@17623891105
   redis:
@@ -14,5 +14,9 @@ spring:
     database: 0
     username: r-bp12mq5ndal73dtjct
     password: Zy@17623891105
+  //解决swagger和springboot版本不兼容情况
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 mybatis:
   mapper-locations: classpath:mapper/*.xml
