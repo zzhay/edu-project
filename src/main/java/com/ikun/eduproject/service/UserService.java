@@ -69,5 +69,4 @@ public interface UserService {
      */
     ResultVO updateStatu(String username);
 
-
 }

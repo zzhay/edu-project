@@ -23,14 +23,20 @@ public class Course implements Serializable {
     @ApiModelProperty(dataType = "Integer",required = false,value = "课程id")
     private int courseId;
 
+    @ApiModelProperty(dataType = "Integer",required = true,value = "教师id")
+    private int userId;
+
     @ApiModelProperty(dataType = "String",required = true,value = "课程名")
     private String name;
+
+    @ApiModelProperty(dataType = "String",required = true,value = "作者")
+    private String auther;
 
     @ApiModelProperty(dataType = "BigDecimal",required = true,value = "价格")
     private BigDecimal price;
 
     @ApiModelProperty(dataType = "String",required = true,value = "课程描述")
-    private int description;
+    private String description;
 
     @ApiModelProperty(dataType = "int",required = false,value = "状态（0：已删除，1：未删除）")
     private int statu;
@@ -38,8 +44,6 @@ public class Course implements Serializable {
     @ApiModelProperty(dataType = "int",required = false,value = "是否审核（0：已审核，1未审核）")
     private int checked;
 
-    @ApiModelProperty(dataType = "Integer",required = true,value = "教师id")
-    private int userId;
 
     @ApiModelProperty(dataType = "Timestamp",required = false,value = "创建时间")
     private Timestamp creatTime;

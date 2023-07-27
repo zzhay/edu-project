@@ -9,6 +9,8 @@ import java.util.List;
 /**
  * @Author zzhay
  * @Date 2023/7/26/026
+ * UserDao是用于访问和操作用户数据的数据访问对象
+ * 该类提供了对用户数据的增删改查操作。
  */
 public interface UserDao {
     /**
@@ -27,7 +29,7 @@ public interface UserDao {
 
     /**
      * 按照username更新基础信息
-     * @param user
+     * @param changeInfoVO
      * @return
      */
     int updateByUsername(ChangeInfoVO changeInfoVO);

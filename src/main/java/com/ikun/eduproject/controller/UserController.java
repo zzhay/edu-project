@@ -74,7 +74,7 @@ public class UserController {
      * 查出所有学生
      * @return
      */
-    @ApiOperation("查出所有学生")
+    @ApiOperation("管理员查看所有学生")
     @GetMapping("/getStudent")
     public ResultVO getStudent() {
         ResultVO result = userService.getStudent();
@@ -85,14 +85,14 @@ public class UserController {
      * 查出所有老师
      * @return
      */
-    @ApiOperation("查出所有老师")
+    @ApiOperation("管理员查看所有老师")
     @GetMapping("/getTeacher")
     public ResultVO getTeacher() {
         ResultVO result = userService.getTeacher();
         return result;
     }
 
-    @ApiOperation("更新状态")
+    @ApiOperation("管理员更新用户状态")
     @PostMapping("/updateStatu")
     public ResultVO updateStatu(@RequestParam("username") String username) {
         ResultVO result = userService.updateStatu(username);

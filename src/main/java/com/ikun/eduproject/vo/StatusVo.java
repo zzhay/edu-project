@@ -35,4 +35,9 @@ public class StatusVo {
     public static final int SELECT_OK = 2004;
     public static final int SELECT_NO = 4004;
 
+    //新增状态码
+    public static final int INSERT_OK = 2005;
+    public static final int INSERT_NO = 4005;
+    //课程名冲突
+    public static final int INSERT_NO_COURSE_NAME = 4005;
 }

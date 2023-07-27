@@ -18,7 +18,8 @@
     <update id="updateByUsername" parameterType="com.ikun.eduproject.vo.ChangeInfoVO">
         update user
         set phone=#{phone},
-            email=#{email}
+            email=#{email},
+            statu=#{statu}
         where username = #{username}
     </update>
 
