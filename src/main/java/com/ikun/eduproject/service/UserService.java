@@ -1,6 +1,7 @@
 package com.ikun.eduproject.service;
 
 import com.ikun.eduproject.pojo.User;
+import com.ikun.eduproject.vo.ChangePwdVO;
 import com.ikun.eduproject.vo.ResultVO;
 
 import java.util.List;
@@ -37,7 +38,7 @@ public interface UserService {
      * @param user
      * @return
      */
-    ResultVO updatePassword(User user);
+    ResultVO updatePassword(ChangePwdVO changePwdVO);
 
     /**
      * 查出所有学生
@@ -51,6 +52,12 @@ public interface UserService {
      */
     ResultVO getTeacher();
 
+    /**
+     * 修改状态
+     * @param username
+     * @return
+     */
+    ResultVO updateStatu(String username);
 
 
 }

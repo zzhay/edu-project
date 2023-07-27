@@ -1,5 +1,6 @@
 package com.ikun.eduproject.vo;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,6 +15,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ApiModel(value = "返回信息",description = "返回信息")
 public class ResultVO<T> implements Serializable {
 
     @ApiModelProperty("返回状态码")

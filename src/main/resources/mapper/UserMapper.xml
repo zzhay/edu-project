@@ -22,9 +22,10 @@
         where username = #{username}
     </update>
 
-    <update id="updatePassword" parameterType="com.ikun.eduproject.pojo.User">
+    <update id="updatePassword" parameterType="com.ikun.eduproject.vo.ChangePwdVO">
         update user
-        set password=#{password}
+        set password=#{newPwd}
+        where username = #{username};
     </update>
 
     <select id="selectStudent" resultType="com.ikun.eduproject.pojo.User">
@@ -50,4 +51,14 @@
         from user
         where email = #{email}
     </select>
+
+    <update id="updateStatu" parameterType="string">
+        update user
+        set statu= CASE
+                       WHEN statu = 1 THEN 0
+                       WHEN statu = 0 THEN 1
+                       ELSE statu
+            end
+        where username = #{username}
+    </update>
 </mapper>

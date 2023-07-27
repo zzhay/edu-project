@@ -2,6 +2,7 @@ package com.ikun.eduproject.controller;
 
 import com.ikun.eduproject.pojo.User;
 import com.ikun.eduproject.service.UserService;
+import com.ikun.eduproject.vo.ChangePwdVO;
 import com.ikun.eduproject.vo.ResultVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -58,13 +59,13 @@ public class UserController {
 
     /**
      * 更新密码
-     * @param user
+     * @param changePwdVO
      * @return
      */
     @ApiOperation("更新密码")
     @PostMapping("/updatePwd")
-    public ResultVO updatePassword(@RequestBody User user) {
-        ResultVO result = userService.updatePassword(user);
+    public ResultVO updatePassword(@RequestBody ChangePwdVO changePwdVO) {
+        ResultVO result = userService.updatePassword(changePwdVO);
         return result;
     }
 
@@ -90,4 +91,10 @@ public class UserController {
         return result;
     }
 
+    @ApiOperation("更新状态")
+    @PostMapping("/updateStatu")
+    public ResultVO updateStatu(@RequestParam("username") String username) {
+        ResultVO result = userService.updateStatu(username);
+        return result;
+    }
 }

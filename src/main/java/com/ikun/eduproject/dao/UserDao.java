@@ -1,6 +1,7 @@
 package com.ikun.eduproject.dao;
 
 import com.ikun.eduproject.pojo.User;
+import com.ikun.eduproject.vo.ChangePwdVO;
 
 import java.util.List;
 
@@ -32,10 +33,10 @@ public interface UserDao {
 
     /**
      * 更新密码
-     * @param user
+     * @param changePwdVO
      * @return
      */
-    int updatePassword(User user);
+    int updatePassword(ChangePwdVO changePwdVO);
 
     /**
      * 查出所有学生
@@ -62,4 +63,11 @@ public interface UserDao {
      * @return
      */
     Integer selectByEmail(String email);
+
+    /**
+     * 按照username修改状态
+     * @param username
+     * @return
+     */
+    int updateStatu(String username);
 }

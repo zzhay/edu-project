@@ -32,7 +32,7 @@ public class Course implements Serializable {
     @ApiModelProperty(dataType = "String",required = true,value = "课程描述")
     private int description;
 
-    @ApiModelProperty(dataType = "int",required = false,value = "状态（0：锁定，1：未锁定）")
+    @ApiModelProperty(dataType = "int",required = false,value = "状态（0：已删除，1：未删除）")
     private int statu;
 
     @ApiModelProperty(dataType = "int",required = false,value = "是否审核（0：已审核，1未审核）")

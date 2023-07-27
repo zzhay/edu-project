@@ -14,7 +14,7 @@ class EduProjectApplicationTests {
 
     @Test
     void contextLoads() {
-        System.out.println(userDao.selectByPhone("123"));
+        userDao.updateStatu("mingshan");
     }
 
 }

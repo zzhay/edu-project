@@ -4,8 +4,10 @@ import com.ikun.eduproject.dao.UserDao;
 import com.ikun.eduproject.pojo.User;
 import com.ikun.eduproject.service.UserService;
 import com.ikun.eduproject.utils.MD5Utils;
+import com.ikun.eduproject.vo.ChangePwdVO;
 import com.ikun.eduproject.vo.ResultVO;
 import com.ikun.eduproject.vo.StatusVo;
+import org.bouncycastle.jcajce.provider.digest.MD5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +24,43 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     /**
+     * 注册
+     *
+     * @param user
+     * @return
+     */
+    @Override
+    public ResultVO regist(User user) {
+        //判断用户名是否已注册
+        if (userDao.selectByUsername(user.getUsername()) == null) {
+            //判断电话是否被使用
+            if (userDao.selectByPhone(user.getPhone()) == null) {
+                //判断邮箱是否被使用
+                if (userDao.selectByEmail(user.getEmail()) == null) {
+                    //密码加密
+                    String md5Password = MD5Utils.md5(user.getPassword());
+                    user.setPassword(md5Password);
+                    int i = userDao.insertUser(user);
+                    if (i > 0) {
+                        return new ResultVO(StatusVo.REGIST_OK, "注册成功", null);
+                    } else {
+                        return new ResultVO(StatusVo.REGIST_NO, "注册失败", null);
+                    }
+                } else {
+                    return new ResultVO(StatusVo.REGIST_NO_EMAIL, "邮箱已被使用", null);
+                }
+            } else {
+                return new ResultVO(StatusVo.REGIST_NO_PHONE, "电话号码已被使用", null);
+            }
+
+        } else {
+            return new ResultVO(StatusVo.REGIST_NO, "用户名已被注册", null);
+        }
+    }
+
+    /**
      * 登录
+     *
      * @param username
      * @param password
      * @return
@@ -54,41 +92,8 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * 注册
-     * @param user
-     * @return
-     */
-    @Override
-    public ResultVO regist(User user) {
-        //判断用户名是否已注册
-        if ( userDao.selectByUsername(user.getUsername()) == null) {
-            //判断电话是否被使用
-            if (userDao.selectByPhone(user.getPhone()) == null) {
-                //判断邮箱是否被使用
-                if (userDao.selectByEmail(user.getEmail()) == null) {
-                    //密码加密
-                    String md5Password = MD5Utils.md5(user.getPassword());
-                    user.setPassword(md5Password);
-                    int i = userDao.insertUser(user);
-                    if (i > 0) {
-                        return new ResultVO(StatusVo.REGIST_OK, "注册成功", null);
-                    } else {
-                        return new ResultVO(StatusVo.REGIST_NO, "注册失败", null);
-                    }
-                } else {
-                    return new ResultVO(StatusVo.REGIST_NO_EMAIL, "邮箱已被使用", null);
-                }
-            } else {
-                return new ResultVO(StatusVo.REGIST_NO_PHONE, "电话号码已被使用", null);
-            }
-
-        } else {
-            return new ResultVO(StatusVo.REGIST_NO, "用户名已被注册", null);
-        }
-    }
-
-    /**
      * 更新基础信息
+     *
      * @param user
      * @return
      */
@@ -104,22 +109,38 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 更新密码
-     * @param user
+     *
+     * @param changePwdVO
      * @return
      */
     @Override
-    public ResultVO updatePassword(User user) {
-        User user1 = userDao.selectByUsername(user.getUsername());
-        //判断是否与原密码相同
-        if (user.getPassword() == user1.getPassword()) {
-            return new ResultVO(StatusVo.UPDATE_NO, "密码与原密码相同", null);
+    public ResultVO updatePassword(ChangePwdVO changePwdVO) {
+        User user1 = userDao.selectByUsername(changePwdVO.getUsername());
+        //判断旧密码是否正确
+        if (MD5Utils.md5(changePwdVO.getOldPwd()).equals(user1.getPassword())) {
+            //判断新密码是否与原密码相同
+            String md5Pwd = MD5Utils.md5(changePwdVO.getNewPwd());
+            if (md5Pwd.equals( user1.getPassword())) {
+                return new ResultVO(StatusVo.UPDATE_NO_NEWPWD, "密码与原密码相同", null);
+            } else {
+                changePwdVO.setNewPwd(md5Pwd);
+                if (userDao.updatePassword(changePwdVO) > 0) {
+                    return new ResultVO(StatusVo.UPDATE_OK, "更新成功", null);
+                } else {
+                    return new ResultVO(StatusVo.UPDATE_NO, "更新失败", null);
+                }
+            }
         } else {
-            return new ResultVO(StatusVo.UPDATE_OK, "更新成功", null);
+            return new ResultVO(StatusVo.UPDATE_NO_OLDPWD, "旧密码错误", null);
         }
+
+
+
     }
 
     /**
      * 查出所有学生
+     *
      * @return
      */
     @Override
@@ -134,6 +155,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 查出所有老师
+     *
      * @return
      */
     @Override
@@ -143,6 +165,26 @@ public class UserServiceImpl implements UserService {
             return new ResultVO(StatusVo.SELECT_NO, "查询失败", null);
         } else {
             return new ResultVO(StatusVo.SELECT_OK, "查询成功", users);
+        }
+    }
+
+    /**
+     * 修改状态
+     *
+     * @param username
+     * @return
+     */
+    @Override
+    public ResultVO updateStatu(String username) {
+        if (username != null) {
+            int i = userDao.updateStatu(username);
+            if (i > 0) {
+                return new ResultVO(StatusVo.UPDATE_OK, "更新成功", null);
+            } else {
+                return new ResultVO(StatusVo.UPDATE_NO, "更新失败", null);
+            }
+        } else {
+            return new ResultVO(StatusVo.UPDATE_NO, "用户名错误", null);
         }
     }
 }
