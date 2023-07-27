@@ -25,4 +25,10 @@ public interface CourseService {
      */
     ResultVO getOwnCourse(int userId);
 
+    /**
+     * 教师更新课程信息
+     * @param course
+     * @return
+     */
+    ResultVO updateCourse(Course course);
 }

@@ -31,4 +31,11 @@ public interface CourseDao {
      * @return
      */
     Integer selectByUIdAndName(Course course);
+
+    /**
+     * 编辑课程
+     * @param course
+     * @return
+     */
+    int updateCourse(Course course);
 }

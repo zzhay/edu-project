@@ -52,4 +52,25 @@ public class CourseServiceImpl implements CourseService {
         return new ResultVO(StatusVo.SELECT_OK, "查询成功", list);
 
     }
+
+    /**
+     * 教师更新课程信息
+     * @param course
+     * @return
+     */
+    @Override
+    public ResultVO updateCourse(Course course) {
+        Integer integer = courseDao.selectByUIdAndName(course);
+        if (integer != course.getCourseId()) {
+            return new ResultVO(StatusVo.INSERT_NO_COURSE_NAME, "课程名已经存在", null);
+        } else {
+            int i = courseDao.updateCourse(course);
+            if (i > 0) {
+                return new ResultVO(StatusVo.UPDATE_OK, "更新成功", null);
+            } else {
+                return new ResultVO(StatusVo.UPDATE_NO, "更新失败", null);
+            }
+        }
+
+    }
 }

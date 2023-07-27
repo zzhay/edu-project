@@ -13,12 +13,20 @@
         select *
         from course
         where user_id = #{userId}
+          and statu = 1;
     </select>
-
 
     <select id="selectByUIdAndName" parameterType="com.ikun.eduproject.pojo.Course" resultType="int">
         select course_id
         from course
-        where user_id = #{userId} and name=#{name}
+        where user_id = #{userId}
+          and name = #{name}
+          and statu = 1;
     </select>
+
+    <update id="updateCourse" parameterType="com.ikun.eduproject.pojo.Course">
+        update course
+        set (name,auther,price,description)
+        values (#{name}, #{auther}, #{price}, #{description})
+    </update>
 </mapper>

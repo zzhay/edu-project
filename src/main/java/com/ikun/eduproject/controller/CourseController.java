@@ -6,10 +6,7 @@ import com.ikun.eduproject.vo.ResultVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Author zzhay
@@ -32,9 +29,16 @@ public class CourseController {
     }
 
     @ApiOperation("教师查看名下课程")
-    @PostMapping("/getOwnCourse")
-    public ResultVO getOwnCourse(int userId) {
+    @GetMapping("/getOwnCourse")
+    public ResultVO getOwnCourse(@RequestParam("userId") int userId) {
         ResultVO result = courseService.getOwnCourse(userId);
+        return result;
+    }
+
+    @ApiOperation("修改课程")
+    @PostMapping("/updateCourse")
+    public ResultVO updateCourse(Course course) {
+        ResultVO result = courseService.updateCourse(course);
         return result;
     }
 }

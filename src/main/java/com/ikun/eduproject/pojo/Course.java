@@ -38,10 +38,10 @@ public class Course implements Serializable {
     @ApiModelProperty(dataType = "String",required = true,value = "课程描述")
     private String description;
 
-    @ApiModelProperty(dataType = "int",required = false,value = "状态（0：已删除，1：未删除）")
+    @ApiModelProperty(dataType = "int",required = false,value = "状态（0：下架，1：上架）")
     private int statu;
 
-    @ApiModelProperty(dataType = "int",required = false,value = "是否审核（0：已审核，1未审核）")
+    @ApiModelProperty(dataType = "int",required = false,value = "是否审核（0：未审核，1：已审核）")
     private int checked;
 
 
