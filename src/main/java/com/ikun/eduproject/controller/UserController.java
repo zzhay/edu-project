@@ -2,6 +2,7 @@ package com.ikun.eduproject.controller;
 
 import com.ikun.eduproject.pojo.User;
 import com.ikun.eduproject.service.UserService;
+import com.ikun.eduproject.vo.ChangeInfoVO;
 import com.ikun.eduproject.vo.ChangePwdVO;
 import com.ikun.eduproject.vo.ResultVO;
 import io.swagger.annotations.Api;
@@ -47,13 +48,13 @@ public class UserController {
 
     /**
      * 更新基础信息
-     * @param user
+     * @param changeInfoVO
      * @return
      */
     @ApiOperation("更新基础信息接口")
     @PostMapping("/updateInfo")
-    public ResultVO updateInfo(@RequestBody User user) {
-        ResultVO result = userService.updateInformation(user);
+    public ResultVO updateInfo(@RequestBody ChangeInfoVO changeInfoVO) {
+        ResultVO result = userService.updateInformation(changeInfoVO);
         return result;
     }
 

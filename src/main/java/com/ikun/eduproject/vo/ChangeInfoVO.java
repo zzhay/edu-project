@@ -15,15 +15,15 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "修改密码对象", description = "修改密码")
-public class ChangePwdVO implements Serializable {
+@ApiModel(value = "修改用户信息对象", description = "修改用户信息")
+public class ChangeInfoVO implements Serializable {
 
     @ApiModelProperty("用户名")
     private String username;
 
-    @ApiModelProperty("旧密码")
-    private String oldPwd;
+    @ApiModelProperty("手机号")
+    private String phone;
 
-    @ApiModelProperty("新密码")
-    private String newPwd;
+    @ApiModelProperty("邮箱")
+    private String email;
 }

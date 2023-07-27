@@ -4,6 +4,7 @@ import com.ikun.eduproject.dao.UserDao;
 import com.ikun.eduproject.pojo.User;
 import com.ikun.eduproject.service.UserService;
 import com.ikun.eduproject.utils.MD5Utils;
+import com.ikun.eduproject.vo.ChangeInfoVO;
 import com.ikun.eduproject.vo.ChangePwdVO;
 import com.ikun.eduproject.vo.ResultVO;
 import com.ikun.eduproject.vo.StatusVo;
@@ -98,8 +99,8 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public ResultVO updateInformation(User user) {
-        int i = userDao.updateByUsername(user);
+    public ResultVO updateInformation(ChangeInfoVO changeInfoVO) {
+        int i = userDao.updateByUsername(changeInfoVO);
         if (i > 0) {
             return new ResultVO(StatusVo.UPDATE_OK, "更新成功", null);
         } else {

@@ -1,6 +1,7 @@
 package com.ikun.eduproject.dao;
 
 import com.ikun.eduproject.pojo.User;
+import com.ikun.eduproject.vo.ChangeInfoVO;
 import com.ikun.eduproject.vo.ChangePwdVO;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public interface UserDao {
      * @param user
      * @return
      */
-    int updateByUsername(User user);
+    int updateByUsername(ChangeInfoVO changeInfoVO);
 
     /**
      * 更新密码

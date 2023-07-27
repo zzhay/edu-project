@@ -1,6 +1,7 @@
 package com.ikun.eduproject.service;
 
 import com.ikun.eduproject.pojo.User;
+import com.ikun.eduproject.vo.ChangeInfoVO;
 import com.ikun.eduproject.vo.ChangePwdVO;
 import com.ikun.eduproject.vo.ResultVO;
 
@@ -28,14 +29,14 @@ public interface UserService {
 
     /**
      * 更新基础信息
-     * @param user
+     * @param changeInfoVO
      * @return
      */
-    ResultVO updateInformation(User user);
+   ResultVO updateInformation(ChangeInfoVO changeInfoVO);
 
     /**
      * 更新密码
-     * @param user
+     * @param changePwdVO
      * @return
      */
     ResultVO updatePassword(ChangePwdVO changePwdVO);

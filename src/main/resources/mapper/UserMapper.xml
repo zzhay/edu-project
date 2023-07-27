@@ -15,7 +15,7 @@
         values (#{username}, #{password}, #{role}, #{phone}, #{email})
     </insert>
 
-    <update id="updateByUsername" parameterType="com.ikun.eduproject.pojo.User">
+    <update id="updateByUsername" parameterType="com.ikun.eduproject.vo.ChangeInfoVO">
         update user
         set phone=#{phone},
             email=#{email}
