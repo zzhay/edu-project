@@ -23,7 +23,7 @@ public class CourseController {
 
     @ApiOperation("新增课程")
     @PostMapping("/addCourse")
-    public ResultVO addCourse(Course course) {
+    public ResultVO addCourse(@RequestBody Course course) {
         ResultVO result = courseService.addCourse(course);
         return result;
     }
@@ -37,7 +37,7 @@ public class CourseController {
 
     @ApiOperation("修改课程")
     @PostMapping("/updateCourse")
-    public ResultVO updateCourse(Course course) {
+    public ResultVO updateCourse(@RequestBody Course course) {
         ResultVO result = courseService.updateCourse(course);
         return result;
     }

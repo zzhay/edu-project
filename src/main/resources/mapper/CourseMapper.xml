@@ -26,7 +26,17 @@
 
     <update id="updateCourse" parameterType="com.ikun.eduproject.pojo.Course">
         update course
-        set (name,author,price,description,checked)
-        values (#{name}, #{author}, #{price}, #{description}, 0)
+        set name=#{name},
+            author= #{author},
+            price=#{price},
+            description= #{description},
+            checked=0
+        where course_id = #{courseId}
+    </update>
+
+    <update id="updateStatu" parameterType="com.ikun.eduproject.pojo.Course">
+        update course
+        set statu=0
+        where user_id = #{userId}and name=#{name}
     </update>
 </mapper>

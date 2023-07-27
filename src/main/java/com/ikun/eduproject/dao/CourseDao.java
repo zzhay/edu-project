@@ -26,7 +26,7 @@ public interface CourseDao {
     List<Course> selectByUserId(int userId);
 
     /**
-     * 按照教师id和课程名查询课程
+     * 按照教师id和课程名查询课程id
      * @param course
      * @return
      */
@@ -38,4 +38,11 @@ public interface CourseDao {
      * @return
      */
     int updateCourse(Course course);
+
+    /**
+     * 修改课程状态
+     * @param course
+     * @return
+     */
+    int updateStatu(Course course);
 }
