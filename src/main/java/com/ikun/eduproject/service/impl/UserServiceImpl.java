@@ -17,6 +17,8 @@ import java.util.List;
 /**
  * @Author zzhay
  * @Date 2023/7/26/026
+ * UserServiceImpl是用户相关功能的Service实现类。
+ * 提供了用户管理、权限验证等相关功能的具体实现。
  */
 @Service
 public class UserServiceImpl implements UserService {
@@ -95,7 +97,7 @@ public class UserServiceImpl implements UserService {
     /**
      * 更新基础信息
      *
-     * @param user
+     * @param changeInfoVO
      * @return
      */
     @Override
@@ -121,9 +123,10 @@ public class UserServiceImpl implements UserService {
         if (MD5Utils.md5(changePwdVO.getOldPwd()).equals(user1.getPassword())) {
             //判断新密码是否与原密码相同
             String md5Pwd = MD5Utils.md5(changePwdVO.getNewPwd());
-            if (md5Pwd.equals( user1.getPassword())) {
+            if (md5Pwd.equals(user1.getPassword())) {
                 return new ResultVO(StatusVo.UPDATE_NO_NEWPWD, "密码与原密码相同", null);
             } else {
+                //新密码加密
                 changePwdVO.setNewPwd(md5Pwd);
                 if (userDao.updatePassword(changePwdVO) > 0) {
                     return new ResultVO(StatusVo.UPDATE_OK, "更新成功", null);
@@ -134,9 +137,6 @@ public class UserServiceImpl implements UserService {
         } else {
             return new ResultVO(StatusVo.UPDATE_NO_OLDPWD, "旧密码错误", null);
         }
-
-
-
     }
 
     /**

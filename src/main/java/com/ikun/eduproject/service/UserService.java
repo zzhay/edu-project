@@ -10,10 +10,13 @@ import java.util.List;
 /**
  * @Author zzhay
  * @Date 2023/7/26/026
+ * UserService提供了用户相关功能的接口。
+ * 定义了用户管理、权限验证等相关功能的抽象方法。
  */
 public interface UserService {
     /**
      * 登录
+     *
      * @param username
      * @param password
      * @return
@@ -22,6 +25,7 @@ public interface UserService {
 
     /**
      * 注册
+     *
      * @param user
      * @return
      */
@@ -29,13 +33,15 @@ public interface UserService {
 
     /**
      * 更新基础信息
+     *
      * @param changeInfoVO
      * @return
      */
-   ResultVO updateInformation(ChangeInfoVO changeInfoVO);
+    ResultVO updateInformation(ChangeInfoVO changeInfoVO);
 
     /**
      * 更新密码
+     *
      * @param changePwdVO
      * @return
      */
@@ -43,18 +49,21 @@ public interface UserService {
 
     /**
      * 查出所有学生
+     *
      * @return
      */
     ResultVO getStudent();
 
     /**
      * 查出所有老师
+     *
      * @return
      */
     ResultVO getTeacher();
 
     /**
      * 修改状态
+     *
      * @param username
      * @return
      */
