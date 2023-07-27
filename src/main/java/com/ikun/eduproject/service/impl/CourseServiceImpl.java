@@ -60,8 +60,8 @@ public class CourseServiceImpl implements CourseService {
      */
     @Override
     public ResultVO updateCourse(Course course) {
-        Integer integer = courseDao.selectByUIdAndName(course);
-        if (integer != course.getCourseId()) {
+        Integer courseId = courseDao.selectByUIdAndName(course);
+        if (courseId!=null&&courseId == course.getCourseId()) {
             return new ResultVO(StatusVo.INSERT_NO_COURSE_NAME, "课程名已经存在", null);
         } else {
             int i = courseDao.updateCourse(course);

@@ -30,7 +30,7 @@ public class Course implements Serializable {
     private String name;
 
     @ApiModelProperty(dataType = "String",required = true,value = "作者")
-    private String auther;
+    private String author;
 
     @ApiModelProperty(dataType = "BigDecimal",required = true,value = "价格")
     private BigDecimal price;

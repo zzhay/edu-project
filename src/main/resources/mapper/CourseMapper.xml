@@ -26,7 +26,7 @@
 
     <update id="updateCourse" parameterType="com.ikun.eduproject.pojo.Course">
         update course
-        set (name,auther,price,description)
-        values (#{name}, #{auther}, #{price}, #{description})
+        set (name,author,price,description,checked)
+        values (#{name}, #{author}, #{price}, #{description}, 0)
     </update>
 </mapper>
