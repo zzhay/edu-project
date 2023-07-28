@@ -35,9 +35,7 @@ public class UserController {
      */
     @ApiOperation("注册接口")
     @PostMapping("/regist")
-    public ResultVO regist( User user,@RequestParam("avatar") MultipartFile avatar) throws IOException {
-        String url = aliOSSUtils.upload(avatar);
-        user.setImageUrl(url);
+    public ResultVO regist( User user) {
         ResultVO result = userService.regist(user);
         return result;
     }
