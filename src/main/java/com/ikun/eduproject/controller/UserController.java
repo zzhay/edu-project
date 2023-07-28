@@ -35,8 +35,6 @@ public class UserController {
         return result;
     }
 
-
-
     /**
      * 登录
      * @param user
