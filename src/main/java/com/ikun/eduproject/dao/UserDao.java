@@ -3,6 +3,7 @@ package com.ikun.eduproject.dao;
 import com.ikun.eduproject.pojo.User;
 import com.ikun.eduproject.vo.ChangeInfoVO;
 import com.ikun.eduproject.vo.ChangePwdVO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -80,5 +81,5 @@ public interface UserDao {
      * @param url
      * @return
      */
-    int updateImage(String username, String url);
+    int updateImage(@Param("username") String username, @Param("url") String url);
 }

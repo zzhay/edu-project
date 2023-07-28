@@ -19,10 +19,10 @@ import java.sql.Timestamp;
 @ApiModel(value = "学生拥有课程对象",description = "学生拥有课程信息")
 public class StudentCourses implements Serializable {
     @ApiModelProperty(dataType = "Integer",required = false,value = "用户id")
-    private int userId;
+    private Integer userId;
 
     @ApiModelProperty(dataType = "Integer",required = false,value = "课程id")
-    private int courseId;
+    private Integer courseId;
 
     @ApiModelProperty(dataType = "Timestamp",required = false,value = "购买时间")
     private Timestamp time;

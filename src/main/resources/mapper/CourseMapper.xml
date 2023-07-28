@@ -5,16 +5,9 @@
 <mapper namespace="com.ikun.eduproject.dao.CourseDao">
 
     <insert id="insertCourse" parameterType="com.ikun.eduproject.pojo.Course">
-        insert into course(user_id, name, auther, price, description)
-        values (#{userId}, #{name}, #{auther}, #{price}, #{description})
+        insert into course(user_id, name, author, price, description, image_url)
+        values (#{userId}, #{name}, #{author}, #{price}, #{description}, #{imageUrl})
     </insert>
-
-    <select id="selectByUserId" parameterType="int" resultType="com.ikun.eduproject.pojo.Course">
-        select *
-        from course
-        where user_id = #{userId}
-          and statu = 1;
-    </select>
 
     <select id="selectByUIdAndName" parameterType="com.ikun.eduproject.pojo.Course" resultType="int">
         select course_id
@@ -24,20 +17,71 @@
           and statu = 1;
     </select>
 
+    <select id="selectByUserId1" parameterType="integer" resultType="com.ikun.eduproject.pojo.Course">
+        select *
+        from course
+        where user_id = #{userId}
+          and statu = 1
+          and checked = 1;
+    </select>
+
+    <select id="selectByUserId2" parameterType="integer" resultType="com.ikun.eduproject.pojo.Course">
+        select *
+        from course
+        where user_id = #{userId}
+          and statu = 1
+          and checked = 0;
+    </select>
+
+    <select id="selectByUserId3" parameterType="integer" resultType="com.ikun.eduproject.pojo.Course">
+        select *
+        from course
+        where user_id = #{userId}
+          and statu = 1
+          and checked = 2;
+    </select>
+
     <update id="updateCourse" parameterType="com.ikun.eduproject.pojo.Course">
         update course
         set name=#{name},
             author= #{author},
             price=#{price},
             description= #{description},
-            checked=0
-        where course_id = #{courseId}
+            image_url=#{imageUrl},
+            checked=0;
+        where course_id =
+        #{courseId};
     </update>
 
-    <update id="updateStatu" parameterType="com.ikun.eduproject.pojo.Course">
+    <update id="updateStatu" parameterType="string">
         update course
         set statu=0
-        where user_id = #{userId}
-          and name = #{name}
+        where name = #{name};
     </update>
+
+    <resultMap id="GetCourseChecked" type="com.ikun.eduproject.vo.GetCourseChecked">
+        <id property="courseId" column="course_id"/>
+        <result property="username" column="username"/>
+        <result property="name" column="name"/>
+        <result property="author" column="author"/>
+        <result property="price" column="price"/>
+        <result property="description" column="description"/>
+        <result property="imageUrl" column="image_url"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <select id="selectAllChecked" resultMap="GetCourseChecked">
+        select c.course_id,
+               u.username,
+               c.name,
+               c.author,
+               c.price,
+               c.description,
+               c.image_url,
+               c.update_time
+        from user u
+                 join course c on u.user_id = c.user_id
+        where c.checked = 0
+          and c.statu = 1;
+    </select>
+
 </mapper>

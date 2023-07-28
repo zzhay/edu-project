@@ -68,7 +68,8 @@
             end
         where username = #{username}
     </update>
-    <update id="updateImage" parameterType="string">
+
+    <update id="updateImage">
         update user
         set image_url=#{url}
         where username = #{username};

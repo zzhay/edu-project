@@ -19,13 +19,13 @@ import java.sql.Timestamp;
 @ApiModel(value = "评论对象",description = "评论信息")
 public class Comments implements Serializable {
     @ApiModelProperty(dataType = "Integer",required = false,value = "评论id")
-    private int commentsId;
+    private Integer commentsId;
 
     @ApiModelProperty(dataType = "Integer",required = false,value = "用户id")
-    private int userId;
+    private Integer userId;
 
     @ApiModelProperty(dataType = "Integer",required = false,value = "课程id")
-    private int courseId;
+    private Integer courseId;
 
     @ApiModelProperty(dataType = "String",required = true,value = "评论内容")
     private String text;

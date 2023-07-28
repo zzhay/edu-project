@@ -1,12 +1,15 @@
 package com.ikun.eduproject.service.impl;
 
 import com.ikun.eduproject.dao.CourseDao;
+import com.ikun.eduproject.dao.UserDao;
 import com.ikun.eduproject.pojo.Course;
 import com.ikun.eduproject.service.CourseService;
+import com.ikun.eduproject.vo.GetCourseChecked;
 import com.ikun.eduproject.vo.ResultVO;
 import com.ikun.eduproject.vo.StatusVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -45,20 +48,55 @@ public class CourseServiceImpl implements CourseService {
     }
 
     /**
-     * 教师查看名下课程
+     * 教师查看已上架课程
      *
      * @param userId
      * @return
      */
     @Override
-    public ResultVO getOwnCourse(int userId) {
-        List<Course> list = courseDao.selectByUserId(userId);
-        return new ResultVO(StatusVo.SELECT_OK, "查询成功", list);
-
+    public ResultVO getCourse1(Integer userId) {
+        if (userId != null) {
+            List<Course> list = courseDao.selectByUserId1(userId);
+            return new ResultVO(StatusVo.SELECT_OK, "查询成功", list);
+        } else {
+            return new ResultVO(StatusVo.SELECT_NO, "id为空", null);
+        }
     }
 
     /**
-     * 教师更新课程信息
+     * 教师查看待审核课程
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public ResultVO getCourse2(Integer userId) {
+        if (userId != null) {
+            List<Course> list = courseDao.selectByUserId2(userId);
+            return new ResultVO(StatusVo.SELECT_OK, "查询成功", list);
+        } else {
+            return new ResultVO(StatusVo.SELECT_NO, "id为空", null);
+        }
+    }
+
+    /**
+     * 教师查看审核未通过课程
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public ResultVO getCourse3(Integer userId) {
+        if (userId != null) {
+            List<Course> list = courseDao.selectByUserId3(userId);
+            return new ResultVO(StatusVo.SELECT_OK, "查询成功", list);
+        } else {
+            return new ResultVO(StatusVo.SELECT_NO, "id为空", null);
+        }
+    }
+
+    /**
+     * 教师修改课程信息
      *
      * @param course
      * @return
@@ -68,9 +106,10 @@ public class CourseServiceImpl implements CourseService {
         //根据教师id和课程名查出课程id
         Integer courseId = courseDao.selectByUIdAndName(course);
         //判断课程名是否冲突
-        if (courseId != null && courseId != course.getCourseId()) {
+        if (courseId != null && courseId.equals(course.getCourseId())) {
             return new ResultVO(StatusVo.INSERT_NO_COURSE_NAME, "课程名已经存在", null);
         } else {
+            //更新课程
             int i = courseDao.updateCourse(course);
             if (i > 0) {
                 return new ResultVO(StatusVo.UPDATE_OK, "更新成功", null);
@@ -80,5 +119,29 @@ public class CourseServiceImpl implements CourseService {
         }
     }
 
+    /**
+     * 教师下架课程
+     * @param name
+     * @return
+     */
+    @Override
+    public ResultVO updateStatu(String name) {
+        int i = courseDao.updateStatu(name);
+        if (i > 0) {
+            return new ResultVO(StatusVo.UPDATE_OK, "更新成功", null);
+        } else {
+            return new ResultVO(StatusVo.UPDATE_NO, "更新失败", null);
+        }
+    }
+
+    /**
+     * 查看所有待审核课程
+     * @return
+     */
+    @Override
+    public ResultVO getAllChecked() {
+        List<GetCourseChecked> lists = courseDao.selectAllChecked();
+        return new ResultVO(StatusVo.SELECT_OK, "查询成功", lists);
+    }
 
 }

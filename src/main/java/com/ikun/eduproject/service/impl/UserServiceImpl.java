@@ -12,6 +12,7 @@ import com.ikun.eduproject.vo.StatusVo;
 import org.bouncycastle.jcajce.provider.digest.MD5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,6 +27,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private AliOSSUtils aliOSSUtils;
 
     /**
      * 注册
@@ -190,11 +193,20 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * 更新头像
+     *
+     * @param username
+     * @param url      照片地址
+     * @return
+     */
     @Override
     public ResultVO updateImage(String username, String url) {
-        if (userDao.selectByUsername(username) != null) {
+        User user = userDao.selectByUsername(username);
+        if (user != null) {
             int i = userDao.updateImage(username, url);
             if (i > 0) {
+                aliOSSUtils.deleteImageByUrl(url);
                 return new ResultVO(StatusVo.UPDATE_OK, "修改成功", null);
             } else {
                 return new ResultVO(StatusVo.UPDATE_NO, "修改失败", null);

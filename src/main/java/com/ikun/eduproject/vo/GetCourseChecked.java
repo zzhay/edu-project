@@ -1,31 +1,29 @@
-package com.ikun.eduproject.pojo;
+package com.ikun.eduproject.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.models.auth.In;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 /**
  * @Author zzhay
- * @Date 2023/7/26/026
+ * @Date 2023/7/28/028
  */
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "课程对象",description = "课程信息")
-public class Course implements Serializable {
+@ApiModel(value = "待审核课程返回对象",description = "待审核课程")
+public class GetCourseChecked {
+
     @ApiModelProperty(dataType = "Integer",required = false,value = "课程id")
     private Integer courseId;
 
-    @ApiModelProperty(dataType = "Integer",required = true,value = "教师id")
-    private Integer userId;
+    @ApiModelProperty(dataType = "String",required = true,value = "用户名")
+    private String username;
 
     @ApiModelProperty(dataType = "String",required = true,value = "课程名")
     private String name;
@@ -41,15 +39,6 @@ public class Course implements Serializable {
 
     @ApiModelProperty(dataType = "String",required = true,value = "头像url")
     private String imageUrl;
-
-    @ApiModelProperty(dataType = "int",required = false,value = "状态（0：下架，1：上架）")
-    private int statu;
-
-    @ApiModelProperty(dataType = "int",required = false,value = "是否审核（0：未审核，1：已审核，2：未通过）")
-    private int checked;
-
-    @ApiModelProperty(dataType = "Timestamp",required = false,value = "创建时间")
-    private Timestamp creatTime;
 
     @ApiModelProperty(dataType = "Timestamp",required = false,value = "更新时间")
     private Timestamp updateTime;

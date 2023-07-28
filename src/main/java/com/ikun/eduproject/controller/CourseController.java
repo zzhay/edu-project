@@ -28,17 +28,46 @@ public class CourseController {
         return result;
     }
 
-    @ApiOperation("教师查看名下课程")
-    @GetMapping("/getOwnCourse")
-    public ResultVO getOwnCourse(@RequestParam("userId") int userId) {
-        ResultVO result = courseService.getOwnCourse(userId);
+    @ApiOperation("教师查看已上架课程")
+    @GetMapping("/getCourse1")
+    public ResultVO getCourse1(@RequestParam("userId") int userId) {
+        ResultVO result = courseService.getCourse1(userId);
         return result;
     }
 
-    @ApiOperation("修改课程")
+    @ApiOperation("教师查看待审核课程")
+    @GetMapping("/getCourse2")
+    public ResultVO getCourse2(@RequestParam("userId") int userId) {
+        ResultVO result = courseService.getCourse2(userId);
+        return result;
+    }
+
+    @ApiOperation("教师查看审核未通过课程")
+    @GetMapping("/getCourse3")
+    public ResultVO getCourse3(@RequestParam("userId") int userId) {
+        ResultVO result = courseService.getCourse3(userId);
+        return result;
+    }
+
+    @ApiOperation("教师修改课程信息")
     @PostMapping("/updateCourse")
     public ResultVO updateCourse(@RequestBody Course course) {
         ResultVO result = courseService.updateCourse(course);
         return result;
     }
+
+    @ApiOperation("下架课程")
+    @PostMapping("/updateStatu")
+    public ResultVO updateStatu(@RequestParam("name") String name) {
+        ResultVO result = courseService.updateStatu(name);
+        return result;
+    }
+
+    @ApiOperation("管理员查看所有待审核课程")
+    @PostMapping("/getAllChecked")
+    public ResultVO getAllChecked() {
+        ResultVO result = courseService.getAllChecked();
+        return result;
+    }
+
 }

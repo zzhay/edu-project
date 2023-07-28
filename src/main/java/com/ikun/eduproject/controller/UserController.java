@@ -2,7 +2,6 @@ package com.ikun.eduproject.controller;
 
 import com.ikun.eduproject.pojo.User;
 import com.ikun.eduproject.service.UserService;
-import com.ikun.eduproject.utils.AliOSSUtils;
 import com.ikun.eduproject.vo.ChangeInfoVO;
 import com.ikun.eduproject.vo.ChangePwdVO;
 import com.ikun.eduproject.vo.ResultVO;

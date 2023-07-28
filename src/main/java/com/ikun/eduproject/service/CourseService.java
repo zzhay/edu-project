@@ -19,16 +19,43 @@ public interface CourseService {
     ResultVO addCourse(Course course);
 
     /**
-     * 教师查看名下课程
+     * 教师查看已上架课程
      * @param userId
      * @return
      */
-    ResultVO getOwnCourse(int userId);
+    ResultVO getCourse1(Integer userId);
 
     /**
-     * 教师更新课程信息
+     * 教师查看待审核课程
+     * @param userId
+     * @return
+     */
+    ResultVO getCourse2(Integer userId);
+
+    /**
+     * 教师查看审核未通过课程
+     * @param userId
+     * @return
+     */
+    ResultVO getCourse3(Integer userId);
+
+    /**
+     * 教师修改课程信息
      * @param course
      * @return
      */
     ResultVO updateCourse(Course course);
+
+    /**
+     * 教师下架课程
+     * @param name
+     * @return
+     */
+    ResultVO updateStatu(String name);
+
+    /**
+     * 查看所有待审核课程
+     * @return
+     */
+    ResultVO getAllChecked();
 }

@@ -20,7 +20,7 @@ import java.sql.Timestamp;
 public class User implements Serializable {
 
     @ApiModelProperty(dataType = "Integer",required = false,value = "用户id")
-    private int userId;
+    private Integer userId;
 
     @ApiModelProperty(dataType = "String",required = true,value = "用户名")
     private String username;

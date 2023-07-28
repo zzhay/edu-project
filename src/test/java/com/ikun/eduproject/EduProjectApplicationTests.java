@@ -8,7 +8,9 @@ import com.aliyun.oss.common.auth.CredentialsProviderFactory;
 import com.aliyun.oss.common.auth.EnvironmentVariableCredentialsProvider;
 import com.ikun.eduproject.dao.CourseDao;
 import com.ikun.eduproject.dao.UserDao;
+import com.ikun.eduproject.pojo.Course;
 import com.ikun.eduproject.pojo.User;
+import com.ikun.eduproject.vo.GetCourseChecked;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,7 +25,10 @@ class EduProjectApplicationTests {
 
     @Test
     void contextLoads() {
-
+        List<GetCourseChecked> lists = courseDao.selectAllChecked();
+        for (GetCourseChecked list : lists) {
+            System.out.println(list);
+        }
     }
 
 }
