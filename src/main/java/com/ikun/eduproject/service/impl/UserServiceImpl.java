@@ -3,6 +3,7 @@ package com.ikun.eduproject.service.impl;
 import com.ikun.eduproject.dao.UserDao;
 import com.ikun.eduproject.pojo.User;
 import com.ikun.eduproject.service.UserService;
+import com.ikun.eduproject.utils.AliOSSUtils;
 import com.ikun.eduproject.utils.MD5Utils;
 import com.ikun.eduproject.vo.ChangeInfoVO;
 import com.ikun.eduproject.vo.ChangePwdVO;

@@ -37,6 +37,7 @@
     <update id="updateStatu" parameterType="com.ikun.eduproject.pojo.Course">
         update course
         set statu=0
-        where user_id = #{userId}and name=#{name}
+        where user_id = #{userId}
+          and name = #{name}
     </update>
 </mapper>

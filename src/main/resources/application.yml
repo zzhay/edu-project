@@ -18,11 +18,20 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  servlet:
+    multipart:
+      max-file-size: 128MB
+      max-request-size: 128MB
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
-
+aliyun:
+  oss:
+    endpoint: oss-cn-beijing.aliyuncs.com
+    accessKeyId: LTAI5tK5KuTFR7MrniECrjop
+    accessKeySecret: 8KAmhUWrkEeoHii67XFZ0ef2vpsBUJ
+    bucketName: ikun-edu
 #Mapper接口执行 打印Sql日志
 logging:
   level:

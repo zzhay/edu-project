@@ -2,6 +2,7 @@ package com.ikun.eduproject.controller;
 
 import com.ikun.eduproject.pojo.User;
 import com.ikun.eduproject.service.UserService;
+import com.ikun.eduproject.utils.AliOSSUtils;
 import com.ikun.eduproject.vo.ChangeInfoVO;
 import com.ikun.eduproject.vo.ChangePwdVO;
 import com.ikun.eduproject.vo.ResultVO;
@@ -9,6 +10,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 /**
  * @Author zzhay
@@ -21,6 +25,8 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private AliOSSUtils aliOSSUtils;
 
     /**
      * 注册
@@ -29,9 +35,18 @@ public class UserController {
      */
     @ApiOperation("注册接口")
     @PostMapping("/regist")
-    public ResultVO regist(@RequestBody User user) {
+    public ResultVO regist( User user,@RequestParam("avatar") MultipartFile avatar) throws IOException {
+        String url = aliOSSUtils.upload(avatar);
+        user.setImageUrl(url);
         ResultVO result = userService.regist(user);
         return result;
+    }
+
+    @PostMapping("/upload")
+    public ResultVO upload( @RequestParam("avatar") MultipartFile avatar) throws IOException {
+        String url = aliOSSUtils.upload(avatar);
+
+        return new ResultVO(0,null,url);
     }
 
     /**
@@ -98,4 +113,5 @@ public class UserController {
         ResultVO result = userService.updateStatu(username);
         return result;
     }
+
 }

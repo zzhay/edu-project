@@ -11,8 +11,8 @@
     </select>
 
     <insert id="insertUser" parameterType="com.ikun.eduproject.pojo.User">
-        insert into user (username, password, role, phone, email)
-        values (#{username}, #{password}, #{role}, #{phone}, #{email})
+        insert into user (username, password, role, image_url,phone, email)
+        values (#{username}, #{password}, #{role}, #{imageUrl},#{phone}, #{email})
     </insert>
 
     <update id="updateByUsername" parameterType="com.ikun.eduproject.vo.ChangeInfoVO">
