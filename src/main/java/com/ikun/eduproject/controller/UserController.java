@@ -43,7 +43,6 @@ public class UserController {
     @PostMapping("/upload")
     public ResultVO upload( @RequestParam("avatar") MultipartFile avatar) throws IOException {
         String url = aliOSSUtils.upload(avatar);
-
         return new ResultVO(0,null,url);
     }
 
