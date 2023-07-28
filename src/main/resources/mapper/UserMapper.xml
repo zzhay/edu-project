@@ -11,8 +11,15 @@
     </select>
 
     <insert id="insertUser" parameterType="com.ikun.eduproject.pojo.User">
-        insert into user (username, password, role, image_url,phone)
-        values (#{username}, #{password}, #{role}, #{imageUrl},#{phone})
+        INSERT INTO user (username, password, role, image_url, phone)
+        VALUES (#{username},
+                #{password},
+                #{role},
+                CASE
+                    WHEN #{role} = 1 THEN 'https://ikun-edu.oss-cn-beijing.aliyuncs.com/teacher.jpg'
+                    WHEN #{role} = 2 THEN 'https://ikun-edu.oss-cn-beijing.aliyuncs.com/student.jpg'
+                    END,
+                #{phone});
     </insert>
 
     <update id="updateByUsername" parameterType="com.ikun.eduproject.vo.ChangeInfoVO">
@@ -60,5 +67,10 @@
                        ELSE statu
             end
         where username = #{username}
+    </update>
+    <update id="updateImage" parameterType="string">
+        update user
+        set image_url=#{url}
+        where username = #{username};
     </update>
 </mapper>

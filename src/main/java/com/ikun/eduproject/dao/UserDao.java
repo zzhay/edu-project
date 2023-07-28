@@ -73,4 +73,12 @@ public interface UserDao {
      * @return
      */
     int updateStatu(String username);
+
+    /**
+     * 按照username更新头像
+     * @param username
+     * @param url
+     * @return
+     */
+    int updateImage(String username, String url);
 }

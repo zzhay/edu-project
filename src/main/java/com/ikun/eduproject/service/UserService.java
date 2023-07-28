@@ -69,4 +69,11 @@ public interface UserService {
      */
     ResultVO updateStatu(String username);
 
+    /**
+     * 修改头像
+     * @param username
+     * @param url 照片地址
+     * @return
+     */
+    ResultVO updateImage(String username,String url);
 }

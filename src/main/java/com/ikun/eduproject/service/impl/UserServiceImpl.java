@@ -189,4 +189,19 @@ public class UserServiceImpl implements UserService {
             return new ResultVO(StatusVo.UPDATE_NO, "用户名错误", null);
         }
     }
+
+    @Override
+    public ResultVO updateImage(String username, String url) {
+        if (userDao.selectByUsername(username) != null) {
+            int i = userDao.updateImage(username, url);
+            if (i > 0) {
+                return new ResultVO(StatusVo.UPDATE_OK, "修改成功", null);
+            } else {
+                return new ResultVO(StatusVo.UPDATE_NO, "修改失败", null);
+            }
+        } else {
+            return new ResultVO(StatusVo.UPDATE_NO, "用户不存在", null);
+        }
+
+    }
 }
