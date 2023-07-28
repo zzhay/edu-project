@@ -11,7 +11,7 @@
     </select>
 
     <insert id="insertUser" parameterType="com.ikun.eduproject.pojo.User">
-        INSERT INTO user (username, password, role, image_url, phone)
+        INSERT INTO user (username, password, role, image_url, phone,email)
         VALUES (#{username},
                 #{password},
                 #{role},
@@ -19,7 +19,7 @@
                     WHEN #{role} = 1 THEN 'https://ikun-edu.oss-cn-beijing.aliyuncs.com/teacher.jpg'
                     WHEN #{role} = 2 THEN 'https://ikun-edu.oss-cn-beijing.aliyuncs.com/student.jpg'
                     END,
-                #{phone});
+                #{phone},#{email});
     </insert>
 
     <update id="updateByUsername" parameterType="com.ikun.eduproject.vo.ChangeInfoVO">
