@@ -10,9 +10,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 /**
  * @Author zzhay
@@ -25,8 +22,6 @@ import java.io.IOException;
 public class UserController {
     @Autowired
     private UserService userService;
-    @Autowired
-    private AliOSSUtils aliOSSUtils;
 
     /**
      * 注册
@@ -40,11 +35,7 @@ public class UserController {
         return result;
     }
 
-    @PostMapping("/upload")
-    public ResultVO upload( @RequestParam("avatar") MultipartFile avatar) throws IOException {
-        String url = aliOSSUtils.upload(avatar);
-        return new ResultVO(0,null,url);
-    }
+
 
     /**
      * 登录
