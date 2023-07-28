@@ -2,6 +2,7 @@ package com.ikun.eduproject.service;
 
 import com.ikun.eduproject.pojo.Course;
 import com.ikun.eduproject.vo.ResultVO;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * @Author zzhay
@@ -58,4 +59,12 @@ public interface CourseService {
      * @return
      */
     ResultVO getAllChecked();
+
+    /**
+     * 课程审核
+     * @param courseId
+     * @param checked
+     * @return
+     */
+    ResultVO updateChecked(Integer courseId, @Param("checked") Integer checked);
 }

@@ -15,7 +15,7 @@ import java.io.IOException;
  * @Date 2023/7/28/028
  */
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/alioss")
 @CrossOrigin
 @Api(value = "提供aliOSS文件上传的接口", tags = "aliOSS文件上传")
 public class AliOSSController {

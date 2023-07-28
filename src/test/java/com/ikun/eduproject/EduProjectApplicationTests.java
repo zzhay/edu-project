@@ -10,6 +10,7 @@ import com.ikun.eduproject.dao.CourseDao;
 import com.ikun.eduproject.dao.UserDao;
 import com.ikun.eduproject.pojo.Course;
 import com.ikun.eduproject.pojo.User;
+import com.ikun.eduproject.utils.AliOSSUtils;
 import com.ikun.eduproject.vo.GetCourseChecked;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +24,13 @@ class EduProjectApplicationTests {
     @Autowired
     private CourseDao courseDao;
 
+    @Autowired
+    AliOSSUtils aliOSSUtils;
     @Test
     void contextLoads() {
-        List<GetCourseChecked> lists = courseDao.selectAllChecked();
-        for (GetCourseChecked list : lists) {
-            System.out.println(list);
-        }
+        String imageUrl = "https://ikun-edu.oss-cn-beijing.aliyuncs.com/2023-07-28-17-53-39tx1.png";
+        aliOSSUtils.deleteImageByUrl(imageUrl);
+
     }
 
 }

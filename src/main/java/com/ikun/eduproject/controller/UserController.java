@@ -111,5 +111,4 @@ public class UserController {
         ResultVO result = userService.updateImage(username, url);
         return result;
     }
-
 }

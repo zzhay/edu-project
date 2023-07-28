@@ -144,4 +144,20 @@ public class CourseServiceImpl implements CourseService {
         return new ResultVO(StatusVo.SELECT_OK, "查询成功", lists);
     }
 
+    /**
+     * 课程审核
+     * @param courseId
+     * @param checked
+     * @return
+     */
+    @Override
+    public ResultVO updateChecked(Integer courseId, Integer checked) {
+        int i = courseDao.updateChecked(courseId, checked);
+        if (i > 0) {
+            return new ResultVO(StatusVo.UPDATE_OK, "更新成功", null);
+        } else {
+            return new ResultVO(StatusVo.UPDATE_NO, "更新失败", null);
+        }
+    }
+
 }

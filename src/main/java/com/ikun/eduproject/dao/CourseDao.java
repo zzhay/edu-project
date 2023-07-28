@@ -2,6 +2,7 @@ package com.ikun.eduproject.dao;
 
 import com.ikun.eduproject.pojo.Course;
 import com.ikun.eduproject.vo.GetCourseChecked;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import java.util.List;
 public interface CourseDao {
     /**
      * 添加课程
+     *
      * @param course
      * @return
      */
@@ -21,6 +23,7 @@ public interface CourseDao {
 
     /**
      * 按照教师id和课程名查询课程id
+     *
      * @param course
      * @return
      */
@@ -28,6 +31,7 @@ public interface CourseDao {
 
     /**
      * 按照教师id查询已上架课程
+     *
      * @param userId
      * @return 课程集合
      */
@@ -35,6 +39,7 @@ public interface CourseDao {
 
     /**
      * 按照教师id查询待审核课程
+     *
      * @param userId
      * @return 课程集合
      */
@@ -42,6 +47,7 @@ public interface CourseDao {
 
     /**
      * 按照教师id查询审核未通过课程
+     *
      * @param userId
      * @return 课程集合
      */
@@ -49,6 +55,7 @@ public interface CourseDao {
 
     /**
      * 更新课程信息
+     *
      * @param course
      * @return
      */
@@ -56,6 +63,7 @@ public interface CourseDao {
 
     /**
      * 修改课程状态
+     *
      * @param name
      * @return
      */
@@ -63,6 +71,7 @@ public interface CourseDao {
 
     /**
      * 查询所有待审核课程
+     *
      * @return
      */
     List<GetCourseChecked> selectAllChecked();
@@ -70,7 +79,8 @@ public interface CourseDao {
     /**
      * 更新审核
      * @param courseId
+     * @param checked
      * @return
      */
-    int updateChecked(Integer courseId);
+    int updateChecked(@Param("courseId") Integer courseId, @Param("checked") Integer checked);
 }

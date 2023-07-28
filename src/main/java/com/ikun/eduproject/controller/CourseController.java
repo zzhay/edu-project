@@ -5,6 +5,7 @@ import com.ikun.eduproject.service.CourseService;
 import com.ikun.eduproject.vo.ResultVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,10 +65,16 @@ public class CourseController {
     }
 
     @ApiOperation("管理员查看所有待审核课程")
-    @PostMapping("/getAllChecked")
+    @GetMapping("/getAllChecked")
     public ResultVO getAllChecked() {
         ResultVO result = courseService.getAllChecked();
         return result;
     }
 
+    @ApiOperation("管理员审核课程")
+    @GetMapping("/updateChecked")
+    public ResultVO updateChecked(@RequestParam("courseId") Integer courseId, @Param("checked") Integer checked) {
+        ResultVO result = courseService.updateChecked(courseId, checked);
+        return result;
+    }
 }

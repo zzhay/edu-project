@@ -42,11 +42,11 @@ public class Course implements Serializable {
     @ApiModelProperty(dataType = "String",required = true,value = "头像url")
     private String imageUrl;
 
-    @ApiModelProperty(dataType = "int",required = false,value = "状态（0：下架，1：上架）")
-    private int statu;
+    @ApiModelProperty(dataType = "Integer",required = false,value = "状态（0：下架，1：上架）")
+    private Integer statu;
 
-    @ApiModelProperty(dataType = "int",required = false,value = "是否审核（0：未审核，1：已审核，2：未通过）")
-    private int checked;
+    @ApiModelProperty(dataType = "Integer",required = false,value = "是否审核（0：未审核，1：已审核，2：未通过）")
+    private Integer checked;
 
     @ApiModelProperty(dataType = "Timestamp",required = false,value = "创建时间")
     private Timestamp creatTime;

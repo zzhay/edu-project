@@ -40,8 +40,8 @@ public class User implements Serializable {
     @ApiModelProperty(dataType = "String",required = true,value = "邮件")
     private String email;
 
-    @ApiModelProperty(dataType = "int",required = false,value = "状态（0：锁定，1：未锁定）")
-    private int statu;
+    @ApiModelProperty(dataType = "Integer",required = false,value = "状态（0：锁定，1：未锁定）")
+    private Integer statu;
 
     @ApiModelProperty(dataType = "Timestamp",required = false,value = "创建时间")
     private Timestamp creatTime;

@@ -84,4 +84,9 @@
           and c.statu = 1;
     </select>
 
+    <update id="updateChecked">
+        update course
+        set checked=#{checked}
+        where course_id = #{courseId};
+    </update>
 </mapper>

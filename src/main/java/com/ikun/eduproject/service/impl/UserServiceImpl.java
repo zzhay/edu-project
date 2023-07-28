@@ -206,7 +206,7 @@ public class UserServiceImpl implements UserService {
         if (user != null) {
             int i = userDao.updateImage(username, url);
             if (i > 0) {
-                aliOSSUtils.deleteImageByUrl(url);
+                aliOSSUtils.deleteImageByUrl(user.getImageUrl());
                 return new ResultVO(StatusVo.UPDATE_OK, "修改成功", null);
             } else {
                 return new ResultVO(StatusVo.UPDATE_NO, "修改失败", null);
