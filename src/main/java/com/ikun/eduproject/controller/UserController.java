@@ -100,4 +100,17 @@ public class UserController {
         return result;
     }
 
+    /**
+     * 修改头像
+     * @param username
+     * @param url 照片地址
+     * @return
+     */
+    @ApiOperation("修改头像")
+    @PostMapping("/updateImage")
+    public ResultVO updateImage(@RequestParam("username") String username, @RequestParam("url") String url){
+        ResultVO result = userService.updateImage(username, url);
+        return result;
+    }
+
 }
