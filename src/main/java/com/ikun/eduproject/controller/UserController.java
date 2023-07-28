@@ -30,7 +30,7 @@ public class UserController {
      */
     @ApiOperation("注册接口")
     @PostMapping("/regist")
-    public ResultVO regist( User user) {
+    public ResultVO regist(@RequestBody User user) {
         ResultVO result = userService.regist(user);
         return result;
     }
