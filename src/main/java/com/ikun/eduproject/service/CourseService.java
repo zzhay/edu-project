@@ -45,6 +45,14 @@ public interface CourseService {
     ResultVO getCourse3(Integer userId);
 
     /**
+     * 教师查看已下架课程
+     *
+     * @param userId
+     * @return
+     */
+    ResultVO getCourse4(Integer userId);
+
+    /**
      * 教师修改课程信息
      *
      * @param course
@@ -59,6 +67,15 @@ public interface CourseService {
      * @return
      */
     ResultVO updateStatu(String courseId);
+
+    /**
+     * 教师删除申请
+     *
+     * @param courseId
+     * @return
+     */
+    ResultVO deleteReq(String courseId);
+
 
     /**
      * 查看所有待审核课程

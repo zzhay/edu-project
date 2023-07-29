@@ -4,19 +4,30 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ikun.eduproject.dao.CourseDao">
 
+    <resultMap id="GetCourseChecked" type="com.ikun.eduproject.vo.GetCourseChecked">
+        <id property="courseId" column="course_id"/>
+        <result property="username" column="username"/>
+        <result property="name" column="name"/>
+        <result property="author" column="author"/>
+        <result property="price" column="price"/>
+        <result property="description" column="description"/>
+        <result property="imageUrl" column="image_url"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <!--添加课程-->
     <insert id="insertCourse" parameterType="com.ikun.eduproject.pojo.Course">
         insert into course(user_id, name, author, price, description, sub_name image_url)
         values (#{userId}, #{name}, #{author}, #{price}, #{description}, #{subName} #{imageUrl})
     </insert>
-
+    <!--按照教师id和课程名查询课程id-->
     <select id="selectByUIdAndName" parameterType="com.ikun.eduproject.pojo.Course" resultType="int">
         select course_id
         from course
         where user_id = #{userId}
           and name = #{name}
-          and statu = 1;
+          and statu IN (1, 2);
     </select>
-
+    <!--按照教师id查询已上架课程-->
     <select id="selectByUserId1" parameterType="integer" resultType="com.ikun.eduproject.pojo.Course">
         select *
         from course
@@ -24,23 +35,30 @@
           and statu = 1
           and checked = 1;
     </select>
-
+    <!--按照教师id查询待审核课程-->
     <select id="selectByUserId2" parameterType="integer" resultType="com.ikun.eduproject.pojo.Course">
         select *
         from course
         where user_id = #{userId}
-          and statu = 1
+          and statu = 2
           and checked = 0;
     </select>
-
+    <!--按照教师id查询审核未通过课程-->
     <select id="selectByUserId3" parameterType="integer" resultType="com.ikun.eduproject.pojo.Course">
         select *
         from course
         where user_id = #{userId}
-          and statu = 1
+          and statu = 2
           and checked = 2;
     </select>
-
+    <!--教师查看已下架课程-->
+    <select id="selectByUserId4" parameterType="integer" resultType="com.ikun.eduproject.pojo.Course">
+        select *
+        from course
+        where user_id = #{userId}
+          and statu = 0;
+    </select>
+    <!--更新课程信息-->
     <update id="updateCourse" parameterType="com.ikun.eduproject.pojo.Course">
         update course
         set name=#{name},
@@ -52,23 +70,19 @@
         where course_id =
         #{courseId};
     </update>
-
+    <!--更新课程状态-->
     <update id="updateStatu" parameterType="string">
         update course
         set statu=0
         where course_id = #{courseId};
     </update>
-
-    <resultMap id="GetCourseChecked" type="com.ikun.eduproject.vo.GetCourseChecked">
-        <id property="courseId" column="course_id"/>
-        <result property="username" column="username"/>
-        <result property="name" column="name"/>
-        <result property="author" column="author"/>
-        <result property="price" column="price"/>
-        <result property="description" column="description"/>
-        <result property="imageUrl" column="image_url"/>
-        <result property="updateTime" column="update_time"/>
-    </resultMap>
+    <!--删除课程-->
+    <delete id="deleteCourse">
+        delete
+        from course
+        where course_id = #{courseId};
+    </delete>
+    <!--查询所有待审核课程-->
     <select id="selectAllChecked" resultMap="GetCourseChecked">
         select c.course_id,
                u.username,
@@ -81,15 +95,20 @@
         from user u
                  join course c on u.user_id = c.user_id
         where c.checked = 0
-          and c.statu = 1;
+          and c.statu = 2;
     </select>
-
+    <!--更新审核-->
     <update id="updateChecked">
         update course
-        set checked=#{checked}
-        where course_id = #{courseId};
+        set checked=#{checked},
+            statu  = CASE
+                         WHEN #{checked} = 1 THEN 1
+                         ELSE statu
+                END
+        where course_id =
+              #{courseId};
     </update>
-
+    <!--按照课程类别查询-->
     <select id="selectByCategory" parameterType="string" resultType="com.ikun.eduproject.pojo.Course">
         select course.*
         from course

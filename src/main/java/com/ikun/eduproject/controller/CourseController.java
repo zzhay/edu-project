@@ -50,6 +50,13 @@ public class CourseController {
         return result;
     }
 
+    @ApiOperation("教师查看已下架课程")
+    @GetMapping("/getCourse4")
+    public ResultVO getCourse4(@RequestParam("userId") int userId) {
+        ResultVO result = courseService.getCourse4(userId);
+        return result;
+    }
+
     @ApiOperation("教师修改课程信息")
     @PostMapping("/updateCourse")
     public ResultVO updateCourse(@RequestBody Course course) {
@@ -57,10 +64,17 @@ public class CourseController {
         return result;
     }
 
-    @ApiOperation("下架课程")
+    @ApiOperation("教师下架课程")
     @PostMapping("/updateStatu")
     public ResultVO updateStatu(@RequestParam("courseId") String courseId) {
         ResultVO result = courseService.updateStatu(courseId);
+        return result;
+    }
+
+    @ApiOperation("教师删除申请")
+    @PostMapping("/deleteReq")
+    public ResultVO deleteReq(@RequestParam("courseId") String courseId) {
+        ResultVO result = courseService.deleteReq(courseId);
         return result;
     }
 

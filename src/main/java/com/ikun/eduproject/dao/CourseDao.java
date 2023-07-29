@@ -54,6 +54,13 @@ public interface CourseDao {
     List<Course> selectByUserId3(Integer userId);
 
     /**
+     * 教师查看已下架课程
+     * @param userId
+     * @return
+     */
+    List<Course> selectByUserId4(Integer userId);
+
+    /**
      * 更新课程信息
      *
      * @param course
@@ -62,12 +69,20 @@ public interface CourseDao {
     int updateCourse(Course course);
 
     /**
-     * 修改课程状态
+     * 更新课程状态
      *
      * @param courseId
      * @return
      */
     int updateStatu(String courseId);
+
+    /**
+     * 删除课程
+     *
+     * @param courseId
+     * @return
+     */
+    int deleteCourse(String courseId);
 
     /**
      * 查询所有待审核课程

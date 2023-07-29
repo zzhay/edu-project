@@ -96,6 +96,22 @@ public class CourseServiceImpl implements CourseService {
     }
 
     /**
+     * 教师查看已下架课程
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public ResultVO getCourse4(Integer userId) {
+        if (userId != null) {
+            List<Course> list = courseDao.selectByUserId4(userId);
+            return new ResultVO(StatusVo.SELECT_OK, "查询成功", list);
+        } else {
+            return new ResultVO(StatusVo.SELECT_NO, "id为空", null);
+        }
+    }
+
+    /**
      * 教师修改课程信息
      *
      * @param course
@@ -105,8 +121,8 @@ public class CourseServiceImpl implements CourseService {
     public ResultVO updateCourse(Course course) {
         //根据教师id和课程名查出课程id
         Integer courseId = courseDao.selectByUIdAndName(course);
-        //判断课程名是否冲突
-        if (courseId != null && courseId.equals(course.getCourseId())) {
+        //判断课程名是否冲突: courseId不为空说明该课程名已存在，courseId不相等说明不是同一课程
+        if (courseId != null && !courseId.equals(course.getCourseId())) {
             return new ResultVO(StatusVo.INSERT_NO_COURSE_NAME, "课程名已经存在", null);
         } else {
             //更新课程
@@ -128,9 +144,25 @@ public class CourseServiceImpl implements CourseService {
     public ResultVO updateStatu(String courseId) {
         int i = courseDao.updateStatu(courseId);
         if (i > 0) {
-            return new ResultVO(StatusVo.UPDATE_OK, "更新成功", null);
+            return new ResultVO(StatusVo.UPDATE_OK, "下架成功", null);
         } else {
-            return new ResultVO(StatusVo.UPDATE_NO, "更新失败", null);
+            return new ResultVO(StatusVo.UPDATE_NO, "下架失败", null);
+        }
+    }
+
+    /**
+     * 教师删除申请
+     *
+     * @param courseId
+     * @return
+     */
+    @Override
+    public ResultVO deleteReq(String courseId) {
+        int i = courseDao.deleteCourse(courseId);
+        if (i > 0) {
+            return new ResultVO(StatusVo.UPDATE_OK, "下架成功", null);
+        } else {
+            return new ResultVO(StatusVo.UPDATE_NO, "下架失败", null);
         }
     }
 
