@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
@@ -17,7 +18,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(value = "待审核课程返回对象",description = "待审核课程")
-public class GetCourseChecked {
+public class GetCourseChecked implements Serializable {
 
     @ApiModelProperty(dataType = "Integer",required = false,value = "课程id")
     private Integer courseId;
@@ -39,6 +40,9 @@ public class GetCourseChecked {
 
     @ApiModelProperty(dataType = "String",required = true,value = "头像url")
     private String imageUrl;
+
+    @ApiModelProperty(dataType = "String",required = true,value = "课程内容url")
+    private String contentUrl;
 
     @ApiModelProperty(dataType = "Timestamp",required = false,value = "更新时间")
     private Timestamp updateTime;

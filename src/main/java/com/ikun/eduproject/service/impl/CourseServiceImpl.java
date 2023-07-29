@@ -171,7 +171,7 @@ public class CourseServiceImpl implements CourseService {
      * @return
      */
     @Override
-    public ResultVO getAllChecked() {
+    public ResultVO getChecked() {
         List<GetCourseChecked> lists = courseDao.selectAllChecked();
         return new ResultVO(StatusVo.SELECT_OK, "查询成功", lists);
     }
@@ -198,7 +198,7 @@ public class CourseServiceImpl implements CourseService {
      * @return
      */
     @Override
-    public ResultVO getAllByCategory(String category) {
+    public ResultVO getByCategory(String category) {
         //判断参数是否为空
         if (category == null) {
             return new ResultVO(StatusVo.SELECT_NO, "参数为空", null);

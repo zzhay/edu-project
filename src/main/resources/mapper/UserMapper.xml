@@ -3,13 +3,13 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ikun.eduproject.dao.UserDao">
-
+    <!--按照用户名查询-->
     <select id="selectByUsername" parameterType="string" resultType="com.ikun.eduproject.pojo.User">
         select *
         from user
         where username = #{username}
     </select>
-
+    <!--新增用户-->
     <insert id="insertUser" parameterType="com.ikun.eduproject.pojo.User">
         INSERT INTO user (username, password, role, image_url, phone, email, statu)
         VALUES (#{username},
@@ -25,64 +25,64 @@
                     WHEN #{role} = 2 THEN 1
                     END);
     </insert>
-
+    <!--按照username更新基础信息-->
     <update id="updateByUsername" parameterType="com.ikun.eduproject.vo.ChangeInfoVO">
         update user
         set phone=#{phone},
             email=#{email}
         where username = #{username}
     </update>
-
+    <!--更新密码-->
     <update id="updatePassword" parameterType="com.ikun.eduproject.vo.ChangePwdVO">
         update user
         set password=#{newPwd}
         where username = #{username};
     </update>
-
+    <!--查出所有学生-->
     <select id="selectStudent" resultType="com.ikun.eduproject.pojo.User">
         select username, phone, email, statu
         from user
         where role = 2;
     </select>
-
+    <!--查出所有正常老师-->
     <select id="selectTeacher" resultType="com.ikun.eduproject.pojo.User">
         select username, phone, email, statu
         from user
         where role = 1
           and statu = 1;
     </select>
-
+    <!--查出所有待审核老师-->
     <select id="selectTeacherNo" resultType="com.ikun.eduproject.pojo.User">
         select username, phone, email, statu, create_time
         from user
         where role = 1
           and statu = 2;
     </select>
-
+    <!--根据手机号查找-->
     <select id="selectByPhone" parameterType="string" resultType="Integer">
         select user_id
         from user
         where phone = #{phone}
     </select>
-
+    <!--根据邮箱查找-->
     <select id="selectByEmail" parameterType="string" resultType="Integer">
         select user_id
         from user
         where email = #{email}
     </select>
-
+    <!--按照username修改状态-->
     <update id="updateStatu">
         update user
         set statu= #{statu}
         where username = #{username}
     </update>
-
+    <!--按照username更新头像-->
     <update id="updateImage">
         update user
         set image_url=#{url}
         where username = #{username};
     </update>
-
+    <!--删除用户-->
     <delete id="deleteByUsername" parameterType="string">
         delete
         from user

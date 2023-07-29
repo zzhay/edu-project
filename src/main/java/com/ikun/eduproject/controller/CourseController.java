@@ -71,7 +71,7 @@ public class CourseController {
         return result;
     }
 
-    @ApiOperation("教师删除申请")
+    @ApiOperation("教师删除未通过课程")
     @PostMapping("/deleteReq")
     public ResultVO deleteReq(@RequestParam("courseId") String courseId) {
         ResultVO result = courseService.deleteReq(courseId);
@@ -79,9 +79,9 @@ public class CourseController {
     }
 
     @ApiOperation("管理员查看所有待审核课程")
-    @GetMapping("/getAllChecked")
-    public ResultVO getAllChecked() {
-        ResultVO result = courseService.getAllChecked();
+    @GetMapping("/getChecked")
+    public ResultVO getChecked() {
+        ResultVO result = courseService.getChecked();
         return result;
     }
 
@@ -92,9 +92,10 @@ public class CourseController {
         return result;
     }
     @ApiOperation("按照课程类别查看课程")
-    @GetMapping("/getAllByCategory")
-    public ResultVO getAllByCategory(@RequestParam("category") String category) {
-        ResultVO result = courseService.getAllByCategory(category);
+    @GetMapping("/getByCategory")
+    public ResultVO getByCategory(@RequestParam("category") String category) {
+        ResultVO result = courseService.getByCategory(category);
         return result;
     }
+
 }

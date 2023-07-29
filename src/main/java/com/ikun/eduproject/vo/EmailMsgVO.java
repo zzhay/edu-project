@@ -8,8 +8,9 @@ import io.swagger.annotations.ApiModel;
  */
 @ApiModel(value = "邮件信息",description = "邮件信息")
 public class EmailMsgVO {
-    public static String regSub = "智学云注册信息";
-    public static String statuSub = "智学云账号变动信息";
+    public static String REGIST = "智学云注册提示";
+    public static String ACCOUNT = "智学云账号变动提示";
+
 
 
     public static String registStuMsg(String username) {
@@ -24,11 +25,16 @@ public class EmailMsgVO {
         return "您好，你的教师账号 "+username+" 审核未通过，请重新注册。";
     }
 
-    public static String statuMsg0(String username) {
+    public static String accountMsg0(String username) {
         return "您好，你的账号 "+username+" 已被冻结，请联系管理员了解详情。";
     }
 
-    public static String statuMsg1(String username) {
+    public static String accountMsg1(String username) {
         return "您好，你的账号 "+username+" 已恢复正常。";
     }
+
+    public static String accountMsg2(String username) {
+        return "您好，你的账号 "+username+" 密码修改成功。";
+    }
+
 }

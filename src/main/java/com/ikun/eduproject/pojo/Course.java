@@ -39,11 +39,14 @@ public class Course implements Serializable {
     @ApiModelProperty(dataType = "String",required = true,value = "课程描述")
     private String description;
 
-    @ApiModelProperty(dataType = "String",required = false,value = "学科名")
+    @ApiModelProperty(dataType = "String",required = true,value = "学科名")
     private String subName;
 
     @ApiModelProperty(dataType = "String",required = true,value = "头像url")
     private String imageUrl;
+
+    @ApiModelProperty(dataType = "String",required = true,value = "课程内容url")
+    private String contentUrl;
 
     @ApiModelProperty(dataType = "Integer",required = false,value = "状态（0：下架，1：上架，2：未上架）")
     private Integer statu;

@@ -12,12 +12,13 @@
         <result property="price" column="price"/>
         <result property="description" column="description"/>
         <result property="imageUrl" column="image_url"/>
+        <result property="contentUrl" column="content_url"/>
         <result property="updateTime" column="update_time"/>
     </resultMap>
     <!--添加课程-->
     <insert id="insertCourse" parameterType="com.ikun.eduproject.pojo.Course">
-        insert into course(user_id, name, author, price, description, sub_name image_url)
-        values (#{userId}, #{name}, #{author}, #{price}, #{description}, #{subName} #{imageUrl})
+        insert into course(user_id, name, author, price, description, sub_name, image_url,content_url)
+        values (#{userId}, #{name}, #{author}, #{price}, #{description}, #{subName}, #{imageUrl},#{contentUrl});
     </insert>
     <!--按照教师id和课程名查询课程id-->
     <select id="selectByUIdAndName" parameterType="com.ikun.eduproject.pojo.Course" resultType="int">
@@ -66,6 +67,7 @@
             price=#{price},
             description= #{description},
             image_url=#{imageUrl},
+            content_url=#{contentUrl},
             statu=2,
             checked=0;
         where course_id =
@@ -92,6 +94,7 @@
                c.price,
                c.description,
                c.image_url,
+               c.content_url,
                c.update_time
         from user u
                  join course c on u.user_id = c.user_id

@@ -82,7 +82,7 @@ public interface CourseService {
      *
      * @return
      */
-    ResultVO getAllChecked();
+    ResultVO getChecked();
 
     /**
      * 课程审核
@@ -98,6 +98,6 @@ public interface CourseService {
      * @param category
      * @return
      */
-    ResultVO getAllByCategory(String category);
+    ResultVO getByCategory(String category);
 
 }

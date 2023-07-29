@@ -51,9 +51,9 @@ public class UserServiceImpl implements UserService {
                     if (i > 0) {
                         //根据身份发送邮件
                         if (user.getRole()==1){
-                            emailUtil.sendMessage(user.getEmail(),EmailMsgVO.regSub,EmailMsgVO.registTeaMsg(user.getUsername()));
+                            emailUtil.sendMessage(user.getEmail(),EmailMsgVO.REGIST,EmailMsgVO.registTeaMsg(user.getUsername()));
                         } else if (user.getRole() == 2) {
-                            emailUtil.sendMessage(user.getEmail(),EmailMsgVO.regSub,EmailMsgVO.registStuMsg(user.getUsername()));
+                            emailUtil.sendMessage(user.getEmail(),EmailMsgVO.REGIST,EmailMsgVO.registStuMsg(user.getUsername()));
                         }
                         return new ResultVO(StatusVo.REGIST_OK, "注册成功", null);
                     } else {
@@ -141,6 +141,7 @@ public class UserServiceImpl implements UserService {
                 //新密码加密
                 changePwdVO.setNewPwd(md5Pwd);
                 if (userDao.updatePassword(changePwdVO) > 0) {
+                    emailUtil.sendMessage(user1.getEmail(),EmailMsgVO.ACCOUNT,EmailMsgVO.accountMsg2(user1.getUsername()));
                     return new ResultVO(StatusVo.UPDATE_OK, "更新成功", null);
                 } else {
                     return new ResultVO(StatusVo.UPDATE_NO, "更新失败", null);
@@ -236,16 +237,17 @@ public class UserServiceImpl implements UserService {
             //statu=3，说明审核未通过，删除用户
             if (statu==3) {
                 userDao.deleteByUsername(username);
-                emailUtil.sendMessage(user.getEmail(),EmailMsgVO.regSub,EmailMsgVO.registNoTeaMsg(username));
+                emailUtil.sendMessage(user.getEmail(),EmailMsgVO.REGIST,EmailMsgVO.registNoTeaMsg(username));
                 return new ResultVO(StatusVo.UPDATE_OK, null, null);
             } else {
                 //其它情况是正常用户的状态变动
                 int i = userDao.updateStatu(username, statu);
                 if (i > 0) {
+                    //账号解冻
                     if (statu == 1) {
-                        emailUtil.sendMessage(user.getEmail(), EmailMsgVO.statuSub, EmailMsgVO.statuMsg1(username));
+                        emailUtil.sendMessage(user.getEmail(), EmailMsgVO.ACCOUNT, EmailMsgVO.accountMsg1(username));
                     } else {
-                        emailUtil.sendMessage(user.getEmail(), EmailMsgVO.statuSub, EmailMsgVO.statuMsg0(username));
+                        emailUtil.sendMessage(user.getEmail(), EmailMsgVO.ACCOUNT, EmailMsgVO.accountMsg0(username));
                     }
                     return new ResultVO(StatusVo.UPDATE_OK, "更新成功", null);
                 } else {
