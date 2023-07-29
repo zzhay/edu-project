@@ -91,12 +91,8 @@ public class CourseController {
         ResultVO result = courseService.updateChecked(courseId, checked);
         return result;
     }
-
-    /**
-     * 按照课程类别查看课程
-     * @param category
-     * @return
-     */
+    @ApiOperation("按照课程类别查看课程")
+    @GetMapping("/getAllByCategory")
     public ResultVO getAllByCategory(@RequestParam("category") String category) {
         ResultVO result = courseService.getAllByCategory(category);
         return result;
