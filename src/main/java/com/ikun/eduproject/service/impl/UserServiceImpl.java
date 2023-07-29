@@ -1,6 +1,7 @@
 package com.ikun.eduproject.service.impl;
 
 import com.ikun.eduproject.dao.UserDao;
+import com.ikun.eduproject.error.ImageDeletionException;
 import com.ikun.eduproject.pojo.User;
 import com.ikun.eduproject.service.UserService;
 import com.ikun.eduproject.utils.AliOSSUtils;
@@ -85,11 +86,13 @@ public class UserServiceImpl implements UserService {
                 //密码加密，对比密码
                 String md5Password = MD5Utils.md5(password);
                 if (md5Password.equals(user.getPassword())) {
-                    //判断账号是否被锁定
-                    if (user.getStatu() == 1) {
+                    //判断账号状态是否正常
+                    if (user.getStatu() == 0) {
+                        return new ResultVO(StatusVo.LOGIN_NO_STATU, "账号被锁定", null);
+                    } else if (user.getStatu() == 1) {
                         return new ResultVO(StatusVo.LOGIN_OK, "登录成功", user);
                     } else {
-                        return new ResultVO(StatusVo.LOGIN_NO_STATU, "账号被锁定", null);
+                        return new ResultVO(StatusVo.LOGIN_NO_STATU, "账号审核中", null);
                     }
                 } else {
                     return new ResultVO(StatusVo.LOGIN_NO, "密码错误", null);
@@ -159,17 +162,59 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * 查出所有老师
+     * 查出正常教师
      *
      * @return
      */
     @Override
     public ResultVO getTeacher() {
         List<User> users = userDao.selectTeacher();
-        if (users.isEmpty()) {
-            return new ResultVO(StatusVo.SELECT_NO, "查询失败", null);
+        return new ResultVO(StatusVo.SELECT_OK, "查询成功", users);
+    }
+
+    /**
+     * 查出待审核教师
+     *
+     * @return
+     */
+    @Override
+    public ResultVO getTeacherNo() {
+        List<User> users = userDao.selectTeacherNo();
+        return new ResultVO(StatusVo.SELECT_OK, "查询成功", users);
+    }
+
+
+    /**
+     * 更新头像
+     *
+     * @param username
+     * @param url      照片地址
+     * @return
+     */
+    @Override
+    //开始事务,抛出 ImageDeletionException异常则事务回滚
+    @Transactional(rollbackFor = ImageDeletionException.class)
+    public ResultVO updateImage(String username, String url) {
+        User user = userDao.selectByUsername(username);
+        if (user != null) {
+            String imageUrl = user.getImageUrl();
+            int i = userDao.updateImage(username, url);
+            if (i > 0) {
+                try {
+                    boolean b = aliOSSUtils.deleteImageByUrl(imageUrl);
+                    //ailiOSS删除失败则抛出异常
+                    if (!b) {
+                        throw new ImageDeletionException("原图片删除错误");
+                    }
+                } catch (ImageDeletionException e) {
+                    return new ResultVO(StatusVo.UPDATE_NO, "修改失败", null);
+                }
+                return new ResultVO(StatusVo.UPDATE_OK, "修改成功", null);
+            } else {
+                return new ResultVO(StatusVo.UPDATE_NO, "修改失败", null);
+            }
         } else {
-            return new ResultVO(StatusVo.SELECT_OK, "查询成功", users);
+            return new ResultVO(StatusVo.UPDATE_NO, "用户不存在", null);
         }
     }
 
@@ -180,40 +225,21 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public ResultVO updateStatu(String username) {
+    public ResultVO updateStatu(String username, Integer statu) {
         if (username != null) {
-            int i = userDao.updateStatu(username);
-            if (i > 0) {
-                return new ResultVO(StatusVo.UPDATE_OK, "更新成功", null);
+            if (statu==3) {
+                userDao.deleteByUsername(username);
+                return new ResultVO(StatusVo.UPDATE_OK, null, null);
             } else {
-                return new ResultVO(StatusVo.UPDATE_NO, "更新失败", null);
+                int i = userDao.updateStatu(username, statu);
+                if (i > 0) {
+                    return new ResultVO(StatusVo.UPDATE_OK, "更新成功", null);
+                } else {
+                    return new ResultVO(StatusVo.UPDATE_NO, "更新失败", null);
+                }
             }
         } else {
             return new ResultVO(StatusVo.UPDATE_NO, "用户名错误", null);
         }
-    }
-
-    /**
-     * 更新头像
-     *
-     * @param username
-     * @param url      照片地址
-     * @return
-     */
-    @Override
-    public ResultVO updateImage(String username, String url) {
-        User user = userDao.selectByUsername(username);
-        if (user != null) {
-            int i = userDao.updateImage(username, url);
-            if (i > 0) {
-                aliOSSUtils.deleteImageByUrl(user.getImageUrl());
-                return new ResultVO(StatusVo.UPDATE_OK, "修改成功", null);
-            } else {
-                return new ResultVO(StatusVo.UPDATE_NO, "修改失败", null);
-            }
-        } else {
-            return new ResultVO(StatusVo.UPDATE_NO, "用户不存在", null);
-        }
-
     }
 }

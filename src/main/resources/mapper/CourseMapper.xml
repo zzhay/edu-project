@@ -5,8 +5,8 @@
 <mapper namespace="com.ikun.eduproject.dao.CourseDao">
 
     <insert id="insertCourse" parameterType="com.ikun.eduproject.pojo.Course">
-        insert into course(user_id, name, author, price, description, image_url)
-        values (#{userId}, #{name}, #{author}, #{price}, #{description}, #{imageUrl})
+        insert into course(user_id, name, author, price, description, sub_name image_url)
+        values (#{userId}, #{name}, #{author}, #{price}, #{description}, #{subName} #{imageUrl})
     </insert>
 
     <select id="selectByUIdAndName" parameterType="com.ikun.eduproject.pojo.Course" resultType="int">
@@ -89,4 +89,12 @@
         set checked=#{checked}
         where course_id = #{courseId};
     </update>
+
+    <select id="selectByCategory" parameterType="string" resultType="com.ikun.eduproject.pojo.Course">
+        select course.*
+        from course
+                 inner join subject on course.sub_name = subject.sub_name
+        where subject.sub_category = #{category};
+    </select>
+
 </mapper>

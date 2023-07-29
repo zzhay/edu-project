@@ -160,4 +160,21 @@ public class CourseServiceImpl implements CourseService {
         }
     }
 
+    /**
+     * 按照课程类别查看课程
+     * @param category
+     * @return
+     */
+    @Override
+    public ResultVO getAllByCategory(String category) {
+        //判断参数是否为空
+        if (category == null) {
+            return new ResultVO(StatusVo.SELECT_NO, "参数为空", null);
+        } else {
+            //查询
+            List<Course> courses = courseDao.selectByCategory(category);
+            return new ResultVO(StatusVo.SELECT_OK, "查询成功", courses);
+        }
+    }
+
 }

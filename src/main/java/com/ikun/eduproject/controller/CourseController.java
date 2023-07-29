@@ -72,9 +72,19 @@ public class CourseController {
     }
 
     @ApiOperation("管理员审核课程")
-    @GetMapping("/updateChecked")
+    @PostMapping("/updateChecked")
     public ResultVO updateChecked(@RequestParam("courseId") Integer courseId, @Param("checked") Integer checked) {
         ResultVO result = courseService.updateChecked(courseId, checked);
+        return result;
+    }
+
+    /**
+     * 按照课程类别查看课程
+     * @param category
+     * @return
+     */
+    public ResultVO getAllByCategory(@RequestParam("category") String category) {
+        ResultVO result = courseService.getAllByCategory(category);
         return result;
     }
 }

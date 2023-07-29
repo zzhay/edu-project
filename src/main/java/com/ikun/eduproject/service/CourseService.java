@@ -14,6 +14,7 @@ public interface CourseService {
 
     /**
      * 新增课程
+     *
      * @param course
      * @return
      */
@@ -21,6 +22,7 @@ public interface CourseService {
 
     /**
      * 教师查看已上架课程
+     *
      * @param userId
      * @return
      */
@@ -28,6 +30,7 @@ public interface CourseService {
 
     /**
      * 教师查看待审核课程
+     *
      * @param userId
      * @return
      */
@@ -35,6 +38,7 @@ public interface CourseService {
 
     /**
      * 教师查看审核未通过课程
+     *
      * @param userId
      * @return
      */
@@ -42,6 +46,7 @@ public interface CourseService {
 
     /**
      * 教师修改课程信息
+     *
      * @param course
      * @return
      */
@@ -49,6 +54,7 @@ public interface CourseService {
 
     /**
      * 教师下架课程
+     *
      * @param name
      * @return
      */
@@ -56,15 +62,25 @@ public interface CourseService {
 
     /**
      * 查看所有待审核课程
+     *
      * @return
      */
     ResultVO getAllChecked();
 
     /**
      * 课程审核
+     *
      * @param courseId
      * @param checked
      * @return
      */
-    ResultVO updateChecked(Integer courseId, @Param("checked") Integer checked);
+    ResultVO updateChecked(@Param("courseId") Integer courseId, @Param("checked") Integer checked);
+
+    /**
+     * 按照课程类别查看课程
+     * @param category
+     * @return
+     */
+    ResultVO getAllByCategory(String category);
+
 }

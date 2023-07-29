@@ -55,11 +55,18 @@ public interface UserService {
     ResultVO getStudent();
 
     /**
-     * 查出所有老师
+     * 查出正常教师
      *
      * @return
      */
     ResultVO getTeacher();
+
+    /**
+     * 查出待审核教师
+     *
+     * @return
+     */
+    ResultVO getTeacherNo();
 
     /**
      * 修改状态
@@ -67,7 +74,7 @@ public interface UserService {
      * @param username
      * @return
      */
-    ResultVO updateStatu(String username);
+    ResultVO updateStatu(String username,Integer statu);
 
     /**
      * 修改头像

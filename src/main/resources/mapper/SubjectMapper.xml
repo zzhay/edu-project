@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ikun.eduproject.dao.SubjectDao">
+
+    <select id="selectAll" resultType="com.ikun.eduproject.pojo.Subject">
+        select sub_name, sub_category
+        from subject;
+    </select>
+</mapper>

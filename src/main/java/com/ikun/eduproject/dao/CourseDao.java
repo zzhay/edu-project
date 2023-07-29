@@ -78,9 +78,17 @@ public interface CourseDao {
 
     /**
      * 更新审核
+     *
      * @param courseId
      * @param checked
      * @return
      */
     int updateChecked(@Param("courseId") Integer courseId, @Param("checked") Integer checked);
+
+    /**
+     * 按照课程类别查询
+     * @param category
+     * @return
+     */
+    List<Course> selectByCategory(String category);
 }

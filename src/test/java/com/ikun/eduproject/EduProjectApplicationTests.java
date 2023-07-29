@@ -28,9 +28,10 @@ class EduProjectApplicationTests {
     AliOSSUtils aliOSSUtils;
     @Test
     void contextLoads() {
-        String imageUrl = "https://ikun-edu.oss-cn-beijing.aliyuncs.com/2023-07-28-17-53-39tx1.png";
-        aliOSSUtils.deleteImageByUrl(imageUrl);
-
+        List<Course> courses = courseDao.selectByCategory("理学");
+        for (Course cours : courses) {
+            System.out.println(cours);
+        }
     }
 
 }

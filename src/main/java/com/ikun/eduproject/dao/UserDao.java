@@ -49,10 +49,16 @@ public interface UserDao {
     List<User> selectStudent();
 
     /**
-     * 查出所有学老师
+     * 查出所有正常老师
      * @return
      */
     List<User> selectTeacher();
+
+    /**
+     * 查出所有待审核老师
+     * @return
+     */
+    List<User> selectTeacherNo();
 
     /**
      * 根据手机号查找
@@ -73,7 +79,7 @@ public interface UserDao {
      * @param username
      * @return
      */
-    int updateStatu(String username);
+    int updateStatu(@Param("username") String username,@Param("statu") Integer statu);
 
     /**
      * 按照username更新头像
@@ -82,4 +88,11 @@ public interface UserDao {
      * @return
      */
     int updateImage(@Param("username") String username, @Param("url") String url);
+
+    /**
+     * 删除用户
+     * @param username
+     * @return
+     */
+    int deleteByUsername(String username);
 }

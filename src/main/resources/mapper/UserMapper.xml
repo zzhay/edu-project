@@ -11,7 +11,7 @@
     </select>
 
     <insert id="insertUser" parameterType="com.ikun.eduproject.pojo.User">
-        INSERT INTO user (username, password, role, image_url, phone,email)
+        INSERT INTO user (username, password, role, image_url, phone, email, statu)
         VALUES (#{username},
                 #{password},
                 #{role},
@@ -19,7 +19,11 @@
                     WHEN #{role} = 1 THEN 'https://ikun-edu.oss-cn-beijing.aliyuncs.com/teacher.jpg'
                     WHEN #{role} = 2 THEN 'https://ikun-edu.oss-cn-beijing.aliyuncs.com/student.jpg'
                     END,
-                #{phone},#{email});
+                #{phone}, #{email},
+                CASE
+                    WHEN #{role} = 1 THEN 2
+                    WHEN #{role} = 2 THEN 1
+                    END);
     </insert>
 
     <update id="updateByUsername" parameterType="com.ikun.eduproject.vo.ChangeInfoVO">
@@ -44,7 +48,15 @@
     <select id="selectTeacher" resultType="com.ikun.eduproject.pojo.User">
         select username, phone, email, statu
         from user
-        where role = 1;
+        where role = 1
+          and statu = 1;
+    </select>
+
+    <select id="selectTeacherNo" resultType="com.ikun.eduproject.pojo.User">
+        select username, phone, email, statu, create_time
+        from user
+        where role = 1
+          and statu = 2;
     </select>
 
     <select id="selectByPhone" parameterType="string" resultType="Integer">
@@ -59,13 +71,9 @@
         where email = #{email}
     </select>
 
-    <update id="updateStatu" parameterType="string">
+    <update id="updateStatu">
         update user
-        set statu= CASE
-                       WHEN statu = 1 THEN 0
-                       WHEN statu = 0 THEN 1
-                       ELSE statu
-            end
+        set statu= #{statu}
         where username = #{username}
     </update>
 
@@ -74,4 +82,10 @@
         set image_url=#{url}
         where username = #{username};
     </update>
+
+    <delete id="deleteByUsername" parameterType="string">
+        delete
+        from user
+        where username = #{username};
+    </delete>
 </mapper>

@@ -27,7 +27,7 @@ public class Course implements Serializable {
     @ApiModelProperty(dataType = "Integer",required = true,value = "教师id")
     private Integer userId;
 
-    @ApiModelProperty(dataType = "String",required = true,value = "课程名")
+    @ApiModelProperty(dataType = "String",required = true,value = "课程名称")
     private String name;
 
     @ApiModelProperty(dataType = "String",required = true,value = "作者")
@@ -38,6 +38,9 @@ public class Course implements Serializable {
 
     @ApiModelProperty(dataType = "String",required = true,value = "课程描述")
     private String description;
+
+    @ApiModelProperty(dataType = "String",required = false,value = "学科名")
+    private String subName;
 
     @ApiModelProperty(dataType = "String",required = true,value = "头像url")
     private String imageUrl;

@@ -85,17 +85,28 @@ public class UserController {
      * 查出所有老师
      * @return
      */
-    @ApiOperation("管理员查看所有老师")
+    @ApiOperation("管理员查看正常教师")
     @GetMapping("/getTeacher")
     public ResultVO getTeacher() {
         ResultVO result = userService.getTeacher();
         return result;
     }
 
+    /**
+     * 查出待审核教师
+     * @return
+     */
+    @ApiOperation("管理员查看待审核老教师")
+    @GetMapping("/getTeacherNo")
+    public ResultVO getTeacherNo() {
+        ResultVO result = userService.getTeacherNo();
+        return result;
+    }
+
     @ApiOperation("管理员更新用户状态")
     @PostMapping("/updateStatu")
-    public ResultVO updateStatu(@RequestParam("username") String username) {
-        ResultVO result = userService.updateStatu(username);
+    public ResultVO updateStatu(@RequestParam("username") String username,@RequestParam("statu") Integer statu) {
+        ResultVO result = userService.updateStatu(username,statu);
         return result;
     }
 
@@ -111,4 +122,5 @@ public class UserController {
         ResultVO result = userService.updateImage(username, url);
         return result;
     }
+
 }
