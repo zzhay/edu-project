@@ -66,6 +66,7 @@
             price=#{price},
             description= #{description},
             image_url=#{imageUrl},
+            statu=2,
             checked=0;
         where course_id =
         #{courseId};
@@ -113,7 +114,8 @@
         select course.*
         from course
                  inner join subject on course.sub_name = subject.sub_name
-        where subject.sub_category = #{category};
+        where subject.sub_category = #{category}
+          and course.statu = 1;
     </select>
 
 </mapper>
