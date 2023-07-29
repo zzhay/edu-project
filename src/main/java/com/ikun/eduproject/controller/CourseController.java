@@ -59,8 +59,8 @@ public class CourseController {
 
     @ApiOperation("下架课程")
     @PostMapping("/updateStatu")
-    public ResultVO updateStatu(@RequestParam("name") String name) {
-        ResultVO result = courseService.updateStatu(name);
+    public ResultVO updateStatu(@RequestParam("courseId") String courseId) {
+        ResultVO result = courseService.updateStatu(courseId);
         return result;
     }
 

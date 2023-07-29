@@ -64,10 +64,10 @@ public interface CourseDao {
     /**
      * 修改课程状态
      *
-     * @param name
+     * @param courseId
      * @return
      */
-    int updateStatu(String name);
+    int updateStatu(String courseId);
 
     /**
      * 查询所有待审核课程

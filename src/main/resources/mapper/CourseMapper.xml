@@ -56,7 +56,7 @@
     <update id="updateStatu" parameterType="string">
         update course
         set statu=0
-        where name = #{name};
+        where course_id = #{courseId};
     </update>
 
     <resultMap id="GetCourseChecked" type="com.ikun.eduproject.vo.GetCourseChecked">

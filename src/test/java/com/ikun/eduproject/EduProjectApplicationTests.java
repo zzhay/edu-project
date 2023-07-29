@@ -11,6 +11,8 @@ import com.ikun.eduproject.dao.UserDao;
 import com.ikun.eduproject.pojo.Course;
 import com.ikun.eduproject.pojo.User;
 import com.ikun.eduproject.utils.AliOSSUtils;
+import com.ikun.eduproject.utils.EmailUtil;
+import com.ikun.eduproject.vo.EmailMsgVO;
 import com.ikun.eduproject.vo.GetCourseChecked;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +28,14 @@ class EduProjectApplicationTests {
 
     @Autowired
     AliOSSUtils aliOSSUtils;
+    @Autowired
+    EmailUtil emailUtil;
+
     @Test
     void contextLoads() {
-        List<Course> courses = courseDao.selectByCategory("理学");
-        for (Course cours : courses) {
-            System.out.println(cours);
-        }
+        EmailMsgVO msgVO = new EmailMsgVO();
+        System.out.println(msgVO.registStuMsg("xioamin"));
     }
+
 
 }

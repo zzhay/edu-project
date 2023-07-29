@@ -121,12 +121,12 @@ public class CourseServiceImpl implements CourseService {
 
     /**
      * 教师下架课程
-     * @param name
+     * @param courseId
      * @return
      */
     @Override
-    public ResultVO updateStatu(String name) {
-        int i = courseDao.updateStatu(name);
+    public ResultVO updateStatu(String courseId) {
+        int i = courseDao.updateStatu(courseId);
         if (i > 0) {
             return new ResultVO(StatusVo.UPDATE_OK, "更新成功", null);
         } else {

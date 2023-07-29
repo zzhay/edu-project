@@ -5,12 +5,9 @@ import com.ikun.eduproject.error.ImageDeletionException;
 import com.ikun.eduproject.pojo.User;
 import com.ikun.eduproject.service.UserService;
 import com.ikun.eduproject.utils.AliOSSUtils;
+import com.ikun.eduproject.utils.EmailUtil;
 import com.ikun.eduproject.utils.MD5Utils;
-import com.ikun.eduproject.vo.ChangeInfoVO;
-import com.ikun.eduproject.vo.ChangePwdVO;
-import com.ikun.eduproject.vo.ResultVO;
-import com.ikun.eduproject.vo.StatusVo;
-import org.bouncycastle.jcajce.provider.digest.MD5;
+import com.ikun.eduproject.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +27,8 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
     @Autowired
     private AliOSSUtils aliOSSUtils;
+    @Autowired
+    private EmailUtil emailUtil;
 
     /**
      * 注册
@@ -50,6 +49,12 @@ public class UserServiceImpl implements UserService {
                     user.setPassword(md5Password);
                     int i = userDao.insertUser(user);
                     if (i > 0) {
+                        //根据身份发送邮件
+                        if (user.getRole()==1){
+                            emailUtil.sendMessage(user.getEmail(),EmailMsgVO.regSub,EmailMsgVO.registTeaMsg(user.getUsername()));
+                        } else if (user.getRole() == 2) {
+                            emailUtil.sendMessage(user.getEmail(),EmailMsgVO.regSub,EmailMsgVO.registStuMsg(user.getUsername()));
+                        }
                         return new ResultVO(StatusVo.REGIST_OK, "注册成功", null);
                     } else {
                         return new ResultVO(StatusVo.REGIST_NO, "注册失败", null);

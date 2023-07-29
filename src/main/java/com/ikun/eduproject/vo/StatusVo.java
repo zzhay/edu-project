@@ -3,8 +3,7 @@ package com.ikun.eduproject.vo;
 import io.swagger.annotations.ApiModel;
 
 /**
- * @Author zy
- * @Date 2022/10/17
+ * 状态码信息
  */
 @ApiModel(value = "状态码信息",description = "状态码信息")
 public class StatusVo {

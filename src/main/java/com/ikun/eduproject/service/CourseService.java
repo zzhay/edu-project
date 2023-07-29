@@ -55,10 +55,10 @@ public interface CourseService {
     /**
      * 教师下架课程
      *
-     * @param name
+     * @param courseId
      * @return
      */
-    ResultVO updateStatu(String name);
+    ResultVO updateStatu(String courseId);
 
     /**
      * 查看所有待审核课程
