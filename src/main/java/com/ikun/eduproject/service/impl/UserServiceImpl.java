@@ -232,12 +232,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResultVO updateStatu(String username, Integer statu) {
         if (username != null) {
+            User user = userDao.selectByUsername(username);
+            //statu=3，说明审核未通过，删除用户
             if (statu==3) {
                 userDao.deleteByUsername(username);
+                emailUtil.sendMessage(user.getEmail(),EmailMsgVO.regSub,EmailMsgVO.registNoTeaMsg(username));
                 return new ResultVO(StatusVo.UPDATE_OK, null, null);
             } else {
+                //其它情况是正常用户的状态变动
                 int i = userDao.updateStatu(username, statu);
                 if (i > 0) {
+                    if (statu == 1) {
+                        emailUtil.sendMessage(user.getEmail(), EmailMsgVO.statuSub, EmailMsgVO.statuMsg1(username));
+                    } else {
+                        emailUtil.sendMessage(user.getEmail(), EmailMsgVO.statuSub, EmailMsgVO.statuMsg0(username));
+                    }
                     return new ResultVO(StatusVo.UPDATE_OK, "更新成功", null);
                 } else {
                     return new ResultVO(StatusVo.UPDATE_NO, "更新失败", null);
