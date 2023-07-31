@@ -29,7 +29,7 @@ public class AliOSSUtils {
     private String bucketName;
 
     /**
-     * 实现上传图片到OSS
+     * 实现上传文件到OSS
      */
     public String upload(MultipartFile multipartFile) throws IOException {
         // 获取上传的文件的输入流
@@ -52,7 +52,7 @@ public class AliOSSUtils {
     }
 
     /**
-     * 实现上传图片到OSS
+     * 删除文件
      */
     public boolean deleteImageByUrl(String imageUrl) {
         String objectKey = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);

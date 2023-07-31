@@ -6,6 +6,7 @@ import com.ikun.eduproject.pojo.User;
 import com.ikun.eduproject.service.UserService;
 import com.ikun.eduproject.utils.*;
 import com.ikun.eduproject.vo.*;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSendException;
 import org.springframework.stereotype.Service;
@@ -38,10 +39,9 @@ public class UserServiceImpl implements UserService {
      *
      * @param user 用户对象
      * @return ResultVO
-     * @throws MailSendException 邮件发送异常情况
      */
     @Override
-    public ResultVO<String> regist(User user) throws MailSendException {
+    public ResultVO<String> regist(User user){
         //判断用户名是否已注册
         if (userDao.selectByUsername(user.getUsername()) != null) {
             return new ResultVO<>(StatusVO.REGIST_NO, "用户名已被注册", null);
@@ -59,11 +59,15 @@ public class UserServiceImpl implements UserService {
         user.setPassword(md5Password);
         int i = userDao.insertUser(user);
         if (i > 0) {
-            //根据身份发送邮件
-            if (user.getRole() == 1) {
-                emailUtil.sendMessage(user.getEmail(), EmailMsgVO.REGIST, EmailMsgVO.registTeaMsg(user.getUsername()));
-            } else if (user.getRole() == 2) {
-                emailUtil.sendMessage(user.getEmail(), EmailMsgVO.REGIST, EmailMsgVO.registStuMsg(user.getUsername()));
+            try {
+                //根据身份发送邮件
+                if (user.getRole() == 1) {
+                    emailUtil.sendMessage(user.getEmail(), EmailMsgVO.REGIST, EmailMsgVO.registTeaMsg(user.getUsername()));
+                } else if (user.getRole() == 2) {
+                    emailUtil.sendMessage(user.getEmail(), EmailMsgVO.REGIST, EmailMsgVO.registStuMsg(user.getUsername()));
+                }
+            } catch (MailSendException e) {
+                return new ResultVO<>(StatusVO.EMALI_NO, "邮箱异常", null);
             }
             return new ResultVO<>(StatusVO.REGIST_OK, "注册成功", null);
         } else {
@@ -126,10 +130,9 @@ public class UserServiceImpl implements UserService {
      *
      * @param changePwdVO 更改密码传入对象
      * @return ResultVO
-     * @throws MailSendException 邮件发送异常情况
      */
     @Override
-    public ResultVO<String> updatePassword(ChangePwdVO changePwdVO) throws MailSendException {
+    public ResultVO<String> updatePassword(ChangePwdVO changePwdVO){
         User user1 = userDao.selectByUsername(changePwdVO.getUsername());
         //判断旧密码是否正确
         if (Objects.equals(changePwdVO.getOldPwd(), user1.getPassword())) {
@@ -195,10 +198,9 @@ public class UserServiceImpl implements UserService {
      * @param username 用户名
      * @param statu    状态
      * @return ResultVO
-     * @throws MailSendException 邮件发送异常情况
      */
     @Override
-    public ResultVO<String> updateStatu(String username, Integer statu) throws MailSendException {
+    public ResultVO<String> updateStatu(String username, Integer statu){
 
         if (username == null || statu == null) {
             return new ResultVO<>(StatusVO.UPDATE_NO, "参数错误", null);
@@ -225,10 +227,9 @@ public class UserServiceImpl implements UserService {
      * @param username 用户名
      * @param statu    状态
      * @return ResultVO
-     * @throws MailSendException 邮件发送异常情况
      */
     @Override
-    public ResultVO<String> checkTeacher(String username, Integer statu) throws MailSendException {
+    public ResultVO<String> checkTeacher(String username, Integer statu){
         User user = userDao.selectByUsername(username);
         //statu=3，说明审核未通过，删除用户
         if (statu == 3) {
@@ -289,10 +290,9 @@ public class UserServiceImpl implements UserService {
      *
      * @param email 邮箱
      * @return ResultVO
-     * @throws MailSendException 邮件发送异常情况
      */
     @Override
-    public ResultVO<String> getCaptcha(String email) throws MailSendException {
+    public ResultVO<String> getCaptcha(String email){
         if (email == null) {
             return new ResultVO<>(StatusVO.EMALI_NO, "邮箱不能为空", null);
         }
@@ -332,10 +332,12 @@ public class UserServiceImpl implements UserService {
     /**
      * @param forgetPwdVO 忘记密码传入参数
      * @return ResultVO
-     * @throws MailSendException 邮件发送异常情况
      */
     @Override
-    public ResultVO<String> forgetPwd(ForgetPwdVO forgetPwdVO) throws MailSendException {
+    public ResultVO<String> forgetPwd(ForgetPwdVO forgetPwdVO){
+        if (StringUtils.isBlank(forgetPwdVO.getUsername()) || StringUtils.isBlank(forgetPwdVO.getPassword())) {
+        //todo
+        }
         //加密密码
         String md5Pwd = MD5Utils.md5(forgetPwdVO.getPassword());
         //new一个更新密码 ChangePwdVO对象
@@ -349,6 +351,5 @@ public class UserServiceImpl implements UserService {
         } else {
             return new ResultVO<>(StatusVO.UPDATE_NO, "修改失败", null);
         }
-
     }
 }
