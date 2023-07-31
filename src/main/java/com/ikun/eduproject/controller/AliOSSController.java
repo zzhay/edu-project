@@ -2,7 +2,7 @@ package com.ikun.eduproject.controller;
 
 import com.ikun.eduproject.utils.AliOSSUtils;
 import com.ikun.eduproject.vo.ResultVO;
-import com.ikun.eduproject.vo.StatusVo;
+import com.ikun.eduproject.vo.StatusVO;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -33,9 +33,9 @@ public class AliOSSController {
     public ResultVO upload(@RequestParam("avatar") MultipartFile avatar) throws IOException {
         String url = aliOSSUtils.upload(avatar);
         if (url != null) {
-            return new ResultVO(StatusVo.INSERT_OK, "上传成功", url);
+            return new ResultVO(StatusVO.INSERT_OK, "上传成功", url);
         } else {
-            return new ResultVO(StatusVo.INSERT_OK,"上传失败",null);
+            return new ResultVO(StatusVO.INSERT_OK,"上传失败",null);
         }
     }
 }

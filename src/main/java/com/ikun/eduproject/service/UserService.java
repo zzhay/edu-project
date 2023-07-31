@@ -3,6 +3,7 @@ package com.ikun.eduproject.service;
 import com.ikun.eduproject.pojo.User;
 import com.ikun.eduproject.vo.ChangeInfoVO;
 import com.ikun.eduproject.vo.ChangePwdVO;
+import com.ikun.eduproject.vo.ForgetPwdVO;
 import com.ikun.eduproject.vo.ResultVO;
 
 import java.util.List;
@@ -14,73 +15,107 @@ import java.util.List;
  * 定义了用户管理、权限验证等相关功能的抽象方法。
  */
 public interface UserService {
-    /**
-     * 登录
-     *
-     * @param username
-     * @param password
-     * @return
-     */
-    ResultVO login(String username, String password);
 
     /**
      * 注册
      *
-     * @param user
-     * @return
+     * @param user 用户对象
+     * @return ResultVO
      */
-    ResultVO regist(User user);
+    ResultVO<String> regist(User user);
+
+    /**
+     * 登录
+     *
+     * @param username 用户名
+     * @param password 密码
+     * @return ResultVO
+     */
+    ResultVO<User> login(String username, String password);
 
     /**
      * 更新基础信息
      *
-     * @param changeInfoVO
-     * @return
+     * @param changeInfoVO 更改信息传入对象
+     * @return ResultVO
      */
-    ResultVO updateInformation(ChangeInfoVO changeInfoVO);
+    ResultVO<String> updateInformation(ChangeInfoVO changeInfoVO);
 
     /**
-     * 更新密码
+     * 修改密码
      *
-     * @param changePwdVO
-     * @return
+     * @param changePwdVO 更改密码传入对象
+     * @return ResultVO
      */
-    ResultVO updatePassword(ChangePwdVO changePwdVO);
+    ResultVO<String> updatePassword(ChangePwdVO changePwdVO);
 
     /**
      * 查出所有学生
      *
-     * @return
+     * @return ResultVO
      */
-    ResultVO getStudent();
+    ResultVO<List<User>> getStudent();
 
     /**
-     * 查出正常教师
+     * 查出所有教师
      *
-     * @return
+     * @return ResultVO
      */
-    ResultVO getTeacher();
+    ResultVO<List<User>> getTeacher();
 
     /**
      * 查出待审核教师
      *
-     * @return
+     * @return ResultVO
      */
-    ResultVO getTeacherNo();
+    ResultVO<List<User>> getTeacherNo();
 
     /**
      * 修改状态
      *
-     * @param username
-     * @return
+     * @param username 用户名
+     * @param statu    状态
+     * @return ResultVO
      */
-    ResultVO updateStatu(String username,Integer statu);
+    ResultVO<String> updateStatu(String username,Integer statu);
 
     /**
-     * 修改头像
-     * @param username
-     * @param url 照片地址
-     * @return
+     * 审核教师
+     *
+     * @param username 用户名
+     * @param statu    状态
+     * @return ResultVO
      */
-    ResultVO updateImage(String username,String url);
+    ResultVO<String> checkTeacher(String username,Integer statu);
+
+    /**
+     * 更新头像
+     *
+     * @param username 用户名
+     * @param url      照片地址
+     * @return ResultVO
+     */
+    ResultVO<String> updateImage(String username,String url);
+
+    /**
+     * 发送验证码
+     * @param email 邮箱
+     * @return ResultVO
+     */
+    ResultVO<String> getCaptcha(String email);
+
+    /**
+     * 验证验证码
+     * @param email 邮箱
+     * @param captcha 验证码
+     * @return ResultVO
+     */
+    ResultVO<User> checkCaptcha(String email,String captcha);
+
+    /**
+     * 忘记密码
+     * @param forgetPwdVO 忘记密码传入参数
+     * @return ResultVO
+     */
+    ResultVO<String> forgetPwd(ForgetPwdVO forgetPwdVO);
 }

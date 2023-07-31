@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModel;
  * 状态码信息
  */
 @ApiModel(value = "状态码信息",description = "状态码信息")
-public class StatusVo {
+public class StatusVO {
 
     //注册状态码
     public static final int REGIST_OK = 2001;
@@ -39,4 +39,12 @@ public class StatusVo {
     public static final int INSERT_NO = 4005;
     //课程名冲突
     public static final int INSERT_NO_COURSE_NAME = 4005;
+
+    //邮件状态码
+    public static final int EMALI_OK = 2006;
+    public static final int EMALI_NO = 4006;
+
+    //验证码状态码
+    public static final int CAPTCHA_OK = 2007;
+    public static final int CAPTCHA_NO = 4007;
 }

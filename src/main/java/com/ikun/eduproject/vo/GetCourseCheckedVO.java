@@ -18,7 +18,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(value = "待审核课程返回对象",description = "待审核课程")
-public class GetCourseChecked implements Serializable {
+public class GetCourseCheckedVO implements Serializable {
 
     @ApiModelProperty(dataType = "Integer",required = false,value = "课程id")
     private Integer courseId;

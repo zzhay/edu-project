@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ikun.eduproject.dao.CourseDao">
 
-    <resultMap id="GetCourseChecked" type="com.ikun.eduproject.vo.GetCourseChecked">
+    <resultMap id="GetCourseChecked" type="com.ikun.eduproject.vo.GetCourseCheckedVO">
         <id property="courseId" column="course_id"/>
         <result property="username" column="username"/>
         <result property="name" column="name"/>

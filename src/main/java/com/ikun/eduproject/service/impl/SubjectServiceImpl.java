@@ -4,9 +4,8 @@ import com.ikun.eduproject.dao.SubjectDao;
 import com.ikun.eduproject.pojo.Subject;
 import com.ikun.eduproject.service.SubjectService;
 import com.ikun.eduproject.vo.ResultVO;
-import com.ikun.eduproject.vo.StatusVo;
+import com.ikun.eduproject.vo.StatusVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -41,6 +40,6 @@ public class SubjectServiceImpl implements SubjectService {
             }
             categoryMap.get(subCategory).add(subName);
         }
-        return new ResultVO(StatusVo.SELECT_OK, "查询成功", categoryMap);
+        return new ResultVO(StatusVO.SELECT_OK, "查询成功", categoryMap);
     }
 }

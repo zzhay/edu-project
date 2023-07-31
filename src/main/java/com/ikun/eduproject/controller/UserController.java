@@ -4,11 +4,15 @@ import com.ikun.eduproject.pojo.User;
 import com.ikun.eduproject.service.UserService;
 import com.ikun.eduproject.vo.ChangeInfoVO;
 import com.ikun.eduproject.vo.ChangePwdVO;
+import com.ikun.eduproject.vo.ForgetPwdVO;
 import com.ikun.eduproject.vo.ResultVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.mail.MessagingException;
+import java.util.List;
 
 /**
  * @Author zzhay
@@ -19,108 +23,141 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 @Api(value = "提供用户管理的接口", tags = "用户管理")
 public class UserController {
+
     @Autowired
     private UserService userService;
 
     /**
      * 注册
-     * @param user
-     * @return
+     *
+     * @param user 用户信息
+     * @return ResultVO
      */
     @ApiOperation("注册接口")
     @PostMapping("/regist")
-    public ResultVO regist(@RequestBody User user) {
-        ResultVO result = userService.regist(user);
-        return result;
+    public ResultVO<String> regist(@RequestBody User user) {
+        return userService.regist(user);
     }
 
     /**
      * 登录
-     * @param user
-     * @return
+     *
+     * @param user 用户信息
+     * @return ResultVO
      */
     @ApiOperation("登录接口")
     @PostMapping("/login")
-    public ResultVO login(@RequestBody User user) {
-        ResultVO result = userService.login(user.getUsername(), user.getPassword());
-        return result;
+    public ResultVO<User> login(@RequestBody User user) {
+        return userService.login(user.getUsername(), user.getPassword());
     }
 
     /**
      * 更新基础信息
-     * @param changeInfoVO
-     * @return
+     *
+     * @param changeInfoVO 更改信息传入对象
+     * @return ResultVO
      */
     @ApiOperation("更新基础信息接口")
     @PostMapping("/updateInfo")
-    public ResultVO updateInfo(@RequestBody ChangeInfoVO changeInfoVO) {
-        ResultVO result = userService.updateInformation(changeInfoVO);
-        return result;
+    public ResultVO<String> updateInfo(@RequestBody ChangeInfoVO changeInfoVO) {
+        return userService.updateInformation(changeInfoVO);
     }
 
     /**
      * 更新密码
-     * @param changePwdVO
-     * @return
+     *
+     * @param changePwdVO 更改密码传入对象
+     * @return ResultVO
      */
     @ApiOperation("更新密码")
     @PostMapping("/updatePwd")
-    public ResultVO updatePassword(@RequestBody ChangePwdVO changePwdVO) {
-        ResultVO result = userService.updatePassword(changePwdVO);
-        return result;
+    public ResultVO<String> updatePassword(@RequestBody ChangePwdVO changePwdVO){
+        return userService.updatePassword(changePwdVO);
     }
 
     /**
      * 查出所有学生
-     * @return
+     *
+     * @return ResultVO
      */
     @ApiOperation("管理员查看所有学生")
     @GetMapping("/getStudent")
-    public ResultVO getStudent() {
-        ResultVO result = userService.getStudent();
-        return result;
+    public ResultVO<List<User>> getStudent() {
+        return userService.getStudent();
     }
 
     /**
      * 查出所有老师
-     * @return
+     *
+     * @return ResultVO
      */
-    @ApiOperation("管理员查看正常教师")
+    @ApiOperation("管理员查看所有教师")
     @GetMapping("/getTeacher")
-    public ResultVO getTeacher() {
-        ResultVO result = userService.getTeacher();
-        return result;
+    public ResultVO<List<User>> getTeacher() {
+        return userService.getTeacher();
     }
 
     /**
      * 查出待审核教师
-     * @return
+     *
+     * @return ResultVO
      */
     @ApiOperation("管理员查看待审核老教师")
     @GetMapping("/getTeacherNo")
-    public ResultVO getTeacherNo() {
-        ResultVO result = userService.getTeacherNo();
-        return result;
+    public ResultVO<List<User>> getTeacherNo() {
+        return userService.getTeacherNo();
     }
 
     @ApiOperation("管理员更新用户状态")
     @PostMapping("/updateStatu")
-    public ResultVO updateStatu(@RequestParam("username") String username,@RequestParam("statu") Integer statu) {
-        ResultVO result = userService.updateStatu(username,statu);
-        return result;
+    public ResultVO<String> updateStatu(@RequestParam("username") String username, @RequestParam("statu") Integer statu) {
+        return userService.updateStatu(username, statu);
+    }
+
+    @ApiOperation("管理员审核教师")
+    @PostMapping("/checkTeacher")
+    public ResultVO<String> checkTeacher(@RequestParam("username") String username, @RequestParam("statu") Integer statu){
+        return userService.checkTeacher(username, statu);
     }
 
     /**
      * 修改头像
-     * @param username
-     * @param url 照片地址
-     * @return
+     *
+     * @param username 用户名
+     * @param url      照片地址
+     * @return ResultVO
      */
     @ApiOperation("修改头像")
     @PostMapping("/updateImage")
-    public ResultVO updateImage(@RequestParam("username") String username, @RequestParam("url") String url){
-        ResultVO result = userService.updateImage(username, url);
-        return result;
+    public ResultVO<String> updateImage(@RequestParam("username") String username, @RequestParam("url") String url) {
+        return userService.updateImage(username, url);
     }
 
+    /**
+     * 发送验证码
+     *
+     * @return ResultVO
+     */
+    @ApiOperation("发送验证码")
+    @GetMapping("/getCaptcha")
+    public ResultVO<String> getCaptcha(@RequestParam String email) {
+        return userService.getCaptcha(email);
+    }
+
+    /**
+     * 验证验证码
+     *
+     * @return ResultVO
+     */
+    @ApiOperation("验证验证码")
+    @GetMapping("/checkCaptcha")
+    public ResultVO<User> checkCaptcha(@RequestParam String email,@RequestParam String captcha) {
+        return userService.checkCaptcha(email,captcha);
+    }
+
+    @ApiOperation("忘记密码")
+    @PostMapping("/forgetPwd")
+    public ResultVO<String> forgetPwd(@RequestBody ForgetPwdVO forgetPwdVO) {
+        return userService.forgetPwd(forgetPwdVO);
+    }
 }

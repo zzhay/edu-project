@@ -1,7 +1,7 @@
 package com.ikun.eduproject.dao;
 
 import com.ikun.eduproject.pojo.Course;
-import com.ikun.eduproject.vo.GetCourseChecked;
+import com.ikun.eduproject.vo.GetCourseCheckedVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -89,7 +89,7 @@ public interface CourseDao {
      *
      * @return
      */
-    List<GetCourseChecked> selectAllChecked();
+    List<GetCourseCheckedVO> selectAllChecked();
 
     /**
      * 更新审核

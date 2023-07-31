@@ -16,8 +16,8 @@
                 #{password},
                 #{role},
                 CASE
-                    WHEN #{role} = 1 THEN 'https://ikun-edu.oss-cn-beijing.aliyuncs.com/teacher.jpg'
-                    WHEN #{role} = 2 THEN 'https://ikun-edu.oss-cn-beijing.aliyuncs.com/student.jpg'
+                    WHEN #{role} = 1 THEN 'https://ikun-edu.oss-cn-beijing.aliyuncs.com/teacher_default.jpg'
+                    WHEN #{role} = 2 THEN 'https://ikun-edu.oss-cn-beijing.aliyuncs.com/student_default.jpg'
                     END,
                 #{phone}, #{email},
                 CASE
@@ -44,16 +44,16 @@
         from user
         where role = 2;
     </select>
-    <!--查出所有正常老师-->
+    <!--查出所有老师-->
     <select id="selectTeacher" resultType="com.ikun.eduproject.pojo.User">
         select username, phone, email, statu
         from user
         where role = 1
-          and statu = 1;
+          and statu in (0,1);
     </select>
     <!--查出所有待审核老师-->
     <select id="selectTeacherNo" resultType="com.ikun.eduproject.pojo.User">
-        select username, phone, email, statu, create_time
+        select username, phone, email, statu, creat_time
         from user
         where role = 1
           and statu = 2;
@@ -66,7 +66,7 @@
     </select>
     <!--根据邮箱查找-->
     <select id="selectByEmail" parameterType="string" resultType="Integer">
-        select user_id
+        select *
         from user
         where email = #{email}
     </select>

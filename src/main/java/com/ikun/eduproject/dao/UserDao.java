@@ -49,7 +49,7 @@ public interface UserDao {
     List<User> selectStudent();
 
     /**
-     * 查出所有正常老师
+     * 查出所有老师
      * @return
      */
     List<User> selectTeacher();
@@ -72,7 +72,7 @@ public interface UserDao {
      * @param email
      * @return
      */
-    Integer selectByEmail(String email);
+    User selectByEmail(String email);
 
     /**
      * 按照username修改状态
