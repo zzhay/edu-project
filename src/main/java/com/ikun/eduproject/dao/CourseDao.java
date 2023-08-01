@@ -74,7 +74,7 @@ public interface CourseDao {
      * @param courseId
      * @return
      */
-    int updateStatu(String courseId);
+    int updateStatu(Integer courseId);
 
     /**
      * 删除课程
@@ -82,7 +82,7 @@ public interface CourseDao {
      * @param courseId
      * @return
      */
-    int deleteCourse(String courseId);
+    int deleteCourse(Integer courseId);
 
     /**
      * 查询所有待审核课程
@@ -101,9 +101,30 @@ public interface CourseDao {
     int updateChecked(@Param("courseId") Integer courseId, @Param("checked") Integer checked);
 
     /**
-     * 按照课程类别查询
-     * @param category
-     * @return
+     * 按照课程id查询
+     * @param courseId 课程id
+     * @return Course
+     */
+    Course selectByCourseId(Integer courseId);
+
+    /**
+     * 查询已上架课程
+     * @return List<Course>
+     */
+    List<Course> selectAvailable();
+
+    /**
+     * 按照学科类别查询
+     * @param category 学科类别
+     * @return List
      */
     List<Course> selectByCategory(String category);
+
+    /**
+     * 按照学科名查询
+     * @param subName subName
+     * @return List
+     */
+    List<Course> selectBySubName(String subName);
+
 }

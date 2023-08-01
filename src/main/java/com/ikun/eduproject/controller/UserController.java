@@ -11,7 +11,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.mail.MessagingException;
 import java.util.List;
 
 /**
@@ -108,12 +107,24 @@ public class UserController {
         return userService.getTeacherNo();
     }
 
+    /**
+     * 管理员更新用户状态
+     * @param username 用户名
+     * @param statu 状态
+     * @return ResultVO
+     */
     @ApiOperation("管理员更新用户状态")
     @PostMapping("/updateStatu")
     public ResultVO<String> updateStatu(@RequestParam("username") String username, @RequestParam("statu") Integer statu) {
         return userService.updateStatu(username, statu);
     }
 
+    /**
+     * 管理员审核教师
+     * @param username 用户名
+     * @param statu 状态
+     * @return
+     */
     @ApiOperation("管理员审核教师")
     @PostMapping("/checkTeacher")
     public ResultVO<String> checkTeacher(@RequestParam("username") String username, @RequestParam("statu") Integer statu){
@@ -155,6 +166,11 @@ public class UserController {
         return userService.checkCaptcha(email,captcha);
     }
 
+    /**
+     * 忘记密码
+     * @param forgetPwdVO 忘记密码传入参数
+     * @return ResultVO
+     */
     @ApiOperation("忘记密码")
     @PostMapping("/forgetPwd")
     public ResultVO<String> forgetPwd(@RequestBody ForgetPwdVO forgetPwdVO) {

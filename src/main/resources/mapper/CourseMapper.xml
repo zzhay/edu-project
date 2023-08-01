@@ -17,8 +17,8 @@
     </resultMap>
     <!--添加课程-->
     <insert id="insertCourse" parameterType="com.ikun.eduproject.pojo.Course">
-        insert into course(user_id, name, author, price, description, sub_name, image_url,content_url)
-        values (#{userId}, #{name}, #{author}, #{price}, #{description}, #{subName}, #{imageUrl},#{contentUrl});
+        insert into course(user_id, name, author, price, description, sub_name, image_url, content_url)
+        values (#{userId}, #{name}, #{author}, #{price}, #{description}, #{subName}, #{imageUrl}, #{contentUrl});
     </insert>
     <!--按照教师id和课程名查询课程id-->
     <select id="selectByUIdAndName" parameterType="com.ikun.eduproject.pojo.Course" resultType="int">
@@ -74,7 +74,7 @@
         #{courseId};
     </update>
     <!--更新课程状态-->
-    <update id="updateStatu" parameterType="string">
+    <update id="updateStatu" parameterType="integer">
         update course
         set statu=0
         where course_id = #{courseId};
@@ -112,12 +112,33 @@
         where course_id =
               #{courseId};
     </update>
-    <!--按照课程类别查询-->
+    <!--按照课程id查询-->
+    <select id="selectByCourseId" parameterType="integer" resultType="com.ikun.eduproject.pojo.Course">
+        select *
+        from course
+        where course_id = #{courseId};
+    </select>
+    <!--按照课程id查询-->
+    <select id="selectAvailable" resultType="com.ikun.eduproject.pojo.Course">
+        select *
+        from course
+        where statu = 1
+          and checked = 1;
+    </select>
+    <!--按照学科类别查询-->
     <select id="selectByCategory" parameterType="string" resultType="com.ikun.eduproject.pojo.Course">
         select course.*
         from course
                  inner join subject on course.sub_name = subject.sub_name
         where subject.sub_category = #{category}
+          and course.statu = 1;
+    </select>
+    <!--按照学科名查询-->
+    <select id="selectBySubName" parameterType="string" resultType="com.ikun.eduproject.pojo.Course">
+        select course.*
+        from course
+                 inner join subject on course.sub_name = subject.sub_name
+        where subject.sub_name = #{subName}
           and course.statu = 1;
     </select>
 

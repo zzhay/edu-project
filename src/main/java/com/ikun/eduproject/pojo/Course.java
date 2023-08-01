@@ -2,7 +2,6 @@ package com.ikun.eduproject.pojo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.models.auth.In;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -45,7 +44,7 @@ public class Course implements Serializable {
     @ApiModelProperty(dataType = "String",required = true,value = "头像url")
     private String imageUrl;
 
-    @ApiModelProperty(dataType = "String",required = true,value = "课程内容url")
+    @ApiModelProperty(dataType = "String",required = true,value = "附件url")
     private String contentUrl;
 
     @ApiModelProperty(dataType = "Integer",required = false,value = "状态（0：下架，1：上架，2：未上架）")

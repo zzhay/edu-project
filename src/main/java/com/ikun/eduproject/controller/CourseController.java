@@ -66,14 +66,14 @@ public class CourseController {
 
     @ApiOperation("教师下架课程")
     @PostMapping("/updateStatu")
-    public ResultVO updateStatu(@RequestParam("courseId") String courseId) {
+    public ResultVO updateStatu(@RequestParam("courseId") Integer courseId) {
         ResultVO result = courseService.updateStatu(courseId);
         return result;
     }
 
     @ApiOperation("教师删除未通过课程")
     @PostMapping("/deleteReq")
-    public ResultVO deleteReq(@RequestParam("courseId") String courseId) {
+    public ResultVO deleteReq(@RequestParam("courseId") Integer courseId) {
         ResultVO result = courseService.deleteReq(courseId);
         return result;
     }
@@ -92,10 +92,24 @@ public class CourseController {
         return result;
     }
 
-    @ApiOperation("按照课程类别查看课程")
+    @ApiOperation("按照学科类别查看课程")
     @GetMapping("/getByCategory")
     public ResultVO getByCategory(@RequestParam("category") String category) {
         ResultVO result = courseService.getByCategory(category);
+        return result;
+    }
+
+    @ApiOperation("按照学科类别查看课程")
+    @GetMapping("/getBySubName")
+    public ResultVO getBySubName(@RequestParam("subName") String subName) {
+        ResultVO result = courseService.getBySubName(subName);
+        return result;
+    }
+
+    @ApiOperation("按照课程名名称或作者模糊查询")
+    @GetMapping("/queryFuzzy")
+    public ResultVO queryByNameOrAuthorFuzzy(@RequestParam("name") String name) {
+        ResultVO result = courseService.queryByNameOrAuthorFuzzy(name);
         return result;
     }
 

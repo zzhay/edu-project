@@ -41,7 +41,12 @@ public class UserServiceImpl implements UserService {
      * @return ResultVO
      */
     @Override
-    public ResultVO<String> regist(User user){
+    public ResultVO<String> regist(User user) {
+        if (StringUtils.isBlank(user.getUsername()) ||
+                StringUtils.isBlank(user.getPassword()) ||
+                StringUtils.isBlank(user.getEmail())) {
+            return new ResultVO<>(StatusVO.PARAM_NULL, "信息不完整", null);
+        }
         //判断用户名是否已注册
         if (userDao.selectByUsername(user.getUsername()) != null) {
             return new ResultVO<>(StatusVO.REGIST_NO, "用户名已被注册", null);
@@ -75,7 +80,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-
     /**
      * 登录
      *
@@ -86,7 +90,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResultVO<User> login(String username, String password) {
         //判断为空
-        if (username == null || password == null) {
+        if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
             return new ResultVO<>(StatusVO.LOGIN_NO, "用户名或密码为空", null);
         }
         User user = userDao.selectByUsername(username);
@@ -98,7 +102,7 @@ public class UserServiceImpl implements UserService {
         if (Objects.equals(md5Password, user.getPassword())) {
             //判断账号状态是否正常
             if (user.getStatu() == 0) {
-                return new ResultVO<>(StatusVO.LOGIN_NO_STATU, "账号已被锁定", null);
+                return new ResultVO<>(StatusVO.LOGIN_NO_STATU, "账号已被锁定，详情请联系管理员", null);
             } else if (user.getStatu() == 1) {
                 return new ResultVO<>(StatusVO.LOGIN_OK, "登录成功", user);
             } else {
@@ -132,7 +136,11 @@ public class UserServiceImpl implements UserService {
      * @return ResultVO
      */
     @Override
-    public ResultVO<String> updatePassword(ChangePwdVO changePwdVO){
+    public ResultVO<String> updatePassword(ChangePwdVO changePwdVO) {
+        //判读为空
+        if (StringUtils.isBlank(changePwdVO.getNewPwd())) {
+            return new ResultVO<>(StatusVO.PARAM_NULL, "密码不能为空", null);
+        }
         User user1 = userDao.selectByUsername(changePwdVO.getUsername());
         //判断旧密码是否正确
         if (Objects.equals(changePwdVO.getOldPwd(), user1.getPassword())) {
@@ -200,7 +208,7 @@ public class UserServiceImpl implements UserService {
      * @return ResultVO
      */
     @Override
-    public ResultVO<String> updateStatu(String username, Integer statu){
+    public ResultVO<String> updateStatu(String username, Integer statu) {
 
         if (username == null || statu == null) {
             return new ResultVO<>(StatusVO.UPDATE_NO, "参数错误", null);
@@ -229,7 +237,7 @@ public class UserServiceImpl implements UserService {
      * @return ResultVO
      */
     @Override
-    public ResultVO<String> checkTeacher(String username, Integer statu){
+    public ResultVO<String> checkTeacher(String username, Integer statu) {
         User user = userDao.selectByUsername(username);
         //statu=3，说明审核未通过，删除用户
         if (statu == 3) {
@@ -292,7 +300,7 @@ public class UserServiceImpl implements UserService {
      * @return ResultVO
      */
     @Override
-    public ResultVO<String> getCaptcha(String email){
+    public ResultVO<String> getCaptcha(String email) {
         if (email == null) {
             return new ResultVO<>(StatusVO.EMALI_NO, "邮箱不能为空", null);
         }
@@ -314,7 +322,7 @@ public class UserServiceImpl implements UserService {
      * @return ResultVO
      */
     @Override
-    public ResultVO<User> checkCaptcha(String email, String captcha){
+    public ResultVO<User> checkCaptcha(String email, String captcha) {
         if (captcha == null) {
             return new ResultVO<>(StatusVO.CAPTCHA_NO, "验证码不能为空", null);
         }
@@ -330,13 +338,15 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * 忘记密码
+     *
      * @param forgetPwdVO 忘记密码传入参数
      * @return ResultVO
      */
     @Override
-    public ResultVO<String> forgetPwd(ForgetPwdVO forgetPwdVO){
+    public ResultVO<String> forgetPwd(ForgetPwdVO forgetPwdVO) {
         if (StringUtils.isBlank(forgetPwdVO.getUsername()) || StringUtils.isBlank(forgetPwdVO.getPassword())) {
-        //todo
+            return new ResultVO<>(StatusVO.PARAM_NULL, "信息不能为空", null);
         }
         //加密密码
         String md5Pwd = MD5Utils.md5(forgetPwdVO.getPassword());
