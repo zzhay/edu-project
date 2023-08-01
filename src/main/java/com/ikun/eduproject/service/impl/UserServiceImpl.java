@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isBlank(user.getUsername()) ||
                 StringUtils.isBlank(user.getPassword()) ||
                 StringUtils.isBlank(user.getEmail())) {
-            return new ResultVO<>(StatusVO.PARAM_NULL, "信息不完整", null);
+            return new ResultVO<>(StatusVO.REGIST_NO, "信息不完整", null);
         }
         //判断用户名是否已注册
         if (userDao.selectByUsername(user.getUsername()) != null) {
@@ -53,11 +53,11 @@ public class UserServiceImpl implements UserService {
         }
         //判断电话是否被使用
         if (userDao.selectByPhone(user.getPhone()) != null) {
-            return new ResultVO<>(StatusVO.REGIST_NO_PHONE, "电话号码已被使用", null);
+            return new ResultVO<>(StatusVO.REGIST_NO, "电话号码已被使用", null);
         }
         //判断邮箱是否被使用
         if (userDao.selectByEmail(user.getEmail()) != null) {
-            return new ResultVO<>(StatusVO.REGIST_NO_EMAIL, "邮箱已被使用", null);
+            return new ResultVO<>(StatusVO.REGIST_NO, "邮箱已被使用", null);
         }
         //密码加密
         String md5Password = MD5Utils.md5(user.getPassword());
@@ -141,18 +141,14 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isBlank(changePwdVO.getNewPwd())) {
             return new ResultVO<>(StatusVO.PARAM_NULL, "密码不能为空", null);
         }
-        User user1 = userDao.selectByUsername(changePwdVO.getUsername());
-        //判断旧密码是否正确
-        if (Objects.equals(changePwdVO.getOldPwd(), user1.getPassword())) {
-            return new ResultVO<>(StatusVO.UPDATE_NO_OLDPWD, "旧密码错误", null);
-        }
+        User user1 = userDao.selectByEmail(changePwdVO.getEmail());
         //判断新密码是否与原密码相同
-        String md5Pwd = MD5Utils.md5(changePwdVO.getNewPwd());
-        if (Objects.equals(md5Pwd, user1.getPassword())) {
-            return new ResultVO<>(StatusVO.UPDATE_NO_NEWPWD, "密码与原密码相同", null);
+        String md5Pwd1 = MD5Utils.md5(changePwdVO.getNewPwd());
+        if (Objects.equals(md5Pwd1, user1.getPassword())) {
+            return new ResultVO<>(StatusVO.UPDATE_NO, "新密码和老密码相同", null);
         } else {
             //新密码加密
-            changePwdVO.setNewPwd(md5Pwd);
+            changePwdVO.setNewPwd(md5Pwd1);
             if (userDao.updatePassword(changePwdVO) > 0) {
                 emailUtil.sendMessage(user1.getEmail(), EmailMsgVO.ACCOUNT, EmailMsgVO.accountMsg2(user1.getUsername()));
                 return new ResultVO<>(StatusVO.UPDATE_OK, "更新成功", null);
@@ -323,9 +319,6 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public ResultVO<User> checkCaptcha(String email, String captcha) {
-        if (captcha == null) {
-            return new ResultVO<>(StatusVO.CAPTCHA_NO, "验证码不能为空", null);
-        }
         //取出缓存的验证码
         String cacheObject = redisUtil.getCacheObject(email);
         //判断验证码是否相同
@@ -337,29 +330,5 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    /**
-     * 忘记密码
-     *
-     * @param forgetPwdVO 忘记密码传入参数
-     * @return ResultVO
-     */
-    @Override
-    public ResultVO<String> forgetPwd(ForgetPwdVO forgetPwdVO) {
-        if (StringUtils.isBlank(forgetPwdVO.getUsername()) || StringUtils.isBlank(forgetPwdVO.getPassword())) {
-            return new ResultVO<>(StatusVO.PARAM_NULL, "信息不能为空", null);
-        }
-        //加密密码
-        String md5Pwd = MD5Utils.md5(forgetPwdVO.getPassword());
-        //new一个更新密码 ChangePwdVO对象
-        ChangePwdVO changePwdVO = new ChangePwdVO();
-        changePwdVO.setNewPwd(md5Pwd);
-        changePwdVO.setUsername(forgetPwdVO.getUsername());
-        //更新密码并判断是否更新成功
-        if (userDao.updatePassword(changePwdVO) > 0) {
-            emailUtil.sendMessage(forgetPwdVO.getEmail(), EmailMsgVO.ACCOUNT, EmailMsgVO.accountMsg2(forgetPwdVO.getUsername()));
-            return new ResultVO<>(StatusVO.UPDATE_OK, "修改成功", null);
-        } else {
-            return new ResultVO<>(StatusVO.UPDATE_NO, "修改失败", null);
-        }
-    }
+
 }

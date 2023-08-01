@@ -4,4 +4,17 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ikun.eduproject.dao.StuCoursesDao">
 
+    <!--添加学生课程信息-->
+    <insert id="insertStuCourse" parameterType="com.ikun.eduproject.pojo.StudentCourse">
+        insert into user (user_id, course_id)
+        values (#{userId}, #{courseId});
+    </insert>
+    <!--根据用户id和课程id查询-->
+    <select id="selectByUidandCid" resultType="java.lang.Integer">
+        select stu_course_id
+        from student_courses
+        where user_id = #{userId}
+          and course_id = #{courseId};
+    </select>
+
 </mapper>

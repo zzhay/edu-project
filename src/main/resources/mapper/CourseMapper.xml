@@ -141,5 +141,11 @@
         where subject.sub_name = #{subName}
           and course.statu = 1;
     </select>
+    <!--根据课程id查看价格-->
+    <select id="selectPriceByCourseId" resultType="java.math.BigDecimal">
+        select price
+        from course
+        where course_id = #{courseId};
+    </select>
 
 </mapper>

@@ -65,7 +65,7 @@
         where phone = #{phone}
     </select>
     <!--根据邮箱查找-->
-    <select id="selectByEmail" parameterType="string" resultType="Integer">
+    <select id="selectByEmail" parameterType="string" resultType="com.ikun.eduproject.pojo.User">
         select *
         from user
         where email = #{email}
@@ -88,4 +88,16 @@
         from user
         where username = #{username};
     </delete>
+    <!--按照用户id查看学分-->
+    <select id="selectCreditByUserId" resultType="java.math.BigDecimal">
+        select credit
+        from user
+        where user_id = #{userId};
+    </select>
+    <!--按照用户id更新学分-->
+    <update id="updateCreditByUserId">
+        update user
+        set credit=#{credit}
+        where user_id = #{userId};
+    </update>
 </mapper>

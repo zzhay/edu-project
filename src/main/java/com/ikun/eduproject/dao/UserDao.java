@@ -3,8 +3,10 @@ package com.ikun.eduproject.dao;
 import com.ikun.eduproject.pojo.User;
 import com.ikun.eduproject.vo.ChangeInfoVO;
 import com.ikun.eduproject.vo.ChangePwdVO;
+import io.swagger.models.auth.In;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -95,4 +97,18 @@ public interface UserDao {
      * @return
      */
     int deleteByUsername(String username);
+
+    /**
+     * 按照用户id查看学分
+     * @param userId 用户id
+     * @return BigDecimal
+     */
+    BigDecimal selectCreditByUserId(Integer userId);
+
+    /**
+     * 按照用户id更新学分
+     * @param userId 用户id
+     * @return int
+     */
+    int updateCreditByUserId(@Param("userId") Integer userId,@Param("credit") BigDecimal credit);
 }

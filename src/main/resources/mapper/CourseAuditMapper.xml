@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ikun.eduproject.dao.CourseAuditDao">
+    <resultMap id="GetCourseChecked" type="com.ikun.eduproject.vo.GetCourseCheckedVO">
+        <id property="courseId" column="course_id"/>
+        <result property="username" column="username"/>
+        <result property="name" column="name"/>
+        <result property="author" column="author"/>
+        <result property="price" column="price"/>
+        <result property="description" column="description"/>
+        <result property="imageUrl" column="image_url"/>
+        <result property="contentUrl" column="content_url"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <!--课程审核版本-->
+    <insert id="insertCourseAudit" parameterType="com.ikun.eduproject.pojo.CourseAudit">
+        insert into course_audit (user_id, name, author, price, description, sub_name, image_url, content_url)
+        values (#{userId}, #{name}, #{author}, #{price}, #{description}, #{subName}, #{imageUrl}, #{contentUrl});
+    </insert>
+    <!--更新课程审核版本信息-->
+    <update id="updateCourseAudit" parameterType="com.ikun.eduproject.pojo.CourseAudit">
+        update course_audit
+        set name=#{name},
+            author= #{author},
+            price=#{price},
+            description= #{description},
+            image_url=#{imageUrl},
+            content_url=#{contentUrl},
+            checked=0;
+        where course_id =
+        #{courseId};
+    </update>
+    <!--按照课程id删除-->
+    <delete id="deleteCourseAudit">
+        delete
+        from course_audit
+        where course_id = #{courseId};
+    </delete>
+    <!--按照教师id和课程名查询课程id-->
+    <select id="selectByUIdAndName" resultType="int">
+        select course_id
+        from course_audit
+        where user_id = #{userId}
+          and name = #{name}
+    </select>
+    <!--按照教师id查询待审核课程-->
+    <select id="selectByUserIdChecking" resultType="com.ikun.eduproject.pojo.CourseAudit">
+        select *
+        from course_audit
+        where user_id = #{userId}
+          and checked = 0;
+    </select>
+    <!--按照教师id查询审核未通过课程-->
+    <select id="selectByUserIdCheckNo" resultType="com.ikun.eduproject.pojo.CourseAudit">
+        select *
+        from course_audit
+        where user_id = #{userId}
+          and checked = 2;
+    </select>
+    <!--查询所有待审核课程-->
+    <select id="selectAllCheck" resultMap="GetCourseChecked">
+        select c.course_id,
+               u.username,
+               c.name,
+               c.author,
+               c.price,
+               c.description,
+               c.image_url,
+               c.content_url,
+               c.update_time
+        from user u
+                 join course c on u.user_id = c.user_id
+        where c.checked = 0;
+    </select>
+    <!--按照课程id查询课程-->
+    <select id="selectByCoursrId" resultType="com.ikun.eduproject.vo.GetCourseCheckedVO">
+        select user_id, name, author, price, description, sub_name, image_url, content_url
+    </select>
+
+</mapper>

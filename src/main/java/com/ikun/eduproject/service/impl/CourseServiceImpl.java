@@ -39,7 +39,7 @@ public class CourseServiceImpl implements CourseService {
         Integer courseId = courseDao.selectByUIdAndName(course);
         //如果id存在，则该教师名下已有该课程名称，报冲突
         if (courseId != null) {
-            return new ResultVO<>(StatusVO.INSERT_NO_COURSE_NAME, "课程名已经存在", null);
+            return new ResultVO<>(StatusVO.INSERT_NO, "课程名已经存在", null);
         }
         //新增课程
         int i = courseDao.insertCourse(course);
@@ -126,7 +126,7 @@ public class CourseServiceImpl implements CourseService {
         Integer courseId = courseDao.selectByUIdAndName(course);
         //判断课程名是否冲突: courseId不为空说明该课程名已存在，courseId不相等说明不是同一课程
         if (courseId != null && !courseId.equals(course.getCourseId())) {
-            return new ResultVO<>(StatusVO.INSERT_NO_COURSE_NAME, "课程名已经存在", null);
+            return new ResultVO<>(StatusVO.UPDATE_NO, "课程名已经存在", null);
         } else {
             //更新课程
             int i = courseDao.updateCourse(course);
@@ -168,9 +168,9 @@ public class CourseServiceImpl implements CourseService {
     public ResultVO<String> deleteReq(Integer courseId) {
         int i = courseDao.deleteCourse(courseId);
         if (i > 0) {
-            return new ResultVO<>(StatusVO.UPDATE_OK, "下架成功", null);
+            return new ResultVO<>(StatusVO.UPDATE_OK, "删除成功", null);
         } else {
-            return new ResultVO<>(StatusVO.UPDATE_NO, "下架失败", null);
+            return new ResultVO<>(StatusVO.UPDATE_NO, "删除失败", null);
         }
     }
 

@@ -3,7 +3,6 @@ package com.ikun.eduproject.service;
 import com.ikun.eduproject.pojo.User;
 import com.ikun.eduproject.vo.ChangeInfoVO;
 import com.ikun.eduproject.vo.ChangePwdVO;
-import com.ikun.eduproject.vo.ForgetPwdVO;
 import com.ikun.eduproject.vo.ResultVO;
 
 import java.util.List;
@@ -112,10 +111,4 @@ public interface UserService {
      */
     ResultVO<User> checkCaptcha(String email,String captcha);
 
-    /**
-     * 忘记密码
-     * @param forgetPwdVO 忘记密码传入参数
-     * @return ResultVO
-     */
-    ResultVO<String> forgetPwd(ForgetPwdVO forgetPwdVO);
 }

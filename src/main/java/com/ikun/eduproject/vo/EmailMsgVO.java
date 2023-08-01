@@ -12,6 +12,7 @@ public class EmailMsgVO {
     public static String ACCOUNT = "智学云账号变动提示";
 
 
+
     public static String registStuMsg(String username) {
         return "【智学云】你的账号 " + username + " 已注册成功";
     }
@@ -37,7 +38,7 @@ public class EmailMsgVO {
     }
 
     public static String accountMsg2(String username) {
-        return "【智学云】你的账号 " + username + " 密码修改成功";
+        return "【智学云】你的账号 " + username + " 密码已修改";
     }
 
     public static String accountMsg3(String captcha) {

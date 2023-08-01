@@ -4,6 +4,7 @@ import com.ikun.eduproject.pojo.Course;
 import com.ikun.eduproject.vo.GetCourseCheckedVO;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -126,5 +127,12 @@ public interface CourseDao {
      * @return List
      */
     List<Course> selectBySubName(String subName);
+
+    /**
+     * 根据课程id查看价格
+     * @param courseId 课程id
+     * @return BigDecimal
+     */
+    BigDecimal selectPriceByCourseId(Integer courseId);
 
 }

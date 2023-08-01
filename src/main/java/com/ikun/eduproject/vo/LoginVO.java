@@ -11,23 +11,19 @@ import java.io.Serializable;
 
 /**
  * @Author zzhay
- * @Date 2023/7/27/027
+ * @Date 2023/8/1/001
+ * 登录信息
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "修改用户信息对象", description = "修改用户信息")
-public class ChangeInfoVO implements Serializable {
-
+@ApiModel(value = "登录信息对象", description = "登录信息")
+public class LoginVO implements Serializable {
     @ApiModelProperty("用户名")
     @NotNull(message = "用户名不能为空")
     private String username;
 
-    @ApiModelProperty("手机号")
-    @NotNull(message = "电话不能为空")
-    private String phone;
-
-    @ApiModelProperty("邮箱")
-    @NotNull(message = "邮箱不能为空")
-    private String email;
+    @ApiModelProperty("密码")
+    @NotNull(message = "密码不能为空")
+    private String password;
 }

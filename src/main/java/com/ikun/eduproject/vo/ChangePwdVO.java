@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -18,12 +19,11 @@ import java.io.Serializable;
 @ApiModel(value = "修改密码对象", description = "修改密码")
 public class ChangePwdVO implements Serializable {
 
-    @ApiModelProperty("用户名")
-    private String username;
-
-    @ApiModelProperty("旧密码")
-    private String oldPwd;
+    @ApiModelProperty(dataType = "String",required = true,value = "邮箱")
+    @NotNull(message = "邮箱不能为空")
+    private String email;
 
     @ApiModelProperty("新密码")
+    @NotNull(message = "新密码不能为空")
     private String newPwd;
 }

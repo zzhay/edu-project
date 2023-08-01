@@ -14,10 +14,6 @@ public class StatusVO {
     //注册状态码
     public static final int REGIST_OK = 2001;
     public static final int REGIST_NO = 4001;
-    //用户名被占用
-    public static final int REGIST_NO_PHONE = 4011;
-    //邮箱被占用
-    public static final int REGIST_NO_EMAIL = 4021;
 
     //登录状态码
     public static final int LOGIN_OK = 2002;
@@ -40,8 +36,6 @@ public class StatusVO {
     //新增状态码
     public static final int INSERT_OK = 2005;
     public static final int INSERT_NO = 4005;
-    //课程名冲突
-    public static final int INSERT_NO_COURSE_NAME = 4005;
 
     //邮件状态码
     public static final int EMALI_OK = 2006;

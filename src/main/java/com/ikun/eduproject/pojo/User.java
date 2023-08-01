@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -23,22 +25,27 @@ public class User implements Serializable {
     @ApiModelProperty(dataType = "Integer",required = false,value = "用户id")
     private Integer userId;
 
-    @ApiModelProperty(dataType = "String",required = true,value = "用户名")
+    @ApiModelProperty(dataType = "String", required = true, value = "用户名")
+    @NotNull(message = "用户名不能为空")
     private String username;
 
     @ApiModelProperty(dataType = "String",required = true,value = "密码")
+    @NotNull(message = "密码不能为空")
     private String password;
 
     @ApiModelProperty(dataType = "int",required = true,value = "角色（（0：管理员，1：老师，2：学生））")
+    @NotBlank(message = "角色不能为空")
     private Integer role;
 
-    @ApiModelProperty(dataType = "String",required = true,value = "头像url")
+    @ApiModelProperty(dataType = "String",required = false,value = "头像url")
     private String imageUrl;
 
     @ApiModelProperty(dataType = "String",required = true,value = "电话")
+    @NotBlank(message = "电话不能为空")
     private String phone;
 
     @ApiModelProperty(dataType = "String",required = true,value = "邮件")
+    @NotBlank(message = "邮箱不能为空")
     private String email;
 
     @ApiModelProperty(dataType = "BigDecimal", required = true, value = "kun分")

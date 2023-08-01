@@ -2,15 +2,14 @@ package com.ikun.eduproject.controller;
 
 import com.ikun.eduproject.pojo.User;
 import com.ikun.eduproject.service.UserService;
-import com.ikun.eduproject.vo.ChangeInfoVO;
-import com.ikun.eduproject.vo.ChangePwdVO;
-import com.ikun.eduproject.vo.ForgetPwdVO;
-import com.ikun.eduproject.vo.ResultVO;
+import com.ikun.eduproject.vo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -34,20 +33,21 @@ public class UserController {
      */
     @ApiOperation("注册接口")
     @PostMapping("/regist")
-    public ResultVO<String> regist(@RequestBody User user) {
+    public ResultVO<String> regist(@RequestBody @Valid User user) {
+        //todo 注册时绑定邮箱
         return userService.regist(user);
     }
 
     /**
      * 登录
      *
-     * @param user 用户信息
+     * @param loginVO 登录信息
      * @return ResultVO
      */
     @ApiOperation("登录接口")
     @PostMapping("/login")
-    public ResultVO<User> login(@RequestBody User user) {
-        return userService.login(user.getUsername(), user.getPassword());
+    public ResultVO<User> login(@RequestBody @Valid LoginVO loginVO) {
+        return userService.login(loginVO.getUsername(), loginVO.getPassword());
     }
 
     /**
@@ -58,7 +58,7 @@ public class UserController {
      */
     @ApiOperation("更新基础信息接口")
     @PostMapping("/updateInfo")
-    public ResultVO<String> updateInfo(@RequestBody ChangeInfoVO changeInfoVO) {
+    public ResultVO<String> updateInfo(@RequestBody @Valid ChangeInfoVO changeInfoVO) {
         return userService.updateInformation(changeInfoVO);
     }
 
@@ -70,7 +70,7 @@ public class UserController {
      */
     @ApiOperation("更新密码")
     @PostMapping("/updatePwd")
-    public ResultVO<String> updatePassword(@RequestBody ChangePwdVO changePwdVO){
+    public ResultVO<String> updatePassword(@RequestBody @Valid ChangePwdVO changePwdVO) {
         return userService.updatePassword(changePwdVO);
     }
 
@@ -109,25 +109,29 @@ public class UserController {
 
     /**
      * 管理员更新用户状态
+     *
      * @param username 用户名
-     * @param statu 状态
+     * @param statu    状态
      * @return ResultVO
      */
     @ApiOperation("管理员更新用户状态")
     @PostMapping("/updateStatu")
-    public ResultVO<String> updateStatu(@RequestParam("username") String username, @RequestParam("statu") Integer statu) {
+    public ResultVO<String> updateStatu(@RequestParam("username") @NotNull(message = "用户名不能为空") String username,
+                                        @RequestParam("statu") @NotNull(message = "状态不能为空") Integer statu) {
         return userService.updateStatu(username, statu);
     }
 
     /**
      * 管理员审核教师
+     *
      * @param username 用户名
-     * @param statu 状态
+     * @param statu    状态
      * @return
      */
     @ApiOperation("管理员审核教师")
     @PostMapping("/checkTeacher")
-    public ResultVO<String> checkTeacher(@RequestParam("username") String username, @RequestParam("statu") Integer statu){
+    public ResultVO<String> checkTeacher(@RequestParam("username") @NotNull(message = "用户名不能为空") String username,
+                                         @RequestParam("statu") @NotNull(message = "状态不能为空") Integer statu) {
         return userService.checkTeacher(username, statu);
     }
 
@@ -140,7 +144,8 @@ public class UserController {
      */
     @ApiOperation("修改头像")
     @PostMapping("/updateImage")
-    public ResultVO<String> updateImage(@RequestParam("username") String username, @RequestParam("url") String url) {
+    public ResultVO<String> updateImage(@RequestParam("username") @NotNull(message = "用户名不能为空") String username,
+                                        @RequestParam("url") @NotNull(message = "url不能为空") String url) {
         return userService.updateImage(username, url);
     }
 
@@ -151,7 +156,7 @@ public class UserController {
      */
     @ApiOperation("发送验证码")
     @GetMapping("/getCaptcha")
-    public ResultVO<String> getCaptcha(@RequestParam String email) {
+    public ResultVO<String> getCaptcha(@RequestParam @NotNull(message = "邮箱不能为空")String email) {
         return userService.getCaptcha(email);
     }
 
@@ -162,18 +167,9 @@ public class UserController {
      */
     @ApiOperation("验证验证码")
     @GetMapping("/checkCaptcha")
-    public ResultVO<User> checkCaptcha(@RequestParam String email,@RequestParam String captcha) {
-        return userService.checkCaptcha(email,captcha);
+    public ResultVO<User> checkCaptcha(@RequestParam @NotNull(message = "邮箱不能为空")String email,
+                                       @RequestParam @NotNull(message = "验证码不能为空")String captcha) {
+        return userService.checkCaptcha(email, captcha);
     }
 
-    /**
-     * 忘记密码
-     * @param forgetPwdVO 忘记密码传入参数
-     * @return ResultVO
-     */
-    @ApiOperation("忘记密码")
-    @PostMapping("/forgetPwd")
-    public ResultVO<String> forgetPwd(@RequestBody ForgetPwdVO forgetPwdVO) {
-        return userService.forgetPwd(forgetPwdVO);
-    }
 }
