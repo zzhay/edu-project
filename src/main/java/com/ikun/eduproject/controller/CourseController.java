@@ -1,6 +1,7 @@
 package com.ikun.eduproject.controller;
 
 import com.ikun.eduproject.pojo.Course;
+import com.ikun.eduproject.pojo.CourseAudit;
 import com.ikun.eduproject.service.CourseService;
 import com.ikun.eduproject.vo.ResultVO;
 import io.swagger.annotations.Api;
@@ -60,10 +61,17 @@ public class CourseController {
         return result;
     }
 
-    @ApiOperation("教师修改课程信息")
+    @ApiOperation("教师修改已上架课程信息")
     @PostMapping("/updateCourse")
     public ResultVO updateCourse(@RequestBody @Valid Course course) {
         ResultVO result = courseService.updateCourse(course);
+        return result;
+    }
+
+    @ApiOperation("教师修改审核未通过课程信息")
+    @PostMapping("/updateCheckNo")
+    public ResultVO updateCheckNo(@RequestBody @Valid Course course) {
+        ResultVO result = courseService.updateCheckNo(course);
         return result;
     }
 
@@ -91,8 +99,9 @@ public class CourseController {
     @ApiOperation("管理员审核课程")
     @PostMapping("/updateChecked")
     public ResultVO updateChecked(@RequestParam("courseId") @NotNull(message = "课程id不能为空") Integer courseId,
-                                  @Param("checked") @NotNull(message = "审核状态不能为空") Integer checked) {
-        ResultVO result = courseService.updateChecked(courseId, checked);
+                                  @RequestParam("checked") @NotNull(message = "审核状态不能为空") Integer checked,
+                                  @RequestParam("reason") String reason) {
+        ResultVO result = courseService.updateChecked(courseId, checked,reason);
         return result;
     }
 
@@ -110,11 +119,17 @@ public class CourseController {
         return result;
     }
 
-    @ApiOperation("按照课程名名称或作者模糊查询")
+    @ApiOperation("按照课程名名称模糊查询")
     @GetMapping("/queryFuzzy")
     public ResultVO queryByNameOrAuthorFuzzy(@RequestParam("name") @NotNull(message = "课程名或作者不能为空") String name) {
         ResultVO result = courseService.queryByNameOrAuthorFuzzy(name);
         return result;
     }
 
+    @ApiOperation("随机获取4条课程数据")
+    @GetMapping("/queryRandomCourses")
+    public ResultVO queryRandom() {
+        ResultVO result = courseService.queryRandomCourses();
+        return result;
+    }
 }

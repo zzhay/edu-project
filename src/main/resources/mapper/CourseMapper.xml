@@ -11,6 +11,7 @@
         <result property="author" column="author"/>
         <result property="price" column="price"/>
         <result property="description" column="description"/>
+        <result property="subName" column="sub_name"/>
         <result property="imageUrl" column="image_url"/>
         <result property="contentUrl" column="content_url"/>
         <result property="updateTime" column="update_time"/>
@@ -21,7 +22,7 @@
         values (#{userId}, #{name}, #{author}, #{price}, #{description}, #{subName}, #{imageUrl}, #{contentUrl});
     </insert>
     <!--按照教师id和课程名查询课程id-->
-    <select id="selectByUIdAndName" parameterType="com.ikun.eduproject.pojo.Course" resultType="int">
+    <select id="selectByUIdAndName"  resultType="int">
         select course_id
         from course
         where user_id = #{userId}
@@ -29,36 +30,22 @@
           and statu IN (1, 2);
     </select>
     <!--按照教师id查询已上架课程-->
-    <select id="selectByUserId1" parameterType="integer" resultType="com.ikun.eduproject.pojo.Course">
+    <select id="selectByUserId" parameterType="integer" resultType="com.ikun.eduproject.pojo.Course">
         select *
         from course
         where user_id = #{userId}
           and statu = 1
           and checked = 1;
     </select>
-    <!--按照教师id查询待审核课程-->
-    <select id="selectByUserId2" parameterType="integer" resultType="com.ikun.eduproject.pojo.Course">
-        select *
-        from course
-        where user_id = #{userId}
-          and statu = 2
-          and checked = 0;
-    </select>
-    <!--按照教师id查询审核未通过课程-->
-    <select id="selectByUserId3" parameterType="integer" resultType="com.ikun.eduproject.pojo.Course">
-        select *
-        from course
-        where user_id = #{userId}
-          and statu = 2
-          and checked = 2;
-    </select>
+
     <!--教师查看已下架课程-->
-    <select id="selectByUserId4" parameterType="integer" resultType="com.ikun.eduproject.pojo.Course">
+    <select id="selectByUserId2" parameterType="integer" resultType="com.ikun.eduproject.pojo.Course">
         select *
         from course
         where user_id = #{userId}
           and statu = 0;
     </select>
+
     <!--更新课程信息-->
     <update id="updateCourse" parameterType="com.ikun.eduproject.pojo.Course">
         update course
@@ -66,10 +53,11 @@
             author= #{author},
             price=#{price},
             description= #{description},
+            sub_name=#{subName},
             image_url=#{imageUrl},
             content_url=#{contentUrl},
-            statu=2,
-            checked=0;
+            statu=#{statu},
+            checked=#{checked}
         where course_id =
         #{courseId};
     </update>
@@ -85,45 +73,11 @@
         from course
         where course_id = #{courseId};
     </delete>
-    <!--查询所有待审核课程-->
-    <select id="selectAllChecked" resultMap="GetCourseChecked">
-        select c.course_id,
-               u.username,
-               c.name,
-               c.author,
-               c.price,
-               c.description,
-               c.image_url,
-               c.content_url,
-               c.update_time
-        from user u
-                 join course c on u.user_id = c.user_id
-        where c.checked = 0
-          and c.statu = 2;
-    </select>
-    <!--更新审核-->
-    <update id="updateChecked">
-        update course
-        set checked=#{checked},
-            statu  = CASE
-                         WHEN #{checked} = 1 THEN 1
-                         ELSE statu
-                END
-        where course_id =
-              #{courseId};
-    </update>
     <!--按照课程id查询-->
     <select id="selectByCourseId" parameterType="integer" resultType="com.ikun.eduproject.pojo.Course">
         select *
         from course
         where course_id = #{courseId};
-    </select>
-    <!--按照课程id查询-->
-    <select id="selectAvailable" resultType="com.ikun.eduproject.pojo.Course">
-        select *
-        from course
-        where statu = 1
-          and checked = 1;
     </select>
     <!--按照学科类别查询-->
     <select id="selectByCategory" parameterType="string" resultType="com.ikun.eduproject.pojo.Course">
@@ -146,6 +100,13 @@
         select price
         from course
         where course_id = #{courseId};
+    </select>
+    <!--根据课程id查询用户邮箱-->
+    <select id="selectEmailByCourseId" resultType="string">
+        SELECT u.email
+        FROM user u
+                 JOIN course c ON u.user_id = c.user_id
+        WHERE c.course_id = #{courseId};
     </select>
 
 </mapper>

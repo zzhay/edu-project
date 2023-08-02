@@ -2,6 +2,7 @@ package com.ikun.eduproject.dao;
 
 import com.ikun.eduproject.pojo.Course;
 import com.ikun.eduproject.pojo.CourseAudit;
+import com.ikun.eduproject.pojo.User;
 import com.ikun.eduproject.vo.GetCourseCheckedVO;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,18 +16,26 @@ public interface CourseAuditDao {
     /**
      * 新增课程审核版本
      *
-     * @param courseAudit
+     * @param course
      * @return
      */
-    int insertCourseAudit(CourseAudit courseAudit);
+    int insertCourseAudit(Course course);
 
     /**
      * 更新课程审核版本信息
      *
-     * @param courseAudit
+     * @param course
      * @return
      */
-    int updateCourseAudit(CourseAudit courseAudit);
+    int updateCourseAudit(Course course);
+
+    /**
+     * 课程审核版本更新为课程表的信息
+     *
+     * @param course
+     * @return
+     */
+    int updateFromCourse(Course course);
 
     /**
      * 按照课程id删除
@@ -72,6 +81,22 @@ public interface CourseAuditDao {
      * @param courseId
      * @return
      */
-    List<GetCourseCheckedVO> selectByCoursrId(Integer courseId);
+    Course selectByCoursrId(Integer courseId);
+
+    /**
+     * 更新审核
+     * @param courseId
+     * @param checked
+     * @return
+     */
+    int updateCheck(@Param("courseId") Integer courseId, @Param("checked") Integer checked);
+
+    /**
+     * 更新课程状态
+     *
+     * @param courseId
+     * @return
+     */
+    int updateStatu(Integer courseId);
 
 }

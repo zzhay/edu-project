@@ -53,6 +53,9 @@ public class CourseAudit implements Serializable {
     @ApiModelProperty(dataType = "String",required = true,value = "附件url")
     private String contentUrl;
 
+    @ApiModelProperty(dataType = "Integer",required = false,value = "状态（0：下架，1：上架，2：未上架）")
+    private Integer statu;
+
     @ApiModelProperty(dataType = "Integer",required = false,value = "是否审核（0：待审核，1：审核通过，2：未通过）")
     private Integer checked;
 

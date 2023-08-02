@@ -14,6 +14,15 @@ import java.util.List;
  */
 @Repository
 public interface EsCourseRepository extends ElasticsearchRepository<ElasticsearchCourse, Integer> {
-    @Query("{\"bool\": {\"should\": [{\"match\": {\"name\": {\"query\": \"?0\", \"operator\": \"and\"}}}, {\"match\": {\"author\": {\"query\": \"?0\", \"operator\": \"and\"}}}]}}")
-    List<ElasticsearchCourse> findByNameOrAuthorFuzzy(String name);
+    /**
+     * 按照课程名迷糊查询
+     * @param name 课程名
+     * @return List
+     */
+    @Query("{\"bool\": {\"should\": [{\"match\": {\"name\": {\"query\": \"?0\", \"operator\": \"or\"}}}]}}")
+    List<ElasticsearchCourse> findByNameFuzzy(String name);
+
+    List<ElasticsearchCourse> findBySubName(String subName);
+
+
 }

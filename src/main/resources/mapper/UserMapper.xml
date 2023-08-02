@@ -36,7 +36,7 @@
     <update id="updatePassword" parameterType="com.ikun.eduproject.vo.ChangePwdVO">
         update user
         set password=#{newPwd}
-        where username = #{username};
+        where email = #{email};
     </update>
     <!--查出所有学生-->
     <select id="selectStudent" resultType="com.ikun.eduproject.pojo.User">

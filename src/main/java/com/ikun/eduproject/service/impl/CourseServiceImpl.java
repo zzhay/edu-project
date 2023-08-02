@@ -1,18 +1,40 @@
 package com.ikun.eduproject.service.impl;
 
+import com.ikun.eduproject.dao.CourseAuditDao;
 import com.ikun.eduproject.dao.CourseDao;
+import com.ikun.eduproject.error.*;
 import com.ikun.eduproject.es.EsCourseRepository;
 import com.ikun.eduproject.pojo.Course;
+import com.ikun.eduproject.pojo.CourseAudit;
 import com.ikun.eduproject.pojo.ElasticsearchCourse;
 import com.ikun.eduproject.service.CourseService;
+import com.ikun.eduproject.utils.AliOSSUtils;
+import com.ikun.eduproject.utils.EmailUtil;
+import com.ikun.eduproject.vo.EmailMsgVO;
 import com.ikun.eduproject.vo.GetCourseCheckedVO;
 import com.ikun.eduproject.vo.ResultVO;
 import com.ikun.eduproject.vo.StatusVO;
 import org.elasticsearch.ElasticsearchException;
+import org.elasticsearch.common.lucene.search.function.CombineFunction;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.functionscore.RandomScoreFunctionBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @Author zzhay
@@ -25,7 +47,15 @@ public class CourseServiceImpl implements CourseService {
     @Autowired
     private CourseDao courseDao;
     @Autowired
+    private CourseAuditDao courseAuditDao;
+    @Autowired
     private EsCourseRepository esCourseRepository;
+    @Autowired
+    ElasticsearchOperations elasticsearchOperations;
+    @Autowired
+    private AliOSSUtils aliOSSUtils;
+    @Autowired
+    private EmailUtil emailUtil;
 
     /**
      * 新增课程
@@ -34,18 +64,32 @@ public class CourseServiceImpl implements CourseService {
      * @return ResultVO
      */
     @Override
+    @Transactional(rollbackFor = AddCourseException.class)
     public ResultVO<String> addCourse(Course course) {
         //根据教师id和课程名查出课程id
-        Integer courseId = courseDao.selectByUIdAndName(course);
+        Integer courseId = courseDao.selectByUIdAndName(course.getUserId(), course.getName());
+        Integer courseId1 = courseAuditDao.selectByUIdAndName(course.getUserId(), course.getName());
         //如果id存在，则该教师名下已有该课程名称，报冲突
-        if (courseId != null) {
+        if (courseId != null || courseId1 != null) {
             return new ResultVO<>(StatusVO.INSERT_NO, "课程名已经存在", null);
         }
         //新增课程
         int i = courseDao.insertCourse(course);
-        if (i > 0) {
-            return new ResultVO<>(StatusVO.INSERT_OK, "添加成功", null);
-        } else {
+        if (i < 0) {
+            return new ResultVO<>(StatusVO.INSERT_NO, "添加失败", null);
+        }
+        //查询出课程id
+        courseId = courseDao.selectByUIdAndName(course.getUserId(), course.getName());
+        course.setCourseId(courseId);
+        //将课程信息存到课程审核版本表
+        try {
+            int i1 = courseAuditDao.insertCourseAudit(course);
+            if (i1 > 0) {
+                return new ResultVO<>(StatusVO.INSERT_OK, "添加成功，请等待审核", null);
+            } else {
+                throw new AddCourseException("课程添加失败");
+            }
+        } catch (AddCourseException e) {
             return new ResultVO<>(StatusVO.INSERT_NO, "添加失败", null);
         }
     }
@@ -59,7 +103,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public ResultVO<List<Course>> getCourse1(Integer userId) {
         if (userId != null) {
-            List<Course> list = courseDao.selectByUserId1(userId);
+            List<Course> list = courseDao.selectByUserId(userId);
             return new ResultVO<>(StatusVO.SELECT_OK, "查询成功", list);
         } else {
             return new ResultVO<>(StatusVO.SELECT_NO, "id为空", null);
@@ -73,9 +117,9 @@ public class CourseServiceImpl implements CourseService {
      * @return ResultVO
      */
     @Override
-    public ResultVO<List<Course>> getCourse2(Integer userId) {
+    public ResultVO<List<CourseAudit>> getCourse2(Integer userId) {
         if (userId != null) {
-            List<Course> list = courseDao.selectByUserId2(userId);
+            List<CourseAudit> list = courseAuditDao.selectByUserIdChecking(userId);
             return new ResultVO<>(StatusVO.SELECT_OK, "查询成功", list);
         } else {
             return new ResultVO<>(StatusVO.SELECT_NO, "id为空", null);
@@ -89,9 +133,9 @@ public class CourseServiceImpl implements CourseService {
      * @return ResultVO
      */
     @Override
-    public ResultVO<List<Course>> getCourse3(Integer userId) {
+    public ResultVO<List<CourseAudit>> getCourse3(Integer userId) {
         if (userId != null) {
-            List<Course> list = courseDao.selectByUserId3(userId);
+            List<CourseAudit> list = courseAuditDao.selectByUserIdCheckNo(userId);
             return new ResultVO<>(StatusVO.SELECT_OK, "查询成功", list);
         } else {
             return new ResultVO<>(StatusVO.SELECT_NO, "id为空", null);
@@ -107,36 +151,10 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public ResultVO<List<Course>> getCourse4(Integer userId) {
         if (userId != null) {
-            List<Course> list = courseDao.selectByUserId4(userId);
+            List<Course> list = courseDao.selectByUserId2(userId);
             return new ResultVO<>(StatusVO.SELECT_OK, "查询成功", list);
         } else {
             return new ResultVO<>(StatusVO.SELECT_NO, "id为空", null);
-        }
-    }
-
-    /**
-     * 教师修改课程信息
-     *
-     * @param course 课程信息
-     * @return ResultVO
-     */
-    @Override
-    public ResultVO<String> updateCourse(Course course) {
-        //根据教师id和课程名查出课程id
-        Integer courseId = courseDao.selectByUIdAndName(course);
-        //判断课程名是否冲突: courseId不为空说明该课程名已存在，courseId不相等说明不是同一课程
-        if (courseId != null && !courseId.equals(course.getCourseId())) {
-            return new ResultVO<>(StatusVO.UPDATE_NO, "课程名已经存在", null);
-        } else {
-            //更新课程
-            int i = courseDao.updateCourse(course);
-            if (i > 0) {
-                //从ES中删除
-                esCourseRepository.deleteById(course.getCourseId());
-                return new ResultVO<>(StatusVO.UPDATE_OK, "更新成功", null);
-            } else {
-                return new ResultVO<>(StatusVO.UPDATE_NO, "更新失败", null);
-            }
         }
     }
 
@@ -147,15 +165,87 @@ public class CourseServiceImpl implements CourseService {
      * @return ResultVO
      */
     @Override
+    @Transactional(rollbackFor = ChangeCourseStatuException.class)
     public ResultVO<String> updateStatu(Integer courseId) {
+        //下架课程
         int i = courseDao.updateStatu(courseId);
-        if (i > 0) {
-            //从ES中删除
-            esCourseRepository.deleteById(courseId);
-            return new ResultVO<>(StatusVO.UPDATE_OK, "下架成功", null);
-        } else {
+        if (i < 0) {
             return new ResultVO<>(StatusVO.UPDATE_NO, "下架失败", null);
         }
+        try {
+            //下架课程审核版本
+            int i1 = courseAuditDao.updateStatu(courseId);
+            if (i1 < 0) {
+                //修改失败抛出异常，事务回滚
+                throw new ChangeCourseStatuException("课程下架失败");
+            } else {
+                //从ES中删除
+                esCourseRepository.deleteById(courseId);
+                return new ResultVO<>(StatusVO.UPDATE_OK, "下架成功", null);
+            }
+        } catch (ChangeCourseStatuException e) {
+            return new ResultVO<>(StatusVO.UPDATE_NO, "下架失败", null);
+        }
+    }
+
+    /**
+     * 教师修改已上架课程信息
+     *
+     * @param course 课程信息
+     * @return ResultVO
+     */
+    @Override
+    public ResultVO<String> updateCourse(Course course) {
+        Course courseAudit = courseAuditDao.selectByCoursrId(course.getCourseId());
+        //课程已上架，可以修改
+        if (courseAudit.getStatu() == 1 && courseAudit.getChecked() == 1) {
+            //根据教师id和课程名查出课程id,判断同一教师下课程名是否重复
+            Integer courseId = courseDao.selectByUIdAndName(courseAudit.getUserId(), course.getName());
+            if (courseId != null && !courseId.equals(course.getCourseId())) {
+                return new ResultVO<>(StatusVO.UPDATE_NO, "课程名重复", null);
+            }
+            Integer courseId1 = courseAuditDao.selectByUIdAndName(courseAudit.getUserId(), course.getName());
+            if (courseId1 != null && !courseId1.equals(course.getCourseId())) {
+                return new ResultVO<>(StatusVO.UPDATE_NO, "课程名重复", null);
+            }
+            //更新课程审核版本
+            int i = courseAuditDao.updateCourseAudit(course);
+            if (i > 0) {
+                return new ResultVO<>(StatusVO.UPDATE_OK, "更新成功，请等待审核", null);
+            } else {
+                return new ResultVO<>(StatusVO.UPDATE_NO, "更新失败", null);
+            }
+        }
+        //已修改过该课程，流程还未结束，不能重复修改
+        if (courseAudit.getStatu() == 2 && (courseAudit.getChecked() == 0 || courseAudit.getChecked() == 2)) {
+            return new ResultVO<>(StatusVO.UPDATE_NO, "课程已提交过修改，流程还未结束，不能重复提交", null);
+        }
+        return null;
+    }
+
+    /**
+     * 教师修改审核未通过课程信息
+     *
+     * @param course 课程信息
+     * @return ResultVO
+     */
+    @Override
+    public ResultVO<String> updateCheckNo(Course course) {
+        //判断课程名重复
+        Integer courseId = courseDao.selectByUIdAndName(course.getUserId(), course.getName());
+        if (courseId != null && !courseId.equals(course.getCourseId())) {
+            return new ResultVO<>(StatusVO.UPDATE_NO, "课程名重复", null);
+        }
+        Integer courseId1 = courseAuditDao.selectByUIdAndName(course.getUserId(), course.getName());
+        if (courseId1 != null && !courseId1.equals(course.getCourseId())) {
+            return new ResultVO<>(StatusVO.UPDATE_NO, "课程名重复", null);
+        }
+        //更新课程审核版本
+        int i = courseAuditDao.updateCourseAudit(course);
+        if (i < 0) {
+            return new ResultVO<>(StatusVO.UPDATE_NO, "更新失败", null);
+        }
+        return new ResultVO<>(StatusVO.UPDATE_OK, "更新成功，请等待审核", null);
     }
 
     /**
@@ -165,13 +255,49 @@ public class CourseServiceImpl implements CourseService {
      * @return ResultVO
      */
     @Override
+    @Transactional(rollbackFor = DelCourseException.class)
     public ResultVO<String> deleteReq(Integer courseId) {
-        int i = courseDao.deleteCourse(courseId);
-        if (i > 0) {
-            return new ResultVO<>(StatusVO.UPDATE_OK, "删除成功", null);
-        } else {
-            return new ResultVO<>(StatusVO.UPDATE_NO, "删除失败", null);
+        Course course = courseDao.selectByCourseId(courseId);
+        //修改的是已上架的课程
+        if (course.getStatu() == 1 && course.getChecked() == 1) {
+            //比较原图片url和原文件url，不同则删除课程审核版本的
+            Course courseAudit = courseAuditDao.selectByCoursrId(courseId);
+            if (!Objects.equals(course.getImageUrl(), courseAudit.getImageUrl())) {
+                aliOSSUtils.deleteImageByUrl(courseAudit.getImageUrl());
+            }
+            if (!Objects.equals(course.getContentUrl(), courseAudit.getContentUrl())) {
+                aliOSSUtils.deleteImageByUrl(courseAudit.getContentUrl());
+            }
+            //删除申请则恢复课程审核版本
+            int i = courseAuditDao.updateFromCourse(course);
+            if (i > 0) {
+                return new ResultVO<>(StatusVO.UPDATE_OK, "删除成功", null);
+            } else {
+                return new ResultVO<>(StatusVO.UPDATE_NO, "删除失败", null);
+            }
         }
+        //修改的是新增课程的申请
+        if (course.getStatu() == 2 && course.getChecked() == 0) {
+            if (courseDao.deleteCourse(courseId) > 0) {
+                try {
+                    if (courseAuditDao.deleteCourseAudit(courseId) > 0) {
+                        //删除图片和文件
+                        String imageUrl = course.getImageUrl();
+                        String contentUrl = course.getContentUrl();
+                        aliOSSUtils.deleteImageByUrl(imageUrl);
+                        aliOSSUtils.deleteImageByUrl(contentUrl);
+                        return new ResultVO<>(StatusVO.UPDATE_OK, "删除成功", null);
+                    } else {
+                        throw new DelCourseException("课程申请删除失败");
+                    }
+                } catch (DelCourseException e) {
+                    return new ResultVO<>(StatusVO.UPDATE_NO, "删除失败", null);
+                }
+            } else {
+                return new ResultVO<>(StatusVO.UPDATE_NO, "删除失败", null);
+            }
+        }
+        return null;
     }
 
     /**
@@ -181,7 +307,7 @@ public class CourseServiceImpl implements CourseService {
      */
     @Override
     public ResultVO<List<GetCourseCheckedVO>> getChecked() {
-        List<GetCourseCheckedVO> lists = courseDao.selectAllChecked();
+        List<GetCourseCheckedVO> lists = courseAuditDao.selectAllCheck();
         return new ResultVO<>(StatusVO.SELECT_OK, "查询成功", lists);
     }
 
@@ -193,21 +319,49 @@ public class CourseServiceImpl implements CourseService {
      * @return ResultVO
      */
     @Override
-    public ResultVO<String> updateChecked(Integer courseId, Integer checked) {
-        int i = courseDao.updateChecked(courseId, checked);
-        if (i > 0) {
-            // 审核通过时，添加课程到Elasticsearch
-            if (checked == 1) {
-                Course course = courseDao.selectByCourseId(courseId);
-                if (course != null) {
-                    ElasticsearchCourse esCourse = ElasticsearchCourse.fromCourse(course);
-                    esCourseRepository.save(esCourse);
-                }
-            }
-            return new ResultVO<>(StatusVO.UPDATE_OK, "更新成功", null);
-        } else {
-            return new ResultVO<>(StatusVO.UPDATE_NO, "更新失败", null);
+    @Transactional(rollbackFor = UpdateCourseException.class)
+    public ResultVO<String> updateChecked(Integer courseId, Integer checked,String reason) {
+        int i1 = courseAuditDao.updateCheck(courseId, checked);
+        if (i1 < 0) {
+            return new ResultVO<>(StatusVO.UPDATE_NO, "审核失败", null);
         }
+        String email = courseDao.selectEmailByCourseId(courseId);
+        Course courseAudit = courseAuditDao.selectByCoursrId(courseId);
+        if (checked == 1) {
+            try {
+                //获取原图片和附件url
+                Course course = courseDao.selectByCourseId(courseId);
+                String imageUrl = course.getImageUrl();
+                String contentUrl = course.getContentUrl();
+                //比较url是否相同，不同则删除原url
+                if (!Objects.equals(imageUrl, courseAudit.getImageUrl())) {
+                    aliOSSUtils.deleteImageByUrl(imageUrl);
+                }
+                if (!Objects.equals(contentUrl, courseAudit.getContentUrl())) {
+                    aliOSSUtils.deleteImageByUrl(contentUrl);
+                }
+                courseAudit.setStatu(1);
+                courseAudit.setChecked(1);
+                int i = courseDao.updateCourse(courseAudit);
+                if (i < 0) {
+                    throw new UpdateCourseException("课程更新失败");
+                }
+                // 审核通过时，添加课程到Elasticsearch
+                ElasticsearchCourse esCourse = ElasticsearchCourse.fromCourse(courseAudit);
+                esCourseRepository.save(esCourse);
+                //发送邮件通知
+                emailUtil.sendMessage(email, EmailMsgVO.COURSE,EmailMsgVO.coursePassed(courseAudit.getName()));
+                return new ResultVO<>(StatusVO.UPDATE_OK, "审核成功", null);
+            } catch (UpdateCourseException e) {
+                return new ResultVO<>(StatusVO.UPDATE_NO, "审核失败", null);
+            }
+        }
+        if (checked == 2) {
+            //发送邮件通知
+            emailUtil.sendMessage(email, EmailMsgVO.COURSE,EmailMsgVO.courseNotPassed(courseAudit.getName(),reason));
+            return new ResultVO<>(StatusVO.UPDATE_OK, "审核成功", null);
+        }
+        return null;
     }
 
     /**
@@ -230,17 +384,19 @@ public class CourseServiceImpl implements CourseService {
 
     /**
      * 按照学科名查询
+     *
      * @param subName 学科名
      * @return ResultVO
      */
     @Override
-    public ResultVO<List<Course>> getBySubName(String subName) {
+    public ResultVO<List<ElasticsearchCourse>> getBySubName(String subName) {
         //判断参数是否为空
         if (subName == null) {
             return new ResultVO<>(StatusVO.SELECT_NO, "参数为空", null);
         } else {
             //查询
-            List<Course> courses = courseDao.selectBySubName(subName);
+            //List<Course> courses = courseDao.selectBySubName(subName);
+            List<ElasticsearchCourse> courses = esCourseRepository.findBySubName(subName);
             return new ResultVO<>(StatusVO.SELECT_OK, "查询成功", courses);
         }
     }
@@ -259,7 +415,7 @@ public class CourseServiceImpl implements CourseService {
         }
         try {
             //调用查询方法
-            List<ElasticsearchCourse> courseList = esCourseRepository.findByNameOrAuthorFuzzy(name);
+            List<ElasticsearchCourse> courseList = esCourseRepository.findByNameFuzzy(name);
             if (courseList.isEmpty()) {
                 return new ResultVO<>(StatusVO.SELECT_NO, "没有找到相关课程", courseList);
             } else {
@@ -272,5 +428,42 @@ public class CourseServiceImpl implements CourseService {
         }
     }
 
+    /**
+     * 随机获取4个课程数据的
+     *
+     * @return ResultVO
+     */
+    @Override
+    public ResultVO<List<ElasticsearchCourse>> queryRandomCourses() {
+        // 获取每小时的seed
+        long seed = getHourSeed();
+        // 构建查询条件：匹配所有文档
+        QueryBuilder queryBuilder = QueryBuilders.matchAllQuery();
+        // 构建随机得分函数，使用每小时的seed作为种子
+        RandomScoreFunctionBuilder randomScoreFunction = new RandomScoreFunctionBuilder();
+        randomScoreFunction.seed(seed);
+        // 构建function_score查询：将随机得分函数与查询条件结合，实现随机排序
+        QueryBuilder functionScoreQuery = QueryBuilders.functionScoreQuery(queryBuilder, randomScoreFunction)
+                .boostMode(CombineFunction.REPLACE);
+        // 构建NativeSearchQuery：将function_score查询与分页配置结合，并获取前4条数据作为随机课程
+        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
+                .withQuery(functionScoreQuery)
+                .withPageable(PageRequest.of(0, 4))
+                .build();
+        // 执行查询，并获取查询结果
+        SearchHits<ElasticsearchCourse> searchHits = elasticsearchOperations.search(searchQuery, ElasticsearchCourse.class);
+        // 将SearchHits转换为列表集合
+        List<ElasticsearchCourse> lists = searchHits.get().map(SearchHit::getContent).collect(Collectors.toList());
+        return new ResultVO<>(StatusVO.SELECT_OK,"获取成功",lists);
+    }
+    // 获取每小时的seed
+    private long getHourSeed() {
+        // 获取当前时间的小时部分
+        LocalDateTime currentTime = LocalDateTime.now();
+        LocalDateTime currentHour = currentTime.withMinute(0).withSecond(0).withNano(0);
+
+        // 转换为Epoch秒数
+        return currentHour.toInstant(ZoneOffset.UTC).getEpochSecond();
+    }
 
 }

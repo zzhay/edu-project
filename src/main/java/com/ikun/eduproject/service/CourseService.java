@@ -1,6 +1,7 @@
 package com.ikun.eduproject.service;
 
 import com.ikun.eduproject.pojo.Course;
+import com.ikun.eduproject.pojo.CourseAudit;
 import com.ikun.eduproject.pojo.ElasticsearchCourse;
 import com.ikun.eduproject.vo.GetCourseCheckedVO;
 import com.ikun.eduproject.vo.ResultVO;
@@ -38,7 +39,7 @@ public interface CourseService {
      * @param userId 用户id
      * @return ResultVO
      */
-    ResultVO<List<Course>> getCourse2(Integer userId);
+    ResultVO<List<CourseAudit>> getCourse2(Integer userId);
 
     /**
      * 教师查看审核未通过课程
@@ -46,7 +47,7 @@ public interface CourseService {
      * @param userId 用户id
      * @return ResultVO
      */
-    ResultVO<List<Course>> getCourse3(Integer userId);
+    ResultVO<List<CourseAudit>> getCourse3(Integer userId);
 
     /**
      * 教师查看已下架课程
@@ -57,12 +58,19 @@ public interface CourseService {
     ResultVO<List<Course>> getCourse4(Integer userId);
 
     /**
-     * 教师修改课程信息
+     * 教师修改已上架课程信息
      *
      * @param course 课程信息
      * @return ResultVO
      */
     ResultVO<String> updateCourse(Course course);
+
+    /**
+     * 教师修改审核未通过课程信息
+     * @param course 课程信息
+     * @return ResultVO
+     */
+    ResultVO<String> updateCheckNo(Course course);
 
     /**
      * 教师下架课程
@@ -95,7 +103,7 @@ public interface CourseService {
      * @param checked  审核状态
      * @return ResultVO
      */
-    ResultVO<String> updateChecked(@Param("courseId") Integer courseId, @Param("checked") Integer checked);
+    ResultVO<String> updateChecked(Integer courseId, Integer checked,String reason);
 
     /**
      * 按照学科类别查看课程
@@ -109,7 +117,7 @@ public interface CourseService {
      * @param subName 学科名
      * @return ResultVO
      */
-    ResultVO<List<Course>> getBySubName(String subName);
+    ResultVO<List<ElasticsearchCourse>> getBySubName(String subName);
 
     /**
      * 按照名称或作者模糊查询
@@ -117,4 +125,10 @@ public interface CourseService {
      * @return ResultVO
      */
     ResultVO<List<ElasticsearchCourse>> queryByNameOrAuthorFuzzy(String name);
+
+    /**
+     * 随机获取4个课程数据的
+     * @return ResultVO
+     */
+    ResultVO<List<ElasticsearchCourse>> queryRandomCourses();
 }

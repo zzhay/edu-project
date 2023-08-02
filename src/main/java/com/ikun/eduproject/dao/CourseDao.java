@@ -1,6 +1,7 @@
 package com.ikun.eduproject.dao;
 
 import com.ikun.eduproject.pojo.Course;
+import com.ikun.eduproject.pojo.User;
 import com.ikun.eduproject.vo.GetCourseCheckedVO;
 import org.apache.ibatis.annotations.Param;
 
@@ -25,10 +26,11 @@ public interface CourseDao {
     /**
      * 按照教师id和课程名查询课程id
      *
-     * @param course
+     * @param userId
+     * @param name
      * @return
      */
-    Integer selectByUIdAndName(Course course);
+    Integer selectByUIdAndName(@Param("userId") Integer userId, @Param("name")String name);
 
     /**
      * 按照教师id查询已上架课程
@@ -36,30 +38,14 @@ public interface CourseDao {
      * @param userId
      * @return 课程集合
      */
-    List<Course> selectByUserId1(Integer userId);
-
-    /**
-     * 按照教师id查询待审核课程
-     *
-     * @param userId
-     * @return 课程集合
-     */
-    List<Course> selectByUserId2(Integer userId);
-
-    /**
-     * 按照教师id查询审核未通过课程
-     *
-     * @param userId
-     * @return 课程集合
-     */
-    List<Course> selectByUserId3(Integer userId);
+    List<Course> selectByUserId(Integer userId);
 
     /**
      * 教师查看已下架课程
      * @param userId
      * @return
      */
-    List<Course> selectByUserId4(Integer userId);
+    List<Course> selectByUserId2(Integer userId);
 
     /**
      * 更新课程信息
@@ -86,33 +72,11 @@ public interface CourseDao {
     int deleteCourse(Integer courseId);
 
     /**
-     * 查询所有待审核课程
-     *
-     * @return
-     */
-    List<GetCourseCheckedVO> selectAllChecked();
-
-    /**
-     * 更新审核
-     *
-     * @param courseId
-     * @param checked
-     * @return
-     */
-    int updateChecked(@Param("courseId") Integer courseId, @Param("checked") Integer checked);
-
-    /**
      * 按照课程id查询
      * @param courseId 课程id
      * @return Course
      */
     Course selectByCourseId(Integer courseId);
-
-    /**
-     * 查询已上架课程
-     * @return List<Course>
-     */
-    List<Course> selectAvailable();
 
     /**
      * 按照学科类别查询
@@ -134,5 +98,12 @@ public interface CourseDao {
      * @return BigDecimal
      */
     BigDecimal selectPriceByCourseId(Integer courseId);
+
+    /**
+     * 根据课程id查询用户邮箱
+     * @param courseId 课程id
+     * @return User
+     */
+    String selectEmailByCourseId(Integer courseId);
 
 }

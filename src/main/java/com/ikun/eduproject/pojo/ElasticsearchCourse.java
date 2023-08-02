@@ -4,8 +4,9 @@ import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -20,6 +21,7 @@ public class ElasticsearchCourse{
     @Id
     private Integer courseId;
     private Integer userId;
+    @Field(type = FieldType.Text, store = true)
     private String name;
     private String author;
     private BigDecimal price;

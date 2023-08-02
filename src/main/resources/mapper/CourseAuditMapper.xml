@@ -10,17 +10,20 @@
         <result property="author" column="author"/>
         <result property="price" column="price"/>
         <result property="description" column="description"/>
+        <result property="subName" column="sub_name"/>
         <result property="imageUrl" column="image_url"/>
         <result property="contentUrl" column="content_url"/>
         <result property="updateTime" column="update_time"/>
     </resultMap>
-    <!--课程审核版本-->
+    <!--新增课程审核版本-->
     <insert id="insertCourseAudit" parameterType="com.ikun.eduproject.pojo.CourseAudit">
-        insert into course_audit (user_id, name, author, price, description, sub_name, image_url, content_url)
-        values (#{userId}, #{name}, #{author}, #{price}, #{description}, #{subName}, #{imageUrl}, #{contentUrl});
+        insert into course_audit (course_id, user_id, name, author, price, description, sub_name, image_url,
+                                  content_url)
+        values (#{courseId}, #{userId}, #{name}, #{author}, #{price}, #{description}, #{subName}, #{imageUrl},
+                #{contentUrl});
     </insert>
     <!--更新课程审核版本信息-->
-    <update id="updateCourseAudit" parameterType="com.ikun.eduproject.pojo.CourseAudit">
+    <update id="updateCourseAudit" parameterType="com.ikun.eduproject.pojo.Course">
         update course_audit
         set name=#{name},
             author= #{author},
@@ -28,9 +31,22 @@
             description= #{description},
             image_url=#{imageUrl},
             content_url=#{contentUrl},
-            checked=0;
-        where course_id =
-        #{courseId};
+            statu=2,
+            checked=0
+        where course_id = #{courseId};
+    </update>
+    <!--恢复课程审核版本-->
+    <update id="updateFromCourse" parameterType="com.ikun.eduproject.pojo.Course">
+        update course_audit
+        set name=#{name},
+            author= #{author},
+            price=#{price},
+            description= #{description},
+            image_url=#{imageUrl},
+            content_url=#{contentUrl},
+            statu=#{statu},
+            checked=#{checked}
+        where course_id = #{courseId};
     </update>
     <!--按照课程id删除-->
     <delete id="deleteCourseAudit">
@@ -44,12 +60,14 @@
         from course_audit
         where user_id = #{userId}
           and name = #{name}
+          and statu IN (1, 2);
     </select>
     <!--按照教师id查询待审核课程-->
     <select id="selectByUserIdChecking" resultType="com.ikun.eduproject.pojo.CourseAudit">
         select *
         from course_audit
         where user_id = #{userId}
+          and statu = 2
           and checked = 0;
     </select>
     <!--按照教师id查询审核未通过课程-->
@@ -57,6 +75,7 @@
         select *
         from course_audit
         where user_id = #{userId}
+          and statu = 2
           and checked = 2;
     </select>
     <!--查询所有待审核课程-->
@@ -67,16 +86,38 @@
                c.author,
                c.price,
                c.description,
+               c.sub_name,
                c.image_url,
                c.content_url,
                c.update_time
         from user u
-                 join course c on u.user_id = c.user_id
-        where c.checked = 0;
+                 join course_audit c on u.user_id = c.user_id
+        where c.statu = 2
+          and c.checked = 0;
     </select>
     <!--按照课程id查询课程-->
-    <select id="selectByCoursrId" resultType="com.ikun.eduproject.vo.GetCourseCheckedVO">
-        select user_id, name, author, price, description, sub_name, image_url, content_url
+    <select id="selectByCoursrId" resultType="com.ikun.eduproject.pojo.Course">
+        select *
+        from course_audit
+        where course_id = #{courseId};
     </select>
+    <!--更新审核-->
+    <update id="updateCheck">
+        update course_audit
+        set checked=#{checked},
+            statu  = CASE
+                         WHEN #{checked} = 1 THEN 1
+                         ELSE statu
+                END
+        where course_id =
+              #{courseId};
+    </update>
+    <!--更新课程状态-->
+    <update id="updateStatu" parameterType="integer">
+        update course_audit
+        set statu=0
+        where course_id = #{courseId};
+    </update>
+
 
 </mapper>

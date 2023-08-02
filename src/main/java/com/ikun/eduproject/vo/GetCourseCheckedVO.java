@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -35,8 +36,12 @@ public class GetCourseCheckedVO implements Serializable {
     @ApiModelProperty(dataType = "BigDecimal",required = true,value = "价格")
     private BigDecimal price;
 
-    @ApiModelProperty(dataType = "String",required = true,value = "课程描述")
+    @ApiModelProperty(dataType = "String", required = true, value = "课程描述")
     private String description;
+
+    @ApiModelProperty(dataType = "String",required = true,value = "学科名")
+    @NotNull(message = "学科名不能为空")
+    private String subName;
 
     @ApiModelProperty(dataType = "String",required = true,value = "头像url")
     private String imageUrl;

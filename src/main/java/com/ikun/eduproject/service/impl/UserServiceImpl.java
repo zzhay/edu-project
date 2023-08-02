@@ -1,7 +1,7 @@
 package com.ikun.eduproject.service.impl;
 
 import com.ikun.eduproject.dao.UserDao;
-import com.ikun.eduproject.error.ImageDeletionException;
+import com.ikun.eduproject.error.AliOSSDeleteException;
 import com.ikun.eduproject.pojo.User;
 import com.ikun.eduproject.service.UserService;
 import com.ikun.eduproject.utils.*;
@@ -260,8 +260,8 @@ public class UserServiceImpl implements UserService {
      * @return ResultVO
      */
     @Override
-    //开始事务,抛出 ImageDeletionException异常则事务回滚
-    @Transactional(rollbackFor = ImageDeletionException.class)
+    //开始事务,抛出 AliOSSDeleteException
+    @Transactional(rollbackFor = AliOSSDeleteException.class)
     public ResultVO<String> updateImage(String username, String url) {
         User user = userDao.selectByUsername(username);
         if (user == null) {
@@ -277,10 +277,10 @@ public class UserServiceImpl implements UserService {
                     boolean b = aliOSSUtils.deleteImageByUrl(imageUrl);
                     //ailiOSS删除失败则抛出异常
                     if (!b) {
-                        throw new ImageDeletionException("原图片删除错误");
+                        throw new AliOSSDeleteException("原图片删除错误");
                     }
                 }
-            } catch (ImageDeletionException e) {
+            } catch (AliOSSDeleteException e) {
                 return new ResultVO<>(StatusVO.UPDATE_NO, "修改失败", null);
             }
             return new ResultVO<>(StatusVO.UPDATE_OK, "修改成功", null);

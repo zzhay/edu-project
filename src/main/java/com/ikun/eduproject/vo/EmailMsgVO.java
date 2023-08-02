@@ -10,7 +10,7 @@ import io.swagger.annotations.ApiModel;
 public class EmailMsgVO {
     public static String REGIST = "智学云注册提示";
     public static String ACCOUNT = "智学云账号变动提示";
-
+    public static String COURSE = "智学云课程审核提示";
 
 
     public static String registStuMsg(String username) {
@@ -44,4 +44,13 @@ public class EmailMsgVO {
     public static String accountMsg3(String captcha) {
         return "【智学云】验证码：" + captcha + "（5分钟类有效，如非本人操作，请忽略）";
     }
+
+    public static String coursePassed(String name) {
+        return "【智学云】你的课程：" + name + "审核已通过";
+    }
+
+    public static String courseNotPassed(String name, String reason) {
+        return "【智学云】你的课程：" + name + "审核未通过,原因如下：" + reason;
+    }
+
 }
