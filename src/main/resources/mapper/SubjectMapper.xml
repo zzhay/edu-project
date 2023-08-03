@@ -8,4 +8,10 @@
         select sub_name, sub_category
         from subject;
     </select>
+    <!--根据学科名查询学科类别-->
+    <select id="selectSubCategoryBySubName" resultType="java.lang.String">
+        select sub_category
+        from subject
+        where sub_name = #{subName};
+    </select>
 </mapper>

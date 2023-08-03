@@ -28,6 +28,8 @@ class EduProjectApplicationTests {
     private StuCoursesDao stuCoursesDao;
     @Autowired
     private AssignmentsDao assignmentsDao;
+    @Autowired
+    private SubjectDao subjectDao;
 
     @Autowired
     AliOSSUtils aliOSSUtils;
@@ -43,9 +45,7 @@ class EduProjectApplicationTests {
 
     @Test
     void contextLoads() {
-        Integer integer = assignmentsDao.selectByUidAndCid(6, 2);
-        System.out.println(integer);
-        System.out.println(integer == null);
+        System.out.println(subjectDao.selectSubCategoryBySubName("经济思想史"));
     }
 
 

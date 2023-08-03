@@ -110,7 +110,15 @@ public interface CourseService {
      * @param category 学科类别
      * @return ResultVO
      */
-    ResultVO<List<Course>> getByCategory(String category);
+    ResultVO<List<ElasticsearchCourse>> getByCategory(String category);
+
+    /**
+     * 按照学科类别查看课程并按价格排序
+     * @param category 学科类别
+     * @return ResultVO
+     */
+    ResultVO<List<ElasticsearchCourse>> getByCategoryOrderByPrice(String category,Integer sort);
+
 
     /**
      * 按照学科名查询

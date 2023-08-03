@@ -25,7 +25,7 @@ public interface EsCourseRepository extends ElasticsearchRepository<Elasticsearc
     List<ElasticsearchCourse> findByNameFuzzy(String name);
 
     /**
-     * 根据课程名查询并按价格升序
+     * 根据课程名迷糊查询并按价格升序
      *
      * @param name 课程名
      * @return List
@@ -34,13 +34,34 @@ public interface EsCourseRepository extends ElasticsearchRepository<Elasticsearc
     List<ElasticsearchCourse> findByNameFuzzyOrderByPriceAsc(String name);
 
     /**
-     * 根据课程名查询并按价格降序
+     * 根据课程名迷糊查询并按价格降序
      *
      * @param name 课程名
      * @return List
      */
     @Query("{\"bool\": {\"should\": [{\"match\": {\"name\": {\"query\": \"?0\", \"operator\": \"or\"}}}]}, \"sort\": [{\"price\": {\"order\": \"desc\"}}]}")
     List<ElasticsearchCourse> findByNameFuzzyOrderByPriceDesc(String name);
+
+    /**
+     * 按照学科类别查询
+     * @param category 学科类别
+     * @return List
+     */
+    List<ElasticsearchCourse> findBySubCategory(String category);
+
+    /**
+     * 按照学科类别查询并按价格升序
+     * @param category 学科类别
+     * @return List
+     */
+    List<ElasticsearchCourse> findBySubCategoryOrderByPriceAsc(String category);
+
+    /**
+     * 按照学科类别查询并按价格降序
+     * @param category 学科类别
+     * @return List
+     */
+    List<ElasticsearchCourse> findBySubCategoryOrderByPriceDesc(String category);
 
     /**
      * 按照学科名查询

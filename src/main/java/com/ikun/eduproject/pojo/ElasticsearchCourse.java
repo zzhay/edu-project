@@ -15,7 +15,7 @@ import java.util.Date;
  * @Date 2023/7/31/031
  */
 @Data
-@Document(indexName = "course_index_new")
+@Document(indexName = "course_index")
 @ApiModel(value = "ES课程对象",description = "ES课程信息")
 public class ElasticsearchCourse{
     @Id
@@ -27,6 +27,7 @@ public class ElasticsearchCourse{
     private BigDecimal price;
     private String description;
     private String subName;
+    private String subCategory;
     private String imageUrl;
     private String contentUrl;
     private Integer statu;

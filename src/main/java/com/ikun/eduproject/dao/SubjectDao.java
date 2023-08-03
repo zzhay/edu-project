@@ -16,4 +16,7 @@ public interface SubjectDao {
      * @return
      */
     List<Subject> selectAll();
+
+    //根据学科名查询学科类别
+    String selectSubCategoryBySubName(String subName);
 }

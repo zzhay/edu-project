@@ -3,6 +3,7 @@ package com.ikun.eduproject.service.impl;
 import com.ikun.eduproject.dao.AssignmentsDao;
 import com.ikun.eduproject.dao.CourseAuditDao;
 import com.ikun.eduproject.dao.CourseDao;
+import com.ikun.eduproject.dao.SubjectDao;
 import com.ikun.eduproject.error.*;
 import com.ikun.eduproject.es.EsCourseRepository;
 import com.ikun.eduproject.pojo.Assignments;
@@ -54,6 +55,8 @@ public class CourseServiceImpl implements CourseService {
     private CourseAuditDao courseAuditDao;
     @Autowired
     private AssignmentsDao assignmentsDao;
+    @Autowired
+    private SubjectDao subjectDao;
 
     @Autowired
     private EsCourseRepository esCourseRepository;
@@ -359,7 +362,11 @@ public class CourseServiceImpl implements CourseService {
                     throw new UpdateCourseException("课程更新失败");
                 }
                 // 审核通过时，添加课程到Elasticsearch
+                //将Course类对象转换为ElasticsearchCourse对象
                 ElasticsearchCourse esCourse = ElasticsearchCourse.fromCourse(courseAudit);
+                //设置subCategory
+                String category = subjectDao.selectSubCategoryBySubName(courseAudit.getSubName());
+                esCourse.setSubCategory(category);
                 esCourseRepository.save(esCourse);
                 //发送邮件通知
                 emailUtil.sendMessage(email, EmailMsgVO.COURSE,EmailMsgVO.coursePassed(courseAudit.getName()));
@@ -383,15 +390,35 @@ public class CourseServiceImpl implements CourseService {
      * @return ResultVO
      */
     @Override
-    public ResultVO<List<Course>> getByCategory(String category) {
+    public ResultVO<List<ElasticsearchCourse>> getByCategory(String category) {
         //判断参数是否为空
         if (category == null) {
             return new ResultVO<>(StatusVO.SELECT_NO, "参数为空", null);
         } else {
             //查询
-            List<Course> courses = courseDao.selectByCategory(category);
+            List<ElasticsearchCourse> courses = esCourseRepository.findBySubCategory(category);
             return new ResultVO<>(StatusVO.SELECT_OK, "查询成功", courses);
         }
+    }
+
+    /**
+     * 按照学科类别查看课程并按价格排序
+     *
+     * @param category 学科类别
+     * @param sort 排序方式（0：升序，1：降序）
+     * @return ResultVO
+     */
+    @Override
+    public ResultVO<List<ElasticsearchCourse>> getByCategoryOrderByPrice(String category,Integer sort) {
+        List<ElasticsearchCourse> courseList;
+        if (sort.equals(0)) {
+            courseList = esCourseRepository.findBySubCategoryOrderByPriceAsc(category);
+        } else if (sort.equals(1)) {
+            courseList = esCourseRepository.findBySubCategoryOrderByPriceDesc(category);
+        } else {
+            return new ResultVO<>(StatusVO.SELECT_NO, "参数错误", null);
+        }
+        return new ResultVO<>(StatusVO.SELECT_OK,"查询成功",courseList);
     }
 
     /**
@@ -407,7 +434,6 @@ public class CourseServiceImpl implements CourseService {
             return new ResultVO<>(StatusVO.SELECT_NO, "参数为空", null);
         } else {
             //查询
-            //List<Course> courses = courseDao.selectBySubName(subName);
             List<ElasticsearchCourse> courses = esCourseRepository.findBySubName(subName);
             return new ResultVO<>(StatusVO.SELECT_OK, "查询成功", courses);
         }

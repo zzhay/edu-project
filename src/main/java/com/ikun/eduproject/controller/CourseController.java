@@ -111,6 +111,14 @@ public class CourseController {
         return result;
     }
 
+    @ApiOperation("按照学科类别查看课程并按价格排序")
+    @GetMapping("/getByCategoryOrderByPrice")
+    public ResultVO getByCategoryOrderByPrice(@RequestParam("category") @NotNull(message = "学科类别不能为空") String category,
+                                              @RequestParam("sort") @NotNull Integer sort) {
+        ResultVO result = courseService.getByCategoryOrderByPrice(category,sort);
+        return result;
+    }
+
     @ApiOperation("按照学科名查看课程")
     @GetMapping("/getBySubName")
     public ResultVO getBySubName(@RequestParam("subName") @NotNull(message = "学科名不能为空") String subName) {
@@ -155,7 +163,7 @@ public class CourseController {
         return result;
     }
 
-    @ApiOperation("根据课程id对searchFrequency字段加一")
+    @ApiOperation("增加搜索热值")
     @PostMapping("/addSearchFrequency")
     public ResultVO addSearchFrequency(@RequestParam("courseId") @NotNull(message = "课程id不能为空") Integer courseId) {
         ResultVO result = courseService.incrementSearchFrequency(courseId);
