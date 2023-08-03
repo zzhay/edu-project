@@ -24,10 +24,6 @@ public class StatusVO {
     //更新状态码
     public static final int UPDATE_OK = 2003;
     public static final int UPDATE_NO = 4003;
-    //旧密码错误
-    public static final int UPDATE_NO_OLDPWD = 4013;
-    //新密码错误
-    public static final int UPDATE_NO_NEWPWD = 4023;
 
     //查询状态码
     public static final int SELECT_OK = 2004;

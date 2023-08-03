@@ -19,7 +19,7 @@ public interface StuCoursesDao {
      * @param studentCourse 学生课程信息
      * @return int
      */
-    int insertStuCourse(StudentCourse studentCourse);
+    Integer insertStuCourse(StudentCourse studentCourse);
 
     /**
      * 根据用户id和课程id查询
@@ -27,6 +27,12 @@ public interface StuCoursesDao {
      * @param courseId 课程id
      * @return int
      */
-    int selectByUidandCid(@Param("userId") Integer userId, @Param("courseId") Integer courseId);
+    Integer selectByUidAndCid(@Param("userId") Integer userId, @Param("courseId") Integer courseId);
 
+    /**
+     * 按照用户id查询车购买的课程
+     * @param userId 用户id
+     * @return List
+     */
+    List<Course> selectByUid(Integer userId);
 }

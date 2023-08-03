@@ -88,12 +88,13 @@
         from user
         where username = #{username};
     </delete>
-    <!--按照用户id查看学分-->
-    <select id="selectCreditByUserId" resultType="java.math.BigDecimal">
-        select credit
+    <!--按照用户id查看-->
+    <select id="selectByUserId" resultType="com.ikun.eduproject.pojo.User">
+        select username,email,credit
         from user
         where user_id = #{userId};
     </select>
+
     <!--按照用户id更新学分-->
     <update id="updateCreditByUserId">
         update user

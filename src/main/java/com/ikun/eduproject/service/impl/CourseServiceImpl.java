@@ -1,9 +1,11 @@
 package com.ikun.eduproject.service.impl;
 
+import com.ikun.eduproject.dao.AssignmentsDao;
 import com.ikun.eduproject.dao.CourseAuditDao;
 import com.ikun.eduproject.dao.CourseDao;
 import com.ikun.eduproject.error.*;
 import com.ikun.eduproject.es.EsCourseRepository;
+import com.ikun.eduproject.pojo.Assignments;
 import com.ikun.eduproject.pojo.Course;
 import com.ikun.eduproject.pojo.CourseAudit;
 import com.ikun.eduproject.pojo.ElasticsearchCourse;
@@ -16,11 +18,14 @@ import com.ikun.eduproject.vo.ResultVO;
 import com.ikun.eduproject.vo.StatusVO;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.common.lucene.search.function.CombineFunction;
+import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.functionscore.RandomScoreFunctionBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
@@ -31,7 +36,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -48,6 +52,9 @@ public class CourseServiceImpl implements CourseService {
     private CourseDao courseDao;
     @Autowired
     private CourseAuditDao courseAuditDao;
+    @Autowired
+    private AssignmentsDao assignmentsDao;
+
     @Autowired
     private EsCourseRepository esCourseRepository;
     @Autowired
@@ -167,6 +174,11 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @Transactional(rollbackFor = ChangeCourseStatuException.class)
     public ResultVO<String> updateStatu(Integer courseId) {
+        //判断该课程是否有作业未批改
+        List<Assignments> list = assignmentsDao.selectByCourseId(courseId);
+        if (list.size() != 0) {
+            return new ResultVO<>(StatusVO.UPDATE_NO, "下架失败，还有作业未批改", null);
+        }
         //下架课程
         int i = courseDao.updateStatu(courseId);
         if (i < 0) {
@@ -402,7 +414,26 @@ public class CourseServiceImpl implements CourseService {
     }
 
     /**
-     * 按照名称或作者模糊查询
+     * 按照学科名查询并按价格排序
+     * @param subName 学科名
+     * @param sort 排序方式（0：升序，1：降序）
+     * @return ResultVO
+     */
+    @Override
+    public ResultVO<List<ElasticsearchCourse>> getBySubNameOrderByPrice(String subName,Integer sort) {
+        List<ElasticsearchCourse> courseList;
+        if (sort.equals(0)) {
+            courseList = esCourseRepository.findBySubNameOrderByPriceAsc(subName);
+        } else if (sort.equals(1)) {
+            courseList = esCourseRepository.findBySubNameOrderByPriceDesc(subName);
+        } else {
+            return new ResultVO<>(StatusVO.SELECT_NO, "参数错误", null);
+        }
+        return new ResultVO<>(StatusVO.SELECT_OK,"查询成功",courseList);
+    }
+
+    /**
+     * 按照课程名模糊查询
      *
      * @param name 课程名或作者
      * @return ResultVO
@@ -426,6 +457,41 @@ public class CourseServiceImpl implements CourseService {
             e.printStackTrace();
             return new ResultVO<>(StatusVO.SELECT_NO, "查询异常", null);
         }
+    }
+
+    /**
+     * 按照课程名模糊查询并按价格排序
+     * @param name 课程名
+     * @param sort 排序方式（0：升序，1：降序）
+     * @return ResultVO
+     */
+    @Override
+    public ResultVO<List<ElasticsearchCourse>> queryByNameOrAuthorFuzzyOrderByPrice(String name, Integer sort) {
+        List<ElasticsearchCourse> lists;
+        if (sort.equals(0)) {
+            // 构建查询条件，按照课程名进行模糊查询
+            NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
+                    .withQuery(QueryBuilders.matchQuery("name", name).operator(Operator.OR))
+                    .build();
+
+            // 添加按价格升序排序规则
+            searchQuery.addSort(Sort.by(Sort.Direction.ASC, "price"));
+            // 执行查询并返回结果
+            SearchHits<ElasticsearchCourse> searchHits = elasticsearchOperations.search(searchQuery, ElasticsearchCourse.class);
+            // 将SearchHits转换为列表集合
+            lists = searchHits.get().map(SearchHit::getContent).collect(Collectors.toList());
+        }else if (sort.equals(1)){
+            NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
+                    .withQuery(QueryBuilders.matchQuery("name", name).operator(Operator.OR))
+                    .build();
+
+            searchQuery.addSort(Sort.by(Sort.Direction.DESC, "price"));
+            SearchHits<ElasticsearchCourse> searchHits = elasticsearchOperations.search(searchQuery, ElasticsearchCourse.class);
+            lists = searchHits.get().map(SearchHit::getContent).collect(Collectors.toList());
+        }else {
+            return new ResultVO<>(StatusVO.SELECT_NO, "参数错误", null);
+        }
+        return new ResultVO<>(StatusVO.SELECT_OK,"查询成功",lists);
     }
 
     /**
@@ -461,9 +527,44 @@ public class CourseServiceImpl implements CourseService {
         // 获取当前时间的小时部分
         LocalDateTime currentTime = LocalDateTime.now();
         LocalDateTime currentHour = currentTime.withMinute(0).withSecond(0).withNano(0);
-
         // 转换为Epoch秒数
         return currentHour.toInstant(ZoneOffset.UTC).getEpochSecond();
+    }
+
+    /**
+     * 获取最热门的10个课程
+     * @return ResultVO
+     */
+    @Override
+    public ResultVO<List<ElasticsearchCourse>> getPopularCourses() {
+        // 创建排序对象，按照searchFrequency字段降序排列
+        Sort sort = Sort.by(Sort.Direction.DESC, "searchFrequency");
+        // 创建分页对象，只返回前10条数据
+        Pageable pageable = PageRequest.of(0, 10, sort);
+        // 查询热门课程
+        List<ElasticsearchCourse> lists = esCourseRepository.findAll(pageable).getContent();
+        return new ResultVO<>(StatusVO.SELECT_OK, "查询成功", lists);
+    }
+
+    /**
+     * 根据课程id对searchFrequency字段加一
+     * @param courseId 课程id
+     * @return ResultVO
+     */
+    @Override
+    public ResultVO<String> incrementSearchFrequency(Integer courseId) {
+        // 根据课程id从Elasticsearch中获取课程对象
+        ElasticsearchCourse course = esCourseRepository.findById(courseId).orElse(null);
+        // 判断课程对象是否存在
+        if (course == null) {
+            return new ResultVO<>(StatusVO.UPDATE_NO, "课程不存在", null);
+        }
+        // 将searchFrequency字段加一
+        course.setSearchFrequency(course.getSearchFrequency() + 1);
+        // 使用Update API更新数据
+        elasticsearchOperations.save(course);
+
+        return new ResultVO<>(StatusVO.UPDATE_OK, "更新成功", null);
     }
 
 }

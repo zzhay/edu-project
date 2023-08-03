@@ -51,10 +51,6 @@ public class UserServiceImpl implements UserService {
         if (userDao.selectByUsername(user.getUsername()) != null) {
             return new ResultVO<>(StatusVO.REGIST_NO, "用户名已被注册", null);
         }
-        //判断电话是否被使用
-        if (userDao.selectByPhone(user.getPhone()) != null) {
-            return new ResultVO<>(StatusVO.REGIST_NO, "电话号码已被使用", null);
-        }
         //判断邮箱是否被使用
         if (userDao.selectByEmail(user.getEmail()) != null) {
             return new ResultVO<>(StatusVO.REGIST_NO, "邮箱已被使用", null);

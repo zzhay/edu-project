@@ -120,7 +120,23 @@ public interface CourseService {
     ResultVO<List<ElasticsearchCourse>> getBySubName(String subName);
 
     /**
-     * 按照名称或作者模糊查询
+     * 按照学科名查询并按价格排序
+     * @param subName 学科名
+     * @param sort 排序方式（0：升序，1：降序）
+     * @return ResultVO
+     */
+    ResultVO<List<ElasticsearchCourse>> getBySubNameOrderByPrice(String subName,Integer sort);
+
+    /**
+     * 按照课程名模糊查询并按价格排序
+     * @param name 课程名
+     * @param sort 排序方式（0：升序，1：降序）
+     * @return ResultVO
+     */
+    ResultVO<List<ElasticsearchCourse>> queryByNameOrAuthorFuzzyOrderByPrice(String name,Integer sort);
+
+    /**
+     * 按照课程名模糊查询
      * @param name 课程名或作者
      * @return ResultVO
      */
@@ -131,4 +147,17 @@ public interface CourseService {
      * @return ResultVO
      */
     ResultVO<List<ElasticsearchCourse>> queryRandomCourses();
+
+    /**
+     * 获取热门课程
+     * @return ResultVO
+     */
+    ResultVO<List<ElasticsearchCourse>> getPopularCourses();
+
+    /**
+     * 根据课程id对searchFrequency字段加一
+     * @param courseId 课程id
+     * @return ResultVO
+     */
+    ResultVO<String> incrementSearchFrequency(Integer courseId);
 }

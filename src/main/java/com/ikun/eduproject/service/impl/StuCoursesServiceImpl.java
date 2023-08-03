@@ -7,7 +7,9 @@ import com.ikun.eduproject.pojo.Course;
 import com.ikun.eduproject.pojo.StudentCourse;
 import com.ikun.eduproject.pojo.User;
 import com.ikun.eduproject.service.StuCoursesService;
+import com.ikun.eduproject.utils.EmailUtil;
 import com.ikun.eduproject.utils.MD5Utils;
+import com.ikun.eduproject.vo.EmailMsgVO;
 import com.ikun.eduproject.vo.LoginVO;
 import com.ikun.eduproject.vo.ResultVO;
 import com.ikun.eduproject.vo.StatusVO;
@@ -34,6 +36,9 @@ public class StuCoursesServiceImpl implements StuCoursesService {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private EmailUtil emailUtil;
+
     /**
      * 购买课程
      *
@@ -44,31 +49,34 @@ public class StuCoursesServiceImpl implements StuCoursesService {
     @Transactional
     public ResultVO<String> buyCourse(StudentCourse studentCourse) {
         //判断是否已经购买过
-        int i = stuCoursesDao.selectByUidandCid(studentCourse.getUserId(), studentCourse.getCourseId());
+        Integer i = stuCoursesDao.selectByUidAndCid(studentCourse.getUserId(), studentCourse.getCourseId());
         if (i > 0) {
             return new ResultVO<>(StatusVO.INSERT_NO, "已购买过该课程", null);
+        }
+        //课程价格
+        BigDecimal price = courseDao.selectPriceByCourseId(studentCourse.getCourseId());
+        //用户学分
+        User user = userDao.selectByUserId(studentCourse.getUserId());
+        //判断学分是否足够
+        if (user.getCredit().compareTo(price) > 0) {
+            //添加学生课程
+            stuCoursesDao.insertStuCourse(studentCourse);
+            //购买后的学分
+            BigDecimal subtract = user.getCredit().subtract(price);
+            //更新学分
+            userDao.updateCreditByUserId(studentCourse.getUserId(), subtract);
+            //发送邮件通知
+            String name = courseDao.selectByCourseId(studentCourse.getCourseId()).getName();
+            emailUtil.sendMessage(user.getEmail(), EmailMsgVO.BUYCOURSE, EmailMsgVO.buyCourse(user.getUsername(), name));
+            return new ResultVO<>(StatusVO.UPDATE_OK, "购买成功", null);
         } else {
-            //课程价格
-            BigDecimal price = courseDao.selectPriceByCourseId(studentCourse.getCourseId());
-            //用户学分
-            BigDecimal credit = userDao.selectCreditByUserId(studentCourse.getUserId());
-            //判断学分是否足够
-            if (credit.compareTo(price) > 0) {
-                //添加学生课程
-                stuCoursesDao.insertStuCourse(studentCourse);
-                //购买后的学分
-                BigDecimal subtract = credit.subtract(price);
-                //更新学分
-                userDao.updateCreditByUserId(studentCourse.getUserId(), subtract);
-                return new ResultVO<>(StatusVO.UPDATE_OK, "购买成功", null);
-            } else {
-                return new ResultVO<>(StatusVO.UPDATE_NO, "学分不够，购买失败", null);
-            }
+            return new ResultVO<>(StatusVO.UPDATE_NO, "学分不足，购买失败", null);
         }
     }
 
     /**
      * 验证密码
+     *
      * @param loginVO 登录信息
      * @return ResultVO
      */
@@ -85,12 +93,13 @@ public class StuCoursesServiceImpl implements StuCoursesService {
 
     /**
      * 获取购买的课程
+     *
      * @param userId 用户id
      * @return ResultVO
      */
     @Override
     public ResultVO<List<Course>> getOwnCourse(Integer userId) {
-
-        return null;
+        List<Course> courses = stuCoursesDao.selectByUid(userId);
+        return new ResultVO<>(StatusVO.SELECT_OK, "获取成功", courses);
     }
 }

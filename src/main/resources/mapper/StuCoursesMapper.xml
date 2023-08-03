@@ -10,11 +10,18 @@
         values (#{userId}, #{courseId});
     </insert>
     <!--根据用户id和课程id查询-->
-    <select id="selectByUidandCid" resultType="java.lang.Integer">
+    <select id="selectByUidAndCid" resultType="java.lang.Integer">
         select stu_course_id
         from student_courses
         where user_id = #{userId}
           and course_id = #{courseId};
+    </select>
+    <!--按照用户id查询车购买的课程-->
+    <select id="selectByUid" resultType="com.ikun.eduproject.pojo.Course">
+        select c.*
+        from course c
+                 join student_courses s on c.course_id = s.course_id
+        where course_id = #{courseId};
     </select>
 
 </mapper>

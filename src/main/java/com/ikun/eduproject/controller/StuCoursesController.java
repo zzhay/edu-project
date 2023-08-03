@@ -42,7 +42,7 @@ public class StuCoursesController {
     @ApiOperation("显示所购买的课程")
     @PostMapping("/getOwnCourse")
     public ResultVO<List<Course>> getOwnCourse(@RequestParam @NotNull(message = "用户id不能为空") Integer userId) {
-        return null;
+        return stuCoursesService.getOwnCourse(userId);
     }
 
 }

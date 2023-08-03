@@ -101,9 +101,9 @@ public interface UserDao {
     /**
      * 按照用户id查看学分
      * @param userId 用户id
-     * @return BigDecimal
+     * @return User
      */
-    BigDecimal selectCreditByUserId(Integer userId);
+    User selectByUserId(Integer userId);
 
     /**
      * 按照用户id更新学分

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ikun.eduproject.dao.AssignmentsDao">
+    <!--根据课程id查作业-->
+    <select id="selectByCourseId" resultType="com.ikun.eduproject.pojo.Assignments">
+        select *
+        from assignments
+        where course_id = #{courseId};
+    </select>
+    <!--添加作业-->
+    <insert id="insertAssignment" parameterType="com.ikun.eduproject.pojo.Assignments">
+        insert into assignments(user_id, course_id, assignment_url)
+        values (#{userId}, #{courseId}, #{assignmentUrl});
+    </insert>
+    <!--根据学生id和课程id查询作业id-->
+    <select id="selectByUidAndCid" resultType="java.lang.Integer">
+        select assignment_id
+        from assignments
+        where user_id = #{userId}
+          and course_id = #{courseId};
+    </select>
+    <!--更新作业-->
+    <update id="updateAssignment">
+        update assignments
+        set credit=#{credit}
+            and statu = 1
+        where assignment_id = #{assignmentId};
+    </update>
+</mapper>

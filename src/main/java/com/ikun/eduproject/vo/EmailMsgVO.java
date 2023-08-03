@@ -11,6 +11,7 @@ public class EmailMsgVO {
     public static String REGIST = "智学云注册提示";
     public static String ACCOUNT = "智学云账号变动提示";
     public static String COURSE = "智学云课程审核提示";
+    public static String BUYCOURSE = "智学云购买课程提示";
 
 
     public static String registStuMsg(String username) {
@@ -51,6 +52,10 @@ public class EmailMsgVO {
 
     public static String courseNotPassed(String name, String reason) {
         return "【智学云】你的课程：" + name + "审核未通过,原因如下：" + reason;
+    }
+
+    public static String buyCourse(String username, String name) {
+        return "【智学云】你的账号 " + username + "已成功购买课程 " + name;
     }
 
 }

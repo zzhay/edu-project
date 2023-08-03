@@ -15,7 +15,7 @@ import java.util.Date;
  * @Date 2023/7/31/031
  */
 @Data
-@Document(indexName = "course_index")
+@Document(indexName = "course_index_new")
 @ApiModel(value = "ES课程对象",description = "ES课程信息")
 public class ElasticsearchCourse{
     @Id
@@ -33,6 +33,7 @@ public class ElasticsearchCourse{
     private Integer checked;
     private Date creatTime;
     private Date updateTime;
+    private Integer searchFrequency;
 
     //将原始的Course类对象转换为ElasticsearchCourse对象
     public static ElasticsearchCourse fromCourse(Course course) {

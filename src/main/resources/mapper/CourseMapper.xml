@@ -75,7 +75,7 @@
     </delete>
     <!--按照课程id查询-->
     <select id="selectByCourseId" parameterType="integer" resultType="com.ikun.eduproject.pojo.Course">
-        select *
+        select course_id,user_id,author,name,price,statu,checked,sub_name,image_url,content_url
         from course
         where course_id = #{courseId};
     </select>

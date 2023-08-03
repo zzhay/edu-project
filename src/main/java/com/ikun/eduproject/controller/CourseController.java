@@ -1,7 +1,6 @@
 package com.ikun.eduproject.controller;
 
 import com.ikun.eduproject.pojo.Course;
-import com.ikun.eduproject.pojo.CourseAudit;
 import com.ikun.eduproject.service.CourseService;
 import com.ikun.eduproject.vo.ResultVO;
 import io.swagger.annotations.Api;
@@ -101,7 +100,7 @@ public class CourseController {
     public ResultVO updateChecked(@RequestParam("courseId") @NotNull(message = "课程id不能为空") Integer courseId,
                                   @RequestParam("checked") @NotNull(message = "审核状态不能为空") Integer checked,
                                   @RequestParam("reason") String reason) {
-        ResultVO result = courseService.updateChecked(courseId, checked,reason);
+        ResultVO result = courseService.updateChecked(courseId, checked, reason);
         return result;
     }
 
@@ -119,6 +118,14 @@ public class CourseController {
         return result;
     }
 
+    @ApiOperation("按照学科名查看课程并按价格排序")
+    @GetMapping("/getBySubNameOrderByPrice")
+    public ResultVO getBySubNameOrderByPrice(@RequestParam("subName") @NotNull(message = "学科名不能为空") String subName,
+                                             @RequestParam("sort") @NotNull Integer sort) {
+        ResultVO result = courseService.getBySubNameOrderByPrice(subName, sort);
+        return result;
+    }
+
     @ApiOperation("按照课程名名称模糊查询")
     @GetMapping("/queryFuzzy")
     public ResultVO queryByNameOrAuthorFuzzy(@RequestParam("name") @NotNull(message = "课程名或作者不能为空") String name) {
@@ -126,10 +133,32 @@ public class CourseController {
         return result;
     }
 
-    @ApiOperation("随机获取4条课程数据")
+    @ApiOperation("按照课程名名称模糊查询并按价格排序")
+    @GetMapping("/queryFuzzyOrderByPrice")
+    public ResultVO queryByNameOrAuthorFuzzyOrderByPrice(@RequestParam("name") @NotNull(message = "课程名或作者不能为空") String name,
+                                                         @RequestParam("sort") @NotNull Integer sort) {
+        ResultVO result = courseService.queryByNameOrAuthorFuzzyOrderByPrice(name, sort);
+        return result;
+    }
+
+    @ApiOperation("随机获取4条课程")
     @GetMapping("/queryRandomCourses")
     public ResultVO queryRandom() {
         ResultVO result = courseService.queryRandomCourses();
+        return result;
+    }
+
+    @ApiOperation("获取热门课程")
+    @GetMapping("/getPopularCourses")
+    public ResultVO getPopularCourses() {
+        ResultVO result = courseService.getPopularCourses();
+        return result;
+    }
+
+    @ApiOperation("根据课程id对searchFrequency字段加一")
+    @PostMapping("/addSearchFrequency")
+    public ResultVO addSearchFrequency(@RequestParam("courseId") @NotNull(message = "课程id不能为空") Integer courseId) {
+        ResultVO result = courseService.incrementSearchFrequency(courseId);
         return result;
     }
 }
