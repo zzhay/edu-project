@@ -111,4 +111,11 @@ public interface UserService {
      */
     ResultVO<User> checkCaptcha(String email,String captcha);
 
+    /**
+     * 根据用户id获取用户信息
+     * @param userId
+     * @return
+     */
+    ResultVO<User> getByUserId(Integer userId);
+
 }

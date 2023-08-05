@@ -19,20 +19,19 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @ApiModel(value = "获取的评论信息")
 public class CommentsVO implements Serializable {
+    @ApiModelProperty("评论id")
+    private Integer commentsId;
+
     @ApiModelProperty("头像url")
-    @NotNull
-    private Integer imageUrl;
+    private String imageUrl;
 
     @ApiModelProperty("用户名")
-    @NotNull
-    private Integer username;
+    private String username;
 
     @ApiModelProperty( "评论内容")
-    @NotNull
     private String text;
 
     @ApiModelProperty("打分星级（0~5）")
-    @NotNull
     private Double stars;
 
     @ApiModelProperty("评论时间")

@@ -29,6 +29,18 @@ public class CommentsController {
         return commentsService.addComment(comments);
     }
 
+    @ApiOperation("删除评论接口")
+    @PostMapping("/delComment")
+    public ResultVO delComment(@RequestParam("commentId") @NotNull Integer commentId) {
+        return commentsService.delComment(commentId);
+    }
+
+    @ApiOperation("更新评论接口")
+    @PostMapping("/changeComment")
+    public ResultVO changeComment(@RequestBody @Valid Comments comments) {
+        return commentsService.changeComment(comments);
+    }
+
     @ApiOperation("获取评论接口")
     @GetMapping("/getComment")
     public ResultVO getComment(@RequestParam("courseId") @NotNull Integer courseId) {

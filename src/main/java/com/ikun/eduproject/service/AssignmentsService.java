@@ -1,11 +1,14 @@
 package com.ikun.eduproject.service;
 
 import com.ikun.eduproject.pojo.Assignments;
+import com.ikun.eduproject.vo.AssignmentNumVO;
+import com.ikun.eduproject.vo.AssignmentVO;
 import com.ikun.eduproject.vo.ResultVO;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @Author zzhay
@@ -30,4 +33,32 @@ public interface AssignmentsService {
      */
     ResultVO<String> correctingAssignments(Integer assignmentId, BigDecimal credit);
 
+    /**
+     * 教师根据课程查看未批改作业
+     * @param courseId 课程id
+     * @return ResultVO
+     */
+    ResultVO<List<AssignmentVO>> getByCourseIdNO(Integer courseId);
+
+    /**
+     * 教师根据课程查看已批改作业
+     * @param courseId 课程id
+     * @return ResultVO
+     */
+    ResultVO<List<AssignmentVO>> getByCourseIdOK(Integer courseId);
+
+    /**
+     * 教师根据课程查看待批改作业数量
+     * @param userId 用户id
+     * @return ResultVO
+     */
+    ResultVO<List<AssignmentNumVO>> getNumByCourseIdON(Integer userId);
+
+    /**
+     * 学生根据课程查看自己作业
+     * @param userId 用户id
+     * @param courseId 课程id
+     * @return ResultVO
+     */
+    ResultVO<Assignments> getByCourseId(Integer userId,Integer courseId);
 }

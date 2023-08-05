@@ -51,11 +51,11 @@ public class EmailMsgVO {
     }
 
     public static String courseNotPassed(String name, String reason) {
-        return "【智学云】你的课程：" + name + "审核未通过,原因如下：" + reason;
+        return "【智学云】你的课程：" + name + " 审核未通过,原因如下：" + reason;
     }
 
     public static String buyCourse(String username, String name) {
-        return "【智学云】你的账号 " + username + "已成功购买课程 " + name;
+        return "【智学云】你的账号 " + username + " 已成功购买课程 " + name;
     }
 
 }

@@ -6,7 +6,7 @@
 
     <!--添加学生课程信息-->
     <insert id="insertStuCourse" parameterType="com.ikun.eduproject.pojo.StudentCourse">
-        insert into user (user_id, course_id)
+        insert into student_courses (user_id, course_id)
         values (#{userId}, #{courseId});
     </insert>
     <!--根据用户id和课程id查询-->
@@ -21,7 +21,7 @@
         select c.*
         from course c
                  join student_courses s on c.course_id = s.course_id
-        where course_id = #{courseId};
+        where s.user_id = #{userId};
     </select>
 
 </mapper>

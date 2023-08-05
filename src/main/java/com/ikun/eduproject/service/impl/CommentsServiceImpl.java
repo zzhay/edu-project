@@ -43,6 +43,10 @@ public class CommentsServiceImpl implements CommentsService {
         if (i == null) {
             return new ResultVO(StatusVO.INSERT_NO, "评论失败,你还未购买该课程，无法评论", null);
         }
+        //判断是否评论过
+        if (commentsDao.selectByUidAndCid(comments.getUserId(), comments.getCourseId()) != null) {
+            return new ResultVO(StatusVO.INSERT_NO, "你已经评论过该课程，无法重复评论", null);
+        }
         //敏感词判断
         SensitivewordFilter filter = new SensitivewordFilter();
         Set<String> set = filter.getSensitiveWord(comments.getText(), 2);
@@ -54,6 +58,36 @@ public class CommentsServiceImpl implements CommentsService {
             return new ResultVO(StatusVO.INSERT_OK, "评论成功", null);
         } else {
             return new ResultVO(StatusVO.INSERT_NO, "评论失败", null);
+        }
+    }
+
+    /**
+     * 更新评论
+     * @param comments 评论信息
+     * @return ResultVO
+     */
+    @Override
+    public ResultVO<String> changeComment(Comments comments) {
+        int i = commentsDao.updateCommentById(comments);
+        if (i > 0) {
+            return new ResultVO(StatusVO.INSERT_OK, "更新成功", null);
+        } else {
+            return new ResultVO(StatusVO.INSERT_NO, "更新失败", null);
+        }
+    }
+
+    /**
+     * 删除评论
+     * @param commentId 评论id
+     * @return ResultVO
+     */
+    @Override
+    public ResultVO<String> delComment(Integer commentId) {
+        int i = commentsDao.deleteCommentByid(commentId);
+        if (i > 0) {
+            return new ResultVO(StatusVO.INSERT_OK, "删除成功", null);
+        } else {
+            return new ResultVO(StatusVO.INSERT_NO, "删除失败", null);
         }
     }
 

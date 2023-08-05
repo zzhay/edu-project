@@ -23,11 +23,9 @@ public class StudentCourse implements Serializable {
     private Integer stuCourseId;
 
     @ApiModelProperty(dataType = "Integer",required = true,value = "用户id")
-    @NotNull(message = "用户id不能为空")
     private Integer userId;
 
     @ApiModelProperty(dataType = "Integer",required = true,value = "课程id")
-    @NotNull(message = "课程id不能为空")
     private Integer courseId;
 
     @ApiModelProperty(dataType = "Timestamp",required = false,value = "购买时间")

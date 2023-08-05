@@ -3,6 +3,7 @@ package com.ikun.eduproject.dao;
 import com.ikun.eduproject.pojo.Comments;
 import com.ikun.eduproject.vo.CommentsVO;
 import io.swagger.models.auth.In;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -16,6 +17,9 @@ public interface CommentsDao {
     //新增评论
     int insertComment(Comments comments);
 
+    //根据用户id和课程id获取评论id
+    Integer selectByUidAndCid(@Param("userId") Integer userId, @Param("courseId") Integer courseId);
+
     //按照课程id获取评论
     List<CommentsVO> selectByCourseId(Integer courseId);
 
@@ -24,4 +28,10 @@ public interface CommentsDao {
 
     //根据课程id获取总评价数量
     Integer selectNumByCourseId(Integer courseId);
+
+    //根据评论id更新评论
+    int updateCommentById(Comments comments);
+
+    //根据评论id删除评论
+    int deleteCommentByid(Integer commentId);
 }

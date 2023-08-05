@@ -172,4 +172,15 @@ public class UserController {
         return userService.checkCaptcha(email, captcha);
     }
 
+    /**
+     * 根据用户id获取用户信息
+     * @param userId
+     * @return
+     */
+    @ApiOperation("获取用户信息")
+    @PostMapping("/getUser")
+    public ResultVO<User> getUser(@RequestParam("userId") @NotNull(message = "用户id不能为空") Integer userId) {
+        return userService.getByUserId(userId);
+    }
+
 }

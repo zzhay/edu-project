@@ -3,7 +3,9 @@ package com.ikun.eduproject.service;
 import com.ikun.eduproject.pojo.Comments;
 import com.ikun.eduproject.vo.CommentsVO;
 import com.ikun.eduproject.vo.ResultVO;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,6 +24,20 @@ public interface CommentsService {
      * @return ResultVO
      */
     ResultVO<Set> addComment(Comments comments);
+
+    /**
+     * 更新评论
+     * @param comments 评论信息
+     * @return ResultVO
+     */
+    ResultVO<String> changeComment(Comments comments);
+
+    /**
+     * 删除评论
+     * @param commentId 评论id
+     * @return ResultVO
+     */
+    ResultVO<String> delComment(Integer commentId);
 
     /**
      * 获取评论

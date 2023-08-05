@@ -4,6 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ikun.eduproject.dao.CommentsDao">
     <resultMap id="commentMap" type="com.ikun.eduproject.vo.CommentsVO">
+        <result property="commentsId" column="comment_id"/>
         <result property="username" column="username"/>
         <result property="imageUrl" column="image_url"/>
         <result property="text" column="text"/>
@@ -17,7 +18,7 @@
     </insert>
     <!--按照课程id获取评论-->
     <select id="selectByCourseId" resultMap="commentMap">
-        select u.image_url, u.username, c.text, c.stars, c.time
+        select c.comment_id, u.image_url, u.username, c.text, c.stars, c.time
         from comments c
                  join user u on c.user_id = u.user_id
         where c.course_id = #{courseId}
@@ -35,4 +36,24 @@
         from comments
         where course_id = #{courseId};
     </select>
+    <!--根据用户id和课程id获取评论id-->
+    <select id="selectByUidAndCid" resultType="java.lang.Integer">
+        select comment_id
+        from comments
+        where user_id = #{userId}
+          and course_id = #{courseId};
+    </select>
+    <!--根据评论id更新评论-->
+    <update id="updateCommentById" parameterType="com.ikun.eduproject.pojo.Comments">
+        update comments
+        set text=#{text},
+            stars=#{stars}
+        where comment_id = #{commentsId};
+    </update>
+    <!--根据评论id删除评论-->
+    <delete id="deleteCommentByid">
+        delete
+        from comments
+        where comment_id = #{commentsId};
+    </delete>
 </mapper>

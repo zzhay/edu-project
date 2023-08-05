@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -23,11 +24,9 @@ public class Comments implements Serializable {
     private Integer commentsId;
 
     @ApiModelProperty(dataType = "Integer",required = true,value = "用户id")
-    @NotNull
     private Integer userId;
 
     @ApiModelProperty(dataType = "Integer",required = true,value = "课程id")
-    @NotNull
     private Integer courseId;
 
     @ApiModelProperty(dataType = "String",required = true,value = "评论内容")

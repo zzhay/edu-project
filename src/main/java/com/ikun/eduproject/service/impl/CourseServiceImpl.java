@@ -17,6 +17,7 @@ import com.ikun.eduproject.vo.EmailMsgVO;
 import com.ikun.eduproject.vo.GetCourseCheckedVO;
 import com.ikun.eduproject.vo.ResultVO;
 import com.ikun.eduproject.vo.StatusVO;
+import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.common.lucene.search.function.CombineFunction;
 import org.elasticsearch.index.query.Operator;
@@ -47,6 +48,7 @@ import java.util.stream.Collectors;
  * CourseServiceImpl是课程相关功能的Service实现类。
  * 提供了课程管理等相关功能的具体实现。
  */
+@Slf4j
 @Service
 public class CourseServiceImpl implements CourseService {
     @Autowired
@@ -190,7 +192,7 @@ public class CourseServiceImpl implements CourseService {
         try {
             //下架课程审核版本
             int i1 = courseAuditDao.updateStatu(courseId);
-            if (i1 < 0) {
+            if (i1 <= 0) {
                 //修改失败抛出异常，事务回滚
                 throw new ChangeCourseStatuException("课程下架失败");
             } else {
@@ -343,37 +345,38 @@ public class CourseServiceImpl implements CourseService {
         String email = courseDao.selectEmailByCourseId(courseId);
         Course courseAudit = courseAuditDao.selectByCoursrId(courseId);
         if (checked == 1) {
+            //获取原图片和附件url
+            Course course = courseDao.selectByCourseId(courseId);
+            String imageUrl = course.getImageUrl();
+            String contentUrl = course.getContentUrl();
+            //比较url是否相同，不同则删除原url
+            if (!Objects.equals(imageUrl, courseAudit.getImageUrl())) {
+                aliOSSUtils.deleteImageByUrl(imageUrl);
+            }
+            if (!Objects.equals(contentUrl, courseAudit.getContentUrl())) {
+                aliOSSUtils.deleteImageByUrl(contentUrl);
+            }
+            courseAudit.setStatu(1);
+            courseAudit.setChecked(1);
             try {
-                //获取原图片和附件url
-                Course course = courseDao.selectByCourseId(courseId);
-                String imageUrl = course.getImageUrl();
-                String contentUrl = course.getContentUrl();
-                //比较url是否相同，不同则删除原url
-                if (!Objects.equals(imageUrl, courseAudit.getImageUrl())) {
-                    aliOSSUtils.deleteImageByUrl(imageUrl);
-                }
-                if (!Objects.equals(contentUrl, courseAudit.getContentUrl())) {
-                    aliOSSUtils.deleteImageByUrl(contentUrl);
-                }
-                courseAudit.setStatu(1);
-                courseAudit.setChecked(1);
                 int i = courseDao.updateCourse(courseAudit);
-                if (i < 0) {
+                if (i <= 0) {
                     throw new UpdateCourseException("课程更新失败");
                 }
-                // 审核通过时，添加课程到Elasticsearch
-                //将Course类对象转换为ElasticsearchCourse对象
-                ElasticsearchCourse esCourse = ElasticsearchCourse.fromCourse(courseAudit);
-                //设置subCategory
-                String category = subjectDao.selectSubCategoryBySubName(courseAudit.getSubName());
-                esCourse.setSubCategory(category);
-                esCourseRepository.save(esCourse);
-                //发送邮件通知
-                emailUtil.sendMessage(email, EmailMsgVO.COURSE,EmailMsgVO.coursePassed(courseAudit.getName()));
-                return new ResultVO<>(StatusVO.UPDATE_OK, "审核成功", null);
             } catch (UpdateCourseException e) {
                 return new ResultVO<>(StatusVO.UPDATE_NO, "审核失败", null);
             }
+            // 审核通过时，添加课程到Elasticsearch
+            //将Course类对象转换为ElasticsearchCourse对象
+            ElasticsearchCourse esCourse = ElasticsearchCourse.fromCourse(courseAudit);
+            //设置subCategory
+            String category = subjectDao.selectSubCategoryBySubName(courseAudit.getSubName());
+            esCourse.setSubCategory(category);
+            esCourse.setSearchFrequency(0);
+            esCourseRepository.save(esCourse);
+            //发送邮件通知
+            emailUtil.sendMessage(email, EmailMsgVO.COURSE,EmailMsgVO.coursePassed(courseAudit.getName()));
+            return new ResultVO<>(StatusVO.UPDATE_OK, "审核成功", null);
         }
         if (checked == 2) {
             //发送邮件通知

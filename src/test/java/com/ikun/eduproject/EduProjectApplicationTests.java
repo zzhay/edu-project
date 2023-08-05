@@ -3,17 +3,30 @@ package com.ikun.eduproject;
 import com.ikun.eduproject.dao.*;
 import com.ikun.eduproject.es.EsCourseRepository;
 import com.ikun.eduproject.pojo.Assignments;
+import com.ikun.eduproject.pojo.ElasticsearchCourse;
 import com.ikun.eduproject.utils.AliOSSUtils;
 import com.ikun.eduproject.utils.EmailUtil;
 import com.ikun.eduproject.utils.RedisUtil;
 import com.ikun.eduproject.utils.SensitivewordFilter;
+import org.elasticsearch.common.lucene.search.function.FunctionScoreQuery;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.functionscore.FunctionScoreQueryBuilder;
+import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilder;
+import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders;
+import org.elasticsearch.search.sort.ScoreSortBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @SpringBootTest
 class EduProjectApplicationTests {
@@ -45,7 +58,7 @@ class EduProjectApplicationTests {
 
     @Test
     void contextLoads() {
-        System.out.println(subjectDao.selectSubCategoryBySubName("经济思想史"));
+
     }
 
 

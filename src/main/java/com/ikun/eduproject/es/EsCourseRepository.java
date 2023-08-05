@@ -1,7 +1,6 @@
 package com.ikun.eduproject.es;
 
 import com.ikun.eduproject.pojo.ElasticsearchCourse;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.annotations.Query;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.stereotype.Repository;
@@ -86,5 +85,6 @@ public interface EsCourseRepository extends ElasticsearchRepository<Elasticsearc
      * @return List
      */
     List<ElasticsearchCourse> findBySubNameOrderByPriceDesc(String subName);
+
 
 }

@@ -34,7 +34,6 @@ public class User implements Serializable {
     private String password;
 
     @ApiModelProperty(dataType = "int",required = true,value = "角色（（0：管理员，1：老师，2：学生））")
-    @NotBlank(message = "角色不能为空")
     private Integer role;
 
     @ApiModelProperty(dataType = "String",required = false,value = "头像url")

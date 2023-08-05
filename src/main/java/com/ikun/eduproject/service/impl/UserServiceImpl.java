@@ -2,6 +2,7 @@ package com.ikun.eduproject.service.impl;
 
 import com.ikun.eduproject.dao.UserDao;
 import com.ikun.eduproject.error.AliOSSDeleteException;
+import com.ikun.eduproject.error.EmailException;
 import com.ikun.eduproject.pojo.User;
 import com.ikun.eduproject.service.UserService;
 import com.ikun.eduproject.utils.*;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSendException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.List;
 import java.util.Objects;
@@ -41,6 +43,8 @@ public class UserServiceImpl implements UserService {
      * @return ResultVO
      */
     @Override
+    @ExceptionHandler(EmailException.class)
+    @Transactional(rollbackFor = MailSendException.class)
     public ResultVO<String> regist(User user) {
         if (StringUtils.isBlank(user.getUsername()) ||
                 StringUtils.isBlank(user.getPassword()) ||
@@ -68,7 +72,7 @@ public class UserServiceImpl implements UserService {
                     emailUtil.sendMessage(user.getEmail(), EmailMsgVO.REGIST, EmailMsgVO.registStuMsg(user.getUsername()));
                 }
             } catch (MailSendException e) {
-                return new ResultVO<>(StatusVO.EMALI_NO, "邮箱异常", null);
+                throw new EmailException("邮箱异常");
             }
             return new ResultVO<>(StatusVO.REGIST_OK, "注册成功", null);
         } else {
@@ -324,6 +328,12 @@ public class UserServiceImpl implements UserService {
         } else {
             return new ResultVO<>(StatusVO.CAPTCHA_NO, "验证码错误", null);
         }
+    }
+
+    @Override
+    public ResultVO<User> getByUserId(Integer userId) {
+        User user = userDao.selectByUserId(userId);
+        return new ResultVO<>(StatusVO.SELECT_OK,"获取成功", user);
     }
 
 
