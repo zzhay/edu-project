@@ -33,14 +33,14 @@ public class StuCoursesController {
         return stuCoursesService.buyCourse(studentCourse);
     }
 
-    @ApiOperation("验证密码")
+    @ApiOperation("购买时验证密码")
     @PostMapping("/checkPwd")
     public ResultVO<String> checkPwd(@RequestBody @Valid LoginVO loginVO) {
         return stuCoursesService.checkPwd(loginVO);
     }
 
     @ApiOperation("显示所购买的课程")
-    @PostMapping("/getOwnCourse")
+    @GetMapping("/getOwnCourse")
     public ResultVO<List<Course>> getOwnCourse(@RequestParam @NotNull(message = "用户id不能为空") Integer userId) {
         return stuCoursesService.getOwnCourse(userId);
     }

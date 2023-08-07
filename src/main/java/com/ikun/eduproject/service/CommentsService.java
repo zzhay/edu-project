@@ -51,5 +51,5 @@ public interface CommentsService {
      * @param courseId 课程id
      * @return ResultVO
      */
-    ResultVO<Map<String, Integer>> getCourseRatingSummary(Integer courseId);
+    ResultVO<Map<String, String>> getCourseRatingSummary(Integer courseId);
 }

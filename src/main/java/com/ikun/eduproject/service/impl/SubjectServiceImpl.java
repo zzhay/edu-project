@@ -30,10 +30,14 @@ public class SubjectServiceImpl implements SubjectService {
      */
     @Override
     public ResultVO getAll() {
+        //查出所有学科类别信息
         List<Subject> subjects = subjectDao.selectAll();
+        //封装到map中
         Map<String, List<String>> categoryMap = new HashMap<>();
         for (Subject subject : subjects) {
+            //学科名
             String subName = subject.getSubName();
+            //学科类别
             String subCategory = subject.getSubCategory();
             if (!categoryMap.containsKey(subCategory)) {
                 categoryMap.put(subCategory, new ArrayList<>());

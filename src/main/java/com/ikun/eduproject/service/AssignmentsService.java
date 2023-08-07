@@ -61,4 +61,11 @@ public interface AssignmentsService {
      * @return ResultVO
      */
     ResultVO<Assignments> getByCourseId(Integer userId,Integer courseId);
+
+    /**
+     * 学生更新作业
+     * @param assignments 作业
+     * @return ResultVO
+     */
+    ResultVO<String> updateAssignment(Assignments assignments);
 }

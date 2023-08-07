@@ -4,18 +4,6 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ikun.eduproject.dao.CourseDao">
 
-    <resultMap id="GetCourseChecked" type="com.ikun.eduproject.vo.GetCourseCheckedVO">
-        <id property="courseId" column="course_id"/>
-        <result property="username" column="username"/>
-        <result property="name" column="name"/>
-        <result property="author" column="author"/>
-        <result property="price" column="price"/>
-        <result property="description" column="description"/>
-        <result property="subName" column="sub_name"/>
-        <result property="imageUrl" column="image_url"/>
-        <result property="contentUrl" column="content_url"/>
-        <result property="updateTime" column="update_time"/>
-    </resultMap>
     <!--添加课程-->
     <insert id="insertCourse" parameterType="com.ikun.eduproject.pojo.Course">
         insert into course(user_id, name, author, price, description, sub_name, image_url, content_url)

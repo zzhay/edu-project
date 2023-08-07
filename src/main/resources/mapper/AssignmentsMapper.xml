@@ -3,19 +3,12 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ikun.eduproject.dao.AssignmentsDao">
-    <resultMap id="AssignmentMap" type="com.ikun.eduproject.vo.AssignmentVO">
-        <id property="assignmentId" column="assignment_id"/>
-        <result property="username" column="username"/>
-        <result property="assignmentUrl" column="assignment_url"/>
-        <result property="courseId" column="course_id"/>
-        <result property="credit" column="credit"/>
-        <result property="time" column="time"/>
-    </resultMap>
     <resultMap id="AssignmentNumMap" type="com.ikun.eduproject.vo.AssignmentNumVO">
         <id property="courseId" column="course_id"/>
         <result property="name" column="name"/>
-        <result property="num" column="ungraded_assignments_count"/>
+        <result property="num" column="num_of_assignments"/>
     </resultMap>
+
     <!--根据课程id查作业-->
     <select id="selectByCourseId" resultType="com.ikun.eduproject.pojo.Assignments">
         select *
@@ -33,18 +26,23 @@
         insert into assignments(user_id, course_id, assignment_url)
         values (#{userId}, #{courseId}, #{assignmentUrl});
     </insert>
-    <!--根据学生id和课程id查询作业id-->
+    <!--根据学生id和课程id查询作业-->
     <select id="selectByUidAndCid" resultType="com.ikun.eduproject.pojo.Assignments">
         select *
         from assignments
         where user_id = #{userId}
           and course_id = #{courseId};
     </select>
-    <!--更新作业-->
-    <update id="updateAssignment">
+    <!--更新作业状态-->
+    <update id="updateAssignmentStatu">
         update assignments
-        set credit=#{credit}
-            and statu = 1
+        set credit=#{credit},statu = 1
+        where assignment_id = #{assignmentId};
+    </update>
+    <!--更新作业-->
+    <update id="updateAssignment" parameterType="com.ikun.eduproject.pojo.Assignments">
+        update assignments
+        set assignment_url=#{assignmentUrl}
         where assignment_id = #{assignmentId};
     </update>
     <!--根据课程id获取未批改作业-->
@@ -53,7 +51,7 @@
         from assignments a
                  join user u on a.user_id = u.user_id
         where course_id = #{courseId}
-          and statu = 0;
+          and a.statu = 0;
     </select>
     <!--根据课程id获取已批改作业-->
     <select id="selectByCourseIdOK" resultType="com.ikun.eduproject.vo.AssignmentVO">
@@ -61,15 +59,21 @@
         from assignments a
                  join user u on a.user_id = u.user_id
         where course_id = #{courseId}
-          and statu = 1;
+          and a.statu = 1;
     </select>
     <!--根据用户id查看未审批作业数量-->
-    <select id="selectNumByUserId" resultType="com.ikun.eduproject.vo.AssignmentNumVO">
-        select c.course_id, c.name, count(a.assignment_id) as ungraded_assignments_count
-        from course c
-                 left join assignments a on c.course_id = a.course_id and c.user_id = a.user_id
-        where c.user_id = #{userId}
+    <select id="selectNumByUserId" resultMap="AssignmentNumMap">
+        SELECT
+            c.course_id,
+            c.name,
+            COUNT(a.assignment_id) AS num_of_assignments
+        FROM
+            course c
+                LEFT JOIN assignments a ON c.course_id = a.course_id
+        WHERE
+            c.user_id = #{userId}
           and a.statu = 0
-        group by c.course_id, c.name;
+        GROUP BY
+            c.course_id, c.name;
     </select>
 </mapper>

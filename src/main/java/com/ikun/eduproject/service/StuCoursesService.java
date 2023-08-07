@@ -23,7 +23,7 @@ public interface StuCoursesService {
     ResultVO<String> buyCourse(StudentCourse studentCourse);
 
     /**
-     * 验证密码
+     * 购买时验证密码
      * @param loginVO 登录信息
      * @return ResultVO
      */

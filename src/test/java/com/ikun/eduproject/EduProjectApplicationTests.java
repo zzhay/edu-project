@@ -4,10 +4,8 @@ import com.ikun.eduproject.dao.*;
 import com.ikun.eduproject.es.EsCourseRepository;
 import com.ikun.eduproject.pojo.Assignments;
 import com.ikun.eduproject.pojo.ElasticsearchCourse;
-import com.ikun.eduproject.utils.AliOSSUtils;
-import com.ikun.eduproject.utils.EmailUtil;
-import com.ikun.eduproject.utils.RedisUtil;
-import com.ikun.eduproject.utils.SensitivewordFilter;
+import com.ikun.eduproject.utils.*;
+import com.ikun.eduproject.vo.AssignmentNumVO;
 import org.elasticsearch.common.lucene.search.function.FunctionScoreQuery;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.functionscore.FunctionScoreQueryBuilder;
@@ -24,6 +22,7 @@ import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -58,7 +57,7 @@ class EduProjectApplicationTests {
 
     @Test
     void contextLoads() {
-
+        assignmentsDao.updateAssignmentStatu(1, new BigDecimal(2));
     }
 
 

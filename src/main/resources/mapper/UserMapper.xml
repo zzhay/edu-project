@@ -49,7 +49,7 @@
         select username, phone, email, statu
         from user
         where role = 1
-          and statu in (0,1);
+          and statu in (0, 1);
     </select>
     <!--查出所有待审核老师-->
     <select id="selectTeacherNo" resultType="com.ikun.eduproject.pojo.User">
@@ -90,7 +90,7 @@
     </delete>
     <!--按照用户id查看-->
     <select id="selectByUserId" resultType="com.ikun.eduproject.pojo.User">
-        select username,email,credit
+        select username, email,image_url, credit
         from user
         where user_id = #{userId};
     </select>
@@ -99,6 +99,7 @@
     <update id="updateCreditByUserId">
         update user
         set credit=#{credit}
+            and statu = 1
         where user_id = #{userId};
     </update>
 </mapper>

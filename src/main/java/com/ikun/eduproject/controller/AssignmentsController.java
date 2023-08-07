@@ -60,4 +60,11 @@ public class AssignmentsController {
                                   @RequestParam("courseId") @NotNull Integer courseId) {
         return assignmentsService.getByCourseId(userId, courseId);
     }
+
+    @ApiOperation("学生更新作业")
+    @PostMapping("/updateAssignment")
+    public ResultVO updateAssignment(@RequestBody @Valid Assignments assignments) {
+        return assignmentsService.updateAssignment(assignments);
+    }
+
 }

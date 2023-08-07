@@ -99,7 +99,7 @@ public interface UserDao {
     int deleteByUsername(String username);
 
     /**
-     * 按照用户id查看学分
+     * 按照用户id查看
      * @param userId 用户id
      * @return User
      */

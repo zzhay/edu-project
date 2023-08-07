@@ -23,7 +23,7 @@ public class AssignmentVO implements Serializable {
     private Integer assignmentId;
 
     @ApiModelProperty("用户名")
-    private Integer username;
+    private String username;
 
     @ApiModelProperty("课程id")
     private Integer courseId;

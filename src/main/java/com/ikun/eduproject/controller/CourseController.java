@@ -99,7 +99,7 @@ public class CourseController {
     @PostMapping("/updateChecked")
     public ResultVO updateChecked(@RequestParam("courseId") @NotNull(message = "课程id不能为空") Integer courseId,
                                   @RequestParam("checked") @NotNull(message = "审核状态不能为空") Integer checked,
-                                  @RequestParam("reason") String reason) {
+                                  @RequestParam("reason") @NotNull(message = "理由不能为空")String reason) {
         ResultVO result = courseService.updateChecked(courseId, checked, reason);
         return result;
     }

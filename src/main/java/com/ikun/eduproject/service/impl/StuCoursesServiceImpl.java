@@ -51,7 +51,7 @@ public class StuCoursesServiceImpl implements StuCoursesService {
     @Override
     @Transactional(rollbackFor = UpdateCreditException.class)
     public ResultVO<String> buyCourse(StudentCourse studentCourse) {
-        //判断是否已经购买过
+        //判断是否已经购买
         Integer i = stuCoursesDao.selectByUidAndCid(studentCourse.getUserId(), studentCourse.getCourseId());
         if (i != null) {
             return new ResultVO<>(StatusVO.INSERT_NO, "已购买过该课程", null);
@@ -69,7 +69,7 @@ public class StuCoursesServiceImpl implements StuCoursesService {
         if (integer <= 0) {
             return new ResultVO<>(StatusVO.UPDATE_NO, "购买失败", null);
         }
-        //购买后的学分
+        //学生购买后的学分
         BigDecimal subtract = user.getCredit().subtract(price);
         //更新学分
         try {
@@ -80,22 +80,25 @@ public class StuCoursesServiceImpl implements StuCoursesService {
         } catch (UpdateCreditException e) {
             return new ResultVO<>(StatusVO.UPDATE_NO, "购买失败", null);
         }
-        //发送邮件通知
+        //获取课程名
         String name = courseDao.selectByCourseId(studentCourse.getCourseId()).getName();
+        //发送邮件通知
         emailUtil.sendMessage(user.getEmail(), EmailMsgVO.BUYCOURSE, EmailMsgVO.buyCourse(user.getUsername(), name));
         return new ResultVO<>(StatusVO.UPDATE_OK, "购买成功", null);
 
     }
 
     /**
-     * 验证密码
+     * 购买时验证密码
      *
      * @param loginVO 登录信息
      * @return ResultVO
      */
     @Override
     public ResultVO<String> checkPwd(LoginVO loginVO) {
+        //根据用户名获取用户信息
         User user = userDao.selectByUsername(loginVO.getUsername());
+        //验证密码是否相同
         String md5 = MD5Utils.md5(loginVO.getPassword());
         if (Objects.equals(md5, user.getPassword())) {
             return new ResultVO<>(StatusVO.SELECT_OK, "密码正确", null);

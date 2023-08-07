@@ -19,6 +19,8 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @ApiModel(value = "学生拥有课程对象",description = "学生拥有课程信息")
 public class StudentCourse implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @ApiModelProperty(dataType = "Integer",required = false,value = "学生课程id")
     private Integer stuCourseId;
 

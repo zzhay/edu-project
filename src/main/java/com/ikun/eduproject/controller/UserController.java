@@ -2,15 +2,22 @@ package com.ikun.eduproject.controller;
 
 import com.ikun.eduproject.pojo.User;
 import com.ikun.eduproject.service.UserService;
+import com.ikun.eduproject.utils.RedisUtil;
 import com.ikun.eduproject.vo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import jdk.nashorn.internal.parser.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author zzhay
@@ -46,7 +53,7 @@ public class UserController {
      */
     @ApiOperation("登录接口")
     @PostMapping("/login")
-    public ResultVO<User> login(@RequestBody @Valid LoginVO loginVO) {
+    public ResultVO<Map<String, Object>> login(@RequestBody @Valid LoginVO loginVO) {
         return userService.login(loginVO.getUsername(), loginVO.getPassword());
     }
 
@@ -181,6 +188,18 @@ public class UserController {
     @PostMapping("/getUser")
     public ResultVO<User> getUser(@RequestParam("userId") @NotNull(message = "用户id不能为空") Integer userId) {
         return userService.getByUserId(userId);
+    }
+
+    /**
+     * 登出
+     * @param request
+     * @return
+     */
+    @ApiOperation("登出")
+    @PostMapping("/logOut")
+    public ResultVO<String> logOut(HttpServletRequest request) {
+        String token = request.getHeader("token");
+        return userService.logOut(token);
     }
 
 }

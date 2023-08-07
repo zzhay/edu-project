@@ -21,7 +21,7 @@ public class AssignmentNumVO implements Serializable {
     private Integer courseId;
 
     @ApiModelProperty("课程名")
-    private Integer name;
+    private String name;
 
     @ApiModelProperty("数量")
     private Integer num;

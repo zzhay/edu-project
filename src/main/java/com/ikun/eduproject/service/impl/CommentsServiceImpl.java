@@ -108,14 +108,22 @@ public class CommentsServiceImpl implements CommentsService {
      * @return ResultVO
      */
     @Override
-    public ResultVO<Map<String, Integer>> getCourseRatingSummary(Integer courseId) {
+    public ResultVO<Map<String, String>> getCourseRatingSummary(Integer courseId) {
         Double avgStars = commentsDao.selectAVGStarsByCourseId(courseId);
+        if (avgStars == null) {
+            return new ResultVO<>(StatusVO.SELECT_OK, "获取成功", new HashMap<String, String>(2) {
+                {
+                    put("avgStars", "0");
+                    put("num", "0");
+                }
+            });
+        }
         //格式化，只保留一位小数
         DecimalFormat decimalFormat = new DecimalFormat("#.#");
-        Integer format = Integer.valueOf(decimalFormat.format(avgStars));
+        String format = decimalFormat.format((double)avgStars);
         //总评论数
-        Integer num = commentsDao.selectNumByCourseId(courseId);
-        Map<String, Integer> map = new HashMap<>();
+        String num = String.valueOf(commentsDao.selectNumByCourseId(courseId));
+        Map<String, String> map = new HashMap<>(2);
         map.put("avgStars", format);
         map.put("num", num);
         return new ResultVO<>(StatusVO.SELECT_OK, "获取成功", map);

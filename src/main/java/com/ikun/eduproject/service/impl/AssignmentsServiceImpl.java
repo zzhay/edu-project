@@ -2,15 +2,18 @@ package com.ikun.eduproject.service.impl;
 
 import com.ikun.eduproject.dao.AssignmentsDao;
 import com.ikun.eduproject.dao.UserDao;
+import com.ikun.eduproject.error.AliOSSDeleteException;
 import com.ikun.eduproject.error.UpdateCreditException;
 import com.ikun.eduproject.pojo.Assignments;
 import com.ikun.eduproject.service.AssignmentsService;
+import com.ikun.eduproject.utils.AliOSSUtils;
 import com.ikun.eduproject.vo.AssignmentNumVO;
 import com.ikun.eduproject.vo.AssignmentVO;
 import com.ikun.eduproject.vo.ResultVO;
 import com.ikun.eduproject.vo.StatusVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -27,6 +30,9 @@ public class AssignmentsServiceImpl implements AssignmentsService {
     private AssignmentsDao assignmentsDao;
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private AliOSSUtils aliOSSUtils;
 
     /**
      * 提交作业
@@ -57,9 +63,10 @@ public class AssignmentsServiceImpl implements AssignmentsService {
      * @return ResultVO
      */
     @Override
+    @Transactional
     public ResultVO<String> correctingAssignments(Integer assignmentId, BigDecimal credit) {
         //更新作业
-        int i = assignmentsDao.updateAssignment(assignmentId, credit);
+        int i = assignmentsDao.updateAssignmentStatu(assignmentId, credit);
         if (i <= 0) {
             return new ResultVO<>(StatusVO.UPDATE_NO, "批改失败", null);
         }
@@ -124,5 +131,37 @@ public class AssignmentsServiceImpl implements AssignmentsService {
     public ResultVO<Assignments> getByCourseId(Integer userId, Integer courseId) {
         Assignments assignments = assignmentsDao.selectByUidAndCid(userId, courseId);
         return new ResultVO<>(StatusVO.SELECT_OK, "获取成功", assignments);
+    }
+
+    /**
+     * 学生更新作业
+     * @param assignments 作业
+     * @return ResultVO
+     */
+    @Override
+    public ResultVO<String> updateAssignment(Assignments assignments) {
+        //查出原作业信息
+        Assignments assignments1 = assignmentsDao.selectByUidAndCid(assignments.getUserId(), assignments.getCourseId());
+        //判断作业是否批改
+        if (assignments1.getStatu().equals(1)) {
+            return new ResultVO<>(StatusVO.UPDATE_NO, "作业已批改，无法修改", null);
+        }
+        //更新作业
+        assignments.setAssignmentId(assignments1.getAssignmentId());
+        int i = assignmentsDao.updateAssignment(assignments);
+        if (i <= 0) {
+            return new ResultVO<>(StatusVO.UPDATE_NO, "修改失败", null);
+        }
+        try {
+            //删除aliOSS中原文件
+            boolean b = aliOSSUtils.deleteImageByUrl(assignments1.getAssignmentUrl());
+            if (!b) {
+                throw new AliOSSDeleteException("原文件删除失败");
+            }
+        } catch (AliOSSDeleteException e) {
+            return new ResultVO<>(StatusVO.UPDATE_NO, "修改失败", null);
+        }
+        return new ResultVO<>(StatusVO.UPDATE_OK, "修改成功", null);
+
     }
 }

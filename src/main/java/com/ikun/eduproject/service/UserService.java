@@ -1,11 +1,13 @@
 package com.ikun.eduproject.service;
 
 import com.ikun.eduproject.pojo.User;
+import com.ikun.eduproject.utils.TokenUtil;
 import com.ikun.eduproject.vo.ChangeInfoVO;
 import com.ikun.eduproject.vo.ChangePwdVO;
 import com.ikun.eduproject.vo.ResultVO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author zzhay
@@ -30,7 +32,7 @@ public interface UserService {
      * @param password 密码
      * @return ResultVO
      */
-    ResultVO<User> login(String username, String password);
+    ResultVO<Map<String, Object>> login(String username, String password);
 
     /**
      * 更新基础信息
@@ -117,5 +119,13 @@ public interface UserService {
      * @return
      */
     ResultVO<User> getByUserId(Integer userId);
+
+    /**
+     * 登出
+     * @param token
+     * @return
+     */
+    ResultVO<String> logOut(String token);
+
 
 }

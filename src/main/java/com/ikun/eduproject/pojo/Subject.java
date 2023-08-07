@@ -17,6 +17,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @ApiModel(value = "学科对象",description = "学科分类信息")
 public class Subject implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @ApiModelProperty(dataType = "Integer",required = false,value = "学科id")
     private Integer subId;
 

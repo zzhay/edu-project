@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -21,16 +22,21 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @ApiModel(value = "作业对象",description = "作业信息")
 public class Assignments implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @ApiModelProperty(dataType = "Integer",required = false,value = "作业id")
     private Integer assignmentId;
 
     @ApiModelProperty(dataType = "Integer",required = true,value = "学生id")
+    @NotNull
     private Integer userId;
 
     @ApiModelProperty(dataType = "Integer",required = true,value = "课程id")
+    @NotNull
     private Integer courseId;
 
     @ApiModelProperty(dataType = "String",required = true,value = "作业url")
+    @NotNull
     private String assignmentUrl;
 
     @ApiModelProperty(dataType = "BigDecimal", required = false, value = "获得的kun分")

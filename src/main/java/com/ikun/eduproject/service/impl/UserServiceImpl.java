@@ -14,7 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -46,11 +48,6 @@ public class UserServiceImpl implements UserService {
     @ExceptionHandler(EmailException.class)
     @Transactional(rollbackFor = MailSendException.class)
     public ResultVO<String> regist(User user) {
-        if (StringUtils.isBlank(user.getUsername()) ||
-                StringUtils.isBlank(user.getPassword()) ||
-                StringUtils.isBlank(user.getEmail())) {
-            return new ResultVO<>(StatusVO.REGIST_NO, "信息不完整", null);
-        }
         //判断用户名是否已注册
         if (userDao.selectByUsername(user.getUsername()) != null) {
             return new ResultVO<>(StatusVO.REGIST_NO, "用户名已被注册", null);
@@ -88,11 +85,8 @@ public class UserServiceImpl implements UserService {
      * @return ResultVO
      */
     @Override
-    public ResultVO<User> login(String username, String password) {
-        //判断为空
-        if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
-            return new ResultVO<>(StatusVO.LOGIN_NO, "用户名或密码为空", null);
-        }
+    public ResultVO<Map<String, Object>> login(String username, String password) {
+        //根据用户名查询用户信息
         User user = userDao.selectByUsername(username);
         if (user == null) {
             return new ResultVO<>(StatusVO.LOGIN_NO, "用户不存在", null);
@@ -104,7 +98,13 @@ public class UserServiceImpl implements UserService {
             if (user.getStatu() == 0) {
                 return new ResultVO<>(StatusVO.LOGIN_NO_STATU, "账号已被锁定，详情请联系管理员", null);
             } else if (user.getStatu() == 1) {
-                return new ResultVO<>(StatusVO.LOGIN_OK, "登录成功", user);
+                //生成token并存入redis
+                String token = TokenUtil.generateToken(username);
+                redisUtil.setCacheObject(token, user, 6, TimeUnit.HOURS);
+                Map<String, Object> responseData = new HashMap<>(2);
+                responseData.put("token", token);
+                responseData.put("user", user);
+                return new ResultVO<>(StatusVO.LOGIN_OK, "登录成功", responseData);
             } else {
                 return new ResultVO<>(StatusVO.LOGIN_NO_STATU, "账号审核中", null);
             }
@@ -137,10 +137,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public ResultVO<String> updatePassword(ChangePwdVO changePwdVO) {
-        //判读为空
-        if (StringUtils.isBlank(changePwdVO.getNewPwd())) {
-            return new ResultVO<>(StatusVO.PARAM_NULL, "密码不能为空", null);
-        }
+        //根据邮箱查询用户信息
         User user1 = userDao.selectByEmail(changePwdVO.getEmail());
         //判断新密码是否与原密码相同
         String md5Pwd1 = MD5Utils.md5(changePwdVO.getNewPwd());
@@ -167,11 +164,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResultVO<List<User>> getStudent() {
         List<User> users = userDao.selectStudent();
-        if (users.isEmpty()) {
-            return new ResultVO<>(StatusVO.SELECT_NO, "查询失败", null);
-        } else {
-            return new ResultVO<>(StatusVO.SELECT_OK, "查询成功", users);
-        }
+        return new ResultVO<>(StatusVO.SELECT_NO, "查询失败", null);
+
     }
 
     /**
@@ -205,24 +199,21 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public ResultVO<String> updateStatu(String username, Integer statu) {
-
-        if (username == null || statu == null) {
-            return new ResultVO<>(StatusVO.UPDATE_NO, "参数错误", null);
-        } else {
+        int i = userDao.updateStatu(username, statu);
+        if (i > 0) {
+            //查询出用户信息
             User user = userDao.selectByUsername(username);
-            int i = userDao.updateStatu(username, statu);
-            if (i > 0) {
-                //账号解冻
-                if (statu == 1) {
-                    emailUtil.sendMessage(user.getEmail(), EmailMsgVO.ACCOUNT, EmailMsgVO.accountMsg1(username));
-                } else {
-                    emailUtil.sendMessage(user.getEmail(), EmailMsgVO.ACCOUNT, EmailMsgVO.accountMsg0(username));
-                }
-                return new ResultVO<>(StatusVO.UPDATE_OK, "更新成功", null);
+            //根据账号变更情况发送不同邮件
+            if (statu == 1) {
+                emailUtil.sendMessage(user.getEmail(), EmailMsgVO.ACCOUNT, EmailMsgVO.accountMsg1(username));
             } else {
-                return new ResultVO<>(StatusVO.UPDATE_NO, "更新失败", null);
+                emailUtil.sendMessage(user.getEmail(), EmailMsgVO.ACCOUNT, EmailMsgVO.accountMsg0(username));
             }
+            return new ResultVO<>(StatusVO.UPDATE_OK, "更新成功", null);
+        } else {
+            return new ResultVO<>(StatusVO.UPDATE_NO, "更新失败", null);
         }
+
     }
 
     /**
@@ -235,12 +226,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResultVO<String> checkTeacher(String username, Integer statu) {
         User user = userDao.selectByUsername(username);
-        //statu=3，说明审核未通过，删除用户
         if (statu == 3) {
+            //statu=3，说明审核未通过，删除用户
             userDao.deleteByUsername(username);
+            //发送邮件通知
             emailUtil.sendMessage(user.getEmail(), EmailMsgVO.REGIST, EmailMsgVO.registNoTeaMsg(username));
             return new ResultVO<>(StatusVO.UPDATE_OK, null, null);
         } else {
+            //审核通过
             int i = userDao.updateStatu(username, statu);
             if (i > 0) {
                 //更新成功，发送邮件
@@ -267,6 +260,7 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             return new ResultVO<>(StatusVO.UPDATE_NO, "用户不存在", null);
         }
+        //获取原头像url
         String imageUrl = user.getImageUrl();
         int i = userDao.updateImage(username, url);
         if (i > 0) {
@@ -297,14 +291,14 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public ResultVO<String> getCaptcha(String email) {
-        if (email == null) {
-            return new ResultVO<>(StatusVO.EMALI_NO, "邮箱不能为空", null);
-        }
         if (userDao.selectByEmail(email) == null) {
             return new ResultVO<>(StatusVO.EMALI_NO, "用户不存在", null);
         } else {
+            //生成验证码
             String captcha = GenerateCaptchaUtil.generateCaptcha();
+            //email作为key缓存验证码，设置5分钟有效期
             redisUtil.setCacheObject(email, captcha, 5, TimeUnit.MINUTES);
+            //邮件发送验证码
             emailUtil.sendMessage(email, EmailMsgVO.ACCOUNT, EmailMsgVO.accountMsg3(captcha));
             return new ResultVO<>(StatusVO.EMALI_OK, "邮件已发送", null);
         }
@@ -333,7 +327,25 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResultVO<User> getByUserId(Integer userId) {
         User user = userDao.selectByUserId(userId);
-        return new ResultVO<>(StatusVO.SELECT_OK,"获取成功", user);
+        return new ResultVO<>(StatusVO.SELECT_OK, "获取成功", user);
+    }
+
+    /**
+     * 登出
+     * @param token
+     * @return
+     */
+    @Override
+    public ResultVO<String> logOut(String token) {
+        if (token == null) {
+            return new ResultVO<>(StatusVO.UPDATE_NO, "注销失败", null);
+        }
+        boolean b = redisUtil.deleteObject(token);
+        if (b) {
+            return new ResultVO<>(StatusVO.UPDATE_OK, "注销成功", null);
+        } else {
+            return new ResultVO<>(StatusVO.UPDATE_NO, "注销失败", null);
+        }
     }
 
 

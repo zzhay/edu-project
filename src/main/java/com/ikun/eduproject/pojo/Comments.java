@@ -20,6 +20,8 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @ApiModel(value = "评论对象",description = "评论信息")
 public class Comments implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @ApiModelProperty(dataType = "Integer",required = false,value = "评论id")
     private Integer commentsId;
 
