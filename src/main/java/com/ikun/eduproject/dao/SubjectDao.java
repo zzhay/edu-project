@@ -13,10 +13,16 @@ import java.util.List;
 public interface SubjectDao {
     /**
      * 查询所有学科
-     * @return
+     *
+     * @return 学科类别集合
      */
     List<Subject> selectAll();
 
-    //根据学科名查询学科类别
+    /**
+     * 根据学科名查询学科类别
+     *
+     * @param subName 学科名
+     * @return 学科类别
+     */
     String selectSubCategoryBySubName(String subName);
 }

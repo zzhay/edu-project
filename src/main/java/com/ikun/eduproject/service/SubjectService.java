@@ -2,6 +2,9 @@ package com.ikun.eduproject.service;
 
 import com.ikun.eduproject.vo.ResultVO;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @Author zzhay
  * @Date 2023/7/28/028
@@ -11,7 +14,7 @@ import com.ikun.eduproject.vo.ResultVO;
 public interface SubjectService {
     /**
      * 获取所有学科
-     * @return
+     * @return ResultVO
      */
-    ResultVO getAll();
+    ResultVO<Map<String, List<String>>> getAll();
 }

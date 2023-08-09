@@ -16,6 +16,7 @@ public interface StuCoursesDao {
 
     /**
      * 添加学生课程信息
+     *
      * @param studentCourse 学生课程信息
      * @return int
      */
@@ -23,16 +24,18 @@ public interface StuCoursesDao {
 
     /**
      * 根据用户id和课程id查询
-     * @param userId 用户id
+     *
+     * @param userId   用户id
      * @param courseId 课程id
-     * @return int
+     * @return 学生的课程id
      */
     Integer selectByUidAndCid(@Param("userId") Integer userId, @Param("courseId") Integer courseId);
 
     /**
      * 按照用户id查询车购买的课程
+     *
      * @param userId 用户id
-     * @return List
+     * @return 课程集合
      */
     List<Course> selectByUid(Integer userId);
 }

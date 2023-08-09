@@ -1,7 +1,6 @@
 package com.ikun.eduproject.service;
 
 import com.ikun.eduproject.pojo.User;
-import com.ikun.eduproject.utils.TokenUtil;
 import com.ikun.eduproject.vo.ChangeInfoVO;
 import com.ikun.eduproject.vo.ChangePwdVO;
 import com.ikun.eduproject.vo.ResultVO;
@@ -115,15 +114,15 @@ public interface UserService {
 
     /**
      * 根据用户id获取用户信息
-     * @param userId
-     * @return
+     * @param userId 用户id
+     * @return ResultVO
      */
     ResultVO<User> getByUserId(Integer userId);
 
     /**
      * 登出
-     * @param token
-     * @return
+     * @param token token
+     * @return ResultVO
      */
     ResultVO<String> logOut(String token);
 

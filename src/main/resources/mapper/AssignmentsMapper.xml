@@ -33,7 +33,7 @@
         where user_id = #{userId}
           and course_id = #{courseId};
     </select>
-    <!--更新作业状态-->
+    <!--更新作业状态和学分-->
     <update id="updateAssignmentStatu">
         update assignments
         set credit=#{credit},statu = 1

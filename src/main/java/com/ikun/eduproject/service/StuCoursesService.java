@@ -4,7 +4,6 @@ import com.ikun.eduproject.pojo.Course;
 import com.ikun.eduproject.pojo.StudentCourse;
 import com.ikun.eduproject.vo.LoginVO;
 import com.ikun.eduproject.vo.ResultVO;
-import io.swagger.models.auth.In;
 
 import java.util.List;
 

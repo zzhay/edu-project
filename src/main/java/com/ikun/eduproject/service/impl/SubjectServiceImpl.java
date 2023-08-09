@@ -8,6 +8,7 @@ import com.ikun.eduproject.vo.StatusVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,15 +22,15 @@ import java.util.Map;
  */
 @Service
 public class SubjectServiceImpl implements SubjectService {
-    @Autowired
+    @Resource
     private SubjectDao subjectDao;
 
     /**
      * 获取所有学科
-     * @return
+     * @return ResultVO
      */
     @Override
-    public ResultVO getAll() {
+    public ResultVO<Map<String, List<String>>> getAll() {
         //查出所有学科类别信息
         List<Subject> subjects = subjectDao.selectAll();
         //封装到map中
@@ -44,6 +45,6 @@ public class SubjectServiceImpl implements SubjectService {
             }
             categoryMap.get(subCategory).add(subName);
         }
-        return new ResultVO(StatusVO.SELECT_OK, "查询成功", categoryMap);
+        return new ResultVO<>(StatusVO.SELECT_OK, "查询成功", categoryMap);
     }
 }

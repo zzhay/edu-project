@@ -6,15 +6,15 @@ import com.ikun.eduproject.error.AliOSSDeleteException;
 import com.ikun.eduproject.error.UpdateCreditException;
 import com.ikun.eduproject.pojo.Assignments;
 import com.ikun.eduproject.service.AssignmentsService;
-import com.ikun.eduproject.utils.AliOSSUtils;
+import com.ikun.eduproject.utils.AliOssUtils;
 import com.ikun.eduproject.vo.AssignmentNumVO;
 import com.ikun.eduproject.vo.AssignmentVO;
 import com.ikun.eduproject.vo.ResultVO;
 import com.ikun.eduproject.vo.StatusVO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -26,13 +26,13 @@ import java.util.List;
  */
 @Service
 public class AssignmentsServiceImpl implements AssignmentsService {
-    @Autowired
+    @Resource
     private AssignmentsDao assignmentsDao;
-    @Autowired
+    @Resource
     private UserDao userDao;
 
-    @Autowired
-    private AliOSSUtils aliOSSUtils;
+    @Resource
+    private AliOssUtils aliOSSUtils;
 
     /**
      * 提交作业
@@ -47,6 +47,7 @@ public class AssignmentsServiceImpl implements AssignmentsService {
         if (assignment != null) {
             return new ResultVO<>(StatusVO.INSERT_NO, "作业已提交过", null);
         }
+
         int i = assignmentsDao.insertAssignment(assignments);
         if (i > 0) {
             return new ResultVO<>(StatusVO.INSERT_OK, "提交成功", null);
@@ -63,7 +64,7 @@ public class AssignmentsServiceImpl implements AssignmentsService {
      * @return ResultVO
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = UpdateCreditException.class)
     public ResultVO<String> correctingAssignments(Integer assignmentId, BigDecimal credit) {
         //更新作业
         int i = assignmentsDao.updateAssignmentStatu(assignmentId, credit);
@@ -112,6 +113,7 @@ public class AssignmentsServiceImpl implements AssignmentsService {
 
     /**
      * 教师根据课程查看待批改作业数量
+     *
      * @param userId 用户id
      * @return ResultVO
      */
@@ -123,7 +125,8 @@ public class AssignmentsServiceImpl implements AssignmentsService {
 
     /**
      * 学生根据课程查看自己作业
-     * @param userId 用户id
+     *
+     * @param userId   用户id
      * @param courseId 课程id
      * @return ResultVO
      */
@@ -135,6 +138,7 @@ public class AssignmentsServiceImpl implements AssignmentsService {
 
     /**
      * 学生更新作业
+     *
      * @param assignments 作业
      * @return ResultVO
      */

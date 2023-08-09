@@ -19,7 +19,7 @@ import java.io.Serializable;
 public class ResultVO<T> implements Serializable {
 
     @ApiModelProperty("返回状态码")
-    private int code;
+    private Integer code;
     @ApiModelProperty("返回信息")
     private String msg;
     @ApiModelProperty("返回对象")

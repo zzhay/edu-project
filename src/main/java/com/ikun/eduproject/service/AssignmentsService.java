@@ -4,9 +4,6 @@ import com.ikun.eduproject.pojo.Assignments;
 import com.ikun.eduproject.vo.AssignmentNumVO;
 import com.ikun.eduproject.vo.AssignmentVO;
 import com.ikun.eduproject.vo.ResultVO;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
 

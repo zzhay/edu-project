@@ -27,8 +27,10 @@ public class InterceptorConfig implements WebMvcConfigurer {
                         "/stuCourses/**",
                         "/course/**",
                         "/comments/**",
-                        "/assignment/**",
-                        "/alioss/**")
+                        "/assignment/**"
+                        //todo
+                        //, "/alioss/**"
+                )
                 //放行的url
                 .excludePathPatterns("/user/login", "/user/regist", "/user/getCaptcha", "/user/checkCaptcha", "/user/getUser",
                         "/subject/getAll",

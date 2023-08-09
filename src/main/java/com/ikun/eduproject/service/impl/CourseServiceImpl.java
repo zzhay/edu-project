@@ -11,7 +11,7 @@ import com.ikun.eduproject.pojo.Course;
 import com.ikun.eduproject.pojo.CourseAudit;
 import com.ikun.eduproject.pojo.ElasticsearchCourse;
 import com.ikun.eduproject.service.CourseService;
-import com.ikun.eduproject.utils.AliOSSUtils;
+import com.ikun.eduproject.utils.AliOssUtils;
 import com.ikun.eduproject.utils.EmailUtil;
 import com.ikun.eduproject.vo.EmailMsgVO;
 import com.ikun.eduproject.vo.GetCourseCheckedVO;
@@ -24,7 +24,6 @@ import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.functionscore.RandomScoreFunctionBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -36,6 +35,7 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -51,22 +51,22 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class CourseServiceImpl implements CourseService {
-    @Autowired
+    @Resource
     private CourseDao courseDao;
-    @Autowired
+    @Resource
     private CourseAuditDao courseAuditDao;
-    @Autowired
+    @Resource
     private AssignmentsDao assignmentsDao;
-    @Autowired
+    @Resource
     private SubjectDao subjectDao;
 
-    @Autowired
+    @Resource
     private EsCourseRepository esCourseRepository;
-    @Autowired
+    @Resource
     ElasticsearchOperations elasticsearchOperations;
-    @Autowired
-    private AliOSSUtils aliOSSUtils;
-    @Autowired
+    @Resource
+    private AliOssUtils aliOSSUtils;
+    @Resource
     private EmailUtil emailUtil;
 
     /**
@@ -294,31 +294,31 @@ public class CourseServiceImpl implements CourseService {
         //删除新增课程的申请
         if (course.getStatu() == 2 && course.getChecked() == 0) {
             //删除课程表和课程审核版本表中数据
-            if (courseDao.deleteCourse(courseId) > 0) {
-                try {
-                    if (courseAuditDao.deleteCourseAudit(courseId) > 0) {
-                        //删除图片和文件
-                        String imageUrl = course.getImageUrl();
-                        String contentUrl = course.getContentUrl();
-                        try {
-                            boolean b = aliOSSUtils.deleteImageByUrl(imageUrl);
-                            boolean b1 = aliOSSUtils.deleteImageByUrl(contentUrl);
-                            if (!b && !b1) {
-                                throw new AliOSSDeleteException("原文件删除失败");
-                            }
-                        } catch (AliOSSDeleteException e) {
-                            return new ResultVO<>(StatusVO.UPDATE_NO, "删除失败", null);
-                        }
-                        return new ResultVO<>(StatusVO.UPDATE_OK, "删除成功", null);
-                    } else {
-                        throw new DelCourseException("课程申请删除失败");
-                    }
-                } catch (DelCourseException e) {
-                    return new ResultVO<>(StatusVO.UPDATE_NO, "删除失败", null);
-                }
-            } else {
+            if (courseDao.deleteCourse(courseId) <= 0) {
                 return new ResultVO<>(StatusVO.UPDATE_NO, "删除失败", null);
             }
+            try {
+                if (courseAuditDao.deleteCourseAudit(courseId) > 0) {
+                    //删除图片和文件
+                    String imageUrl = course.getImageUrl();
+                    String contentUrl = course.getContentUrl();
+                    try {
+                        boolean b = aliOSSUtils.deleteImageByUrl(imageUrl);
+                        boolean b1 = aliOSSUtils.deleteImageByUrl(contentUrl);
+                        if (!b && !b1) {
+                            throw new AliOSSDeleteException("原文件删除失败");
+                        }
+                    } catch (AliOSSDeleteException e) {
+                        return new ResultVO<>(StatusVO.UPDATE_NO, "删除失败", null);
+                    }
+                    return new ResultVO<>(StatusVO.UPDATE_OK, "删除成功", null);
+                } else {
+                    throw new DelCourseException("课程申请删除失败");
+                }
+            } catch (DelCourseException e) {
+                return new ResultVO<>(StatusVO.UPDATE_NO, "删除失败", null);
+            }
+
         }
         return null;
     }

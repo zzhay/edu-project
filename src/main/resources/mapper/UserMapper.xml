@@ -53,16 +53,10 @@
     </select>
     <!--查出所有待审核老师-->
     <select id="selectTeacherNo" resultType="com.ikun.eduproject.pojo.User">
-        select username, phone, email, statu, creat_time
+        select username, phone, email, statu, create_time
         from user
         where role = 1
           and statu = 2;
-    </select>
-    <!--根据手机号查找-->
-    <select id="selectByPhone" parameterType="string" resultType="Integer">
-        select user_id
-        from user
-        where phone = #{phone}
     </select>
     <!--根据邮箱查找-->
     <select id="selectByEmail" parameterType="string" resultType="com.ikun.eduproject.pojo.User">
@@ -99,7 +93,6 @@
     <update id="updateCreditByUserId">
         update user
         set credit=#{credit}
-            and statu = 1
         where user_id = #{userId};
     </update>
 </mapper>

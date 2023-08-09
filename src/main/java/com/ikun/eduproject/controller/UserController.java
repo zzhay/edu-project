@@ -2,18 +2,13 @@ package com.ikun.eduproject.controller;
 
 import com.ikun.eduproject.pojo.User;
 import com.ikun.eduproject.service.UserService;
-import com.ikun.eduproject.utils.RedisUtil;
 import com.ikun.eduproject.vo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import jdk.nashorn.internal.parser.Token;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServlet;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -29,7 +24,7 @@ import java.util.Map;
 @Api(value = "提供用户管理的接口", tags = "用户管理")
 public class UserController {
 
-    @Autowired
+    @Resource
     private UserService userService;
 
     /**
@@ -133,7 +128,7 @@ public class UserController {
      *
      * @param username 用户名
      * @param statu    状态
-     * @return
+     * @return ResultVO
      */
     @ApiOperation("管理员审核教师")
     @PostMapping("/checkTeacher")
@@ -181,8 +176,8 @@ public class UserController {
 
     /**
      * 根据用户id获取用户信息
-     * @param userId
-     * @return
+     * @param userId 用户id
+     * @return ResultVO
      */
     @ApiOperation("获取用户信息")
     @PostMapping("/getUser")
@@ -192,8 +187,8 @@ public class UserController {
 
     /**
      * 登出
-     * @param request
-     * @return
+     * @param request http请求
+     * @return ResultVO
      */
     @ApiOperation("登出")
     @PostMapping("/logOut")

@@ -15,10 +15,10 @@ import com.ikun.eduproject.vo.LoginVO;
 import com.ikun.eduproject.vo.ResultVO;
 import com.ikun.eduproject.vo.StatusVO;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
@@ -32,14 +32,14 @@ import java.util.Objects;
 @Slf4j
 @Service
 public class StuCoursesServiceImpl implements StuCoursesService {
-    @Autowired
+    @Resource
     private StuCoursesDao stuCoursesDao;
-    @Autowired
+    @Resource
     private CourseDao courseDao;
-    @Autowired
+    @Resource
     private UserDao userDao;
 
-    @Autowired
+    @Resource
     private EmailUtil emailUtil;
 
     /**

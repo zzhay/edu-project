@@ -7,13 +7,12 @@ import com.ikun.eduproject.pojo.User;
 import com.ikun.eduproject.service.UserService;
 import com.ikun.eduproject.utils.*;
 import com.ikun.eduproject.vo.*;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSendException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,13 +28,13 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
+    @Resource
     private UserDao userDao;
-    @Autowired
-    private AliOSSUtils aliOSSUtils;
-    @Autowired
+    @Resource
+    private AliOssUtils aliOSSUtils;
+    @Resource
     private EmailUtil emailUtil;
-    @Autowired
+    @Resource
     private RedisUtil redisUtil;
 
     /**
@@ -60,21 +59,21 @@ public class UserServiceImpl implements UserService {
         String md5Password = MD5Utils.md5(user.getPassword());
         user.setPassword(md5Password);
         int i = userDao.insertUser(user);
-        if (i > 0) {
-            try {
-                //根据身份发送邮件
-                if (user.getRole() == 1) {
-                    emailUtil.sendMessage(user.getEmail(), EmailMsgVO.REGIST, EmailMsgVO.registTeaMsg(user.getUsername()));
-                } else if (user.getRole() == 2) {
-                    emailUtil.sendMessage(user.getEmail(), EmailMsgVO.REGIST, EmailMsgVO.registStuMsg(user.getUsername()));
-                }
-            } catch (MailSendException e) {
-                throw new EmailException("邮箱异常");
-            }
-            return new ResultVO<>(StatusVO.REGIST_OK, "注册成功", null);
-        } else {
+        if (i <= 0) {
             return new ResultVO<>(StatusVO.REGIST_NO, "注册失败", null);
         }
+        try {
+            //根据身份发送邮件
+            if (user.getRole() == 1) {
+                emailUtil.sendMessage(user.getEmail(), EmailMsgVO.REGIST, EmailMsgVO.registTeaMsg(user.getUsername()));
+            } else if (user.getRole() == 2) {
+                emailUtil.sendMessage(user.getEmail(), EmailMsgVO.REGIST, EmailMsgVO.registStuMsg(user.getUsername()));
+            }
+        } catch (MailSendException e) {
+            throw new EmailException("邮箱异常");
+        }
+        return new ResultVO<>(StatusVO.REGIST_OK, "注册成功", null);
+
     }
 
     /**
@@ -93,23 +92,22 @@ public class UserServiceImpl implements UserService {
         }
         //密码加密，对比密码
         String md5Password = MD5Utils.md5(password);
-        if (Objects.equals(md5Password, user.getPassword())) {
-            //判断账号状态是否正常
-            if (user.getStatu() == 0) {
-                return new ResultVO<>(StatusVO.LOGIN_NO_STATU, "账号已被锁定，详情请联系管理员", null);
-            } else if (user.getStatu() == 1) {
-                //生成token并存入redis
-                String token = TokenUtil.generateToken(username);
-                redisUtil.setCacheObject(token, user, 6, TimeUnit.HOURS);
-                Map<String, Object> responseData = new HashMap<>(2);
-                responseData.put("token", token);
-                responseData.put("user", user);
-                return new ResultVO<>(StatusVO.LOGIN_OK, "登录成功", responseData);
-            } else {
-                return new ResultVO<>(StatusVO.LOGIN_NO_STATU, "账号审核中", null);
-            }
-        } else {
+        if (!Objects.equals(md5Password, user.getPassword())) {
             return new ResultVO<>(StatusVO.LOGIN_NO, "密码错误", null);
+        }
+        //判断账号状态是否正常，0：锁定，1：正常
+        if (user.getStatu() == 0) {
+            return new ResultVO<>(StatusVO.LOGIN_NO_STATU, "账号已被锁定，详情请联系管理员", null);
+        } else if (user.getStatu() == 1) {
+            //生成token并存入redis
+            String token = TokenUtil.generateToken(username);
+            redisUtil.setCacheObject(token, user, 6, TimeUnit.HOURS);
+            Map<String, Object> responseData = new HashMap<>(2);
+            responseData.put("token", token);
+            responseData.put("user", user);
+            return new ResultVO<>(StatusVO.LOGIN_OK, "登录成功", responseData);
+        } else {
+            return new ResultVO<>(StatusVO.LOGIN_NO_STATU, "账号审核中", null);
         }
     }
 
@@ -164,7 +162,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResultVO<List<User>> getStudent() {
         List<User> users = userDao.selectStudent();
-        return new ResultVO<>(StatusVO.SELECT_NO, "查询失败", null);
+        return new ResultVO<>(StatusVO.SELECT_OK, "查询成功", users);
 
     }
 
@@ -203,7 +201,7 @@ public class UserServiceImpl implements UserService {
         if (i > 0) {
             //查询出用户信息
             User user = userDao.selectByUsername(username);
-            //根据账号变更情况发送不同邮件
+            //根据账号变更情况发送不同邮件，1：账号正常
             if (statu == 1) {
                 emailUtil.sendMessage(user.getEmail(), EmailMsgVO.ACCOUNT, EmailMsgVO.accountMsg1(username));
             } else {
@@ -266,8 +264,9 @@ public class UserServiceImpl implements UserService {
         if (i > 0) {
             try {
                 //判断是不是默认头像
-                if ((!"https://ikun-edu.oss-cn-beijing.aliyuncs.com/teacher_default.jpg".equals(imageUrl) &&
-                        !"https://ikun-edu.oss-cn-beijing.aliyuncs.com/student_default.jpg".equals(imageUrl))) {
+                String imageUrl1 = "https://ikun-edu.oss-cn-beijing.aliyuncs.com/teacher_default.jpg";
+                String imageUrl2 = "https://ikun-edu.oss-cn-beijing.aliyuncs.com/student_default.jpg";
+                if ((!imageUrl1.equals(imageUrl) && !imageUrl2.equals(imageUrl))) {
                     boolean b = aliOSSUtils.deleteImageByUrl(imageUrl);
                     //ailiOSS删除失败则抛出异常
                     if (!b) {
@@ -324,6 +323,12 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * 根据用户id获取用户信息
+     *
+     * @param userId 用户id
+     * @return ResultVO
+     */
     @Override
     public ResultVO<User> getByUserId(Integer userId) {
         User user = userDao.selectByUserId(userId);
@@ -332,8 +337,9 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 登出
-     * @param token
-     * @return
+     *
+     * @param token token
+     * @return ResultVO
      */
     @Override
     public ResultVO<String> logOut(String token) {

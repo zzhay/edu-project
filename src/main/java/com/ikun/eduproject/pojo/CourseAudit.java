@@ -62,7 +62,7 @@ public class CourseAudit implements Serializable {
     private Integer checked;
 
     @ApiModelProperty(dataType = "Timestamp",required = false,value = "创建时间")
-    private Timestamp creatTime;
+    private Timestamp createTime;
 
     @ApiModelProperty(dataType = "Timestamp",required = false,value = "更新时间")
     private Timestamp updateTime;

@@ -5,7 +5,6 @@ import com.ikun.eduproject.pojo.CourseAudit;
 import com.ikun.eduproject.pojo.ElasticsearchCourse;
 import com.ikun.eduproject.vo.GetCourseCheckedVO;
 import com.ikun.eduproject.vo.ResultVO;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -101,6 +100,7 @@ public interface CourseService {
      *
      * @param courseId 课程id
      * @param checked  审核状态
+     * @param reason 理由
      * @return ResultVO
      */
     ResultVO<String> updateChecked(Integer courseId, Integer checked,String reason);
@@ -115,6 +115,7 @@ public interface CourseService {
     /**
      * 按照学科类别查看课程并按价格排序
      * @param category 学科类别
+     * @param sort 排序方式（0：升序，1：降序）
      * @return ResultVO
      */
     ResultVO<List<ElasticsearchCourse>> getByCategoryOrderByPrice(String category,Integer sort);

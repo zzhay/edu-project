@@ -3,13 +3,11 @@ package com.ikun.eduproject.vo;
 import io.swagger.annotations.ApiModel;
 
 /**
+ * @Author zzhay
  * 状态码信息
  */
 @ApiModel(value = "状态码信息",description = "状态码信息")
 public class StatusVO {
-
-    //参数为空状态码
-    public static final int PARAM_NULL = 4000;
 
     //注册状态码
     public static final int REGIST_OK = 2001;

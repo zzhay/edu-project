@@ -3,7 +3,6 @@ package com.ikun.eduproject.dao;
 import com.ikun.eduproject.pojo.User;
 import com.ikun.eduproject.vo.ChangeInfoVO;
 import com.ikun.eduproject.vo.ChangePwdVO;
-import io.swagger.models.auth.In;
 import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
@@ -18,88 +17,94 @@ import java.util.List;
 public interface UserDao {
     /**
      * 按照用户名查询
-     * @param username
+     *
+     * @param username 用户名
      * @return User对象
      */
     User selectByUsername(String username);
 
     /**
      * 新增用户
-     * @param user
-     * @return
+     *
+     * @param user 用户对象
+     * @return int
      */
     int insertUser(User user);
 
     /**
      * 按照username更新基础信息
-     * @param changeInfoVO
-     * @return
+     *
+     * @param changeInfoVO 更新信息对象
+     * @return int
      */
     int updateByUsername(ChangeInfoVO changeInfoVO);
 
     /**
      * 更新密码
-     * @param changePwdVO
-     * @return
+     *
+     * @param changePwdVO 更新密码对象
+     * @return int
      */
     int updatePassword(ChangePwdVO changePwdVO);
 
     /**
      * 查出所有学生
-     * @return
+     *
+     * @return 学生集合
      */
     List<User> selectStudent();
 
     /**
      * 查出所有老师
-     * @return
+     *
+     * @return 教师集合
      */
     List<User> selectTeacher();
 
     /**
      * 查出所有待审核老师
-     * @return
+     *
+     * @return 待审核教师集合
      */
     List<User> selectTeacherNo();
 
     /**
-     * 根据手机号查找
-     * @param phone
-     * @return
-     */
-    Integer selectByPhone(String phone);
-
-    /**
      * 根据邮箱查找
-     * @param email
-     * @return
+     *
+     * @param email 邮箱
+     * @return User对象
      */
     User selectByEmail(String email);
 
     /**
      * 按照username修改状态
-     * @param username
-     * @return
+     *
+     * @param username 用户名
+     * @param statu    状态
+     * @return int
      */
-    int updateStatu(@Param("username") String username,@Param("statu") Integer statu);
+    int updateStatu(@Param("username") String username, @Param("statu") Integer statu);
 
     /**
      * 按照username更新头像
-     * @param username
-     * @param url
-     * @return
+     *
+     * @param username 用户名
+     * @param url      url地址
+     * @return int
      */
     int updateImage(@Param("username") String username, @Param("url") String url);
 
     /**
      * 删除用户
-     * @param username
-     * @return
+     *
+     * @param username 用户名
+     * @return int
      */
     int deleteByUsername(String username);
 
     /**
      * 按照用户id查看
+     *
      * @param userId 用户id
      * @return User
      */
@@ -107,8 +112,10 @@ public interface UserDao {
 
     /**
      * 按照用户id更新学分
+     *
      * @param userId 用户id
+     * @param credit 学分
      * @return int
      */
-    int updateCreditByUserId(@Param("userId") Integer userId,@Param("credit") BigDecimal credit);
+    int updateCreditByUserId(@Param("userId") Integer userId, @Param("credit") BigDecimal credit);
 }

@@ -50,7 +50,7 @@ public class ElasticsearchCourse{
         esCourse.setContentUrl(course.getContentUrl());
         esCourse.setStatu(course.getStatu());
         esCourse.setChecked(course.getChecked());
-        esCourse.setCreatTime(course.getCreatTime());
+        esCourse.setCreatTime(course.getCreateTime());
         esCourse.setUpdateTime(course.getUpdateTime());
         return esCourse;
     }

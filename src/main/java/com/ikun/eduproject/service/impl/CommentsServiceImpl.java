@@ -8,10 +8,9 @@ import com.ikun.eduproject.utils.SensitivewordFilter;
 import com.ikun.eduproject.vo.CommentsVO;
 import com.ikun.eduproject.vo.ResultVO;
 import com.ikun.eduproject.vo.StatusVO;
-import io.swagger.models.auth.In;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -26,9 +25,9 @@ import java.util.Set;
  */
 @Service
 public class CommentsServiceImpl implements CommentsService {
-    @Autowired
+    @Resource
     private CommentsDao commentsDao;
-    @Autowired
+    @Resource
     private StuCoursesDao stuCoursesDao;
 
     /**
@@ -37,27 +36,27 @@ public class CommentsServiceImpl implements CommentsService {
      * @return ResultVO
      */
     @Override
-    public ResultVO<Set> addComment(Comments comments) {
+    public ResultVO<Set<String>> addComment(Comments comments) {
         //权限校验，是否购买该课程
         Integer i = stuCoursesDao.selectByUidAndCid(comments.getUserId(), comments.getCourseId());
         if (i == null) {
-            return new ResultVO(StatusVO.INSERT_NO, "评论失败,你还未购买该课程，无法评论", null);
+            return new ResultVO<>(StatusVO.INSERT_NO, "评论失败,你还未购买该课程，无法评论", null);
         }
         //判断是否评论过
         if (commentsDao.selectByUidAndCid(comments.getUserId(), comments.getCourseId()) != null) {
-            return new ResultVO(StatusVO.INSERT_NO, "你已经评论过该课程，无法重复评论", null);
+            return new ResultVO<>(StatusVO.INSERT_NO, "你已经评论过该课程，无法重复评论", null);
         }
         //敏感词判断
         SensitivewordFilter filter = new SensitivewordFilter();
         Set<String> set = filter.getSensitiveWord(comments.getText(), 2);
         if (set.size() != 0) {
-            return new ResultVO(StatusVO.INSERT_NO, "评论中包含敏感词", set);
+            return new ResultVO<>(StatusVO.INSERT_NO, "评论中包含敏感词", set);
         }
 
         if (commentsDao.insertComment(comments) > 0) {
-            return new ResultVO(StatusVO.INSERT_OK, "评论成功", null);
+            return new ResultVO<>(StatusVO.INSERT_OK, "评论成功", null);
         } else {
-            return new ResultVO(StatusVO.INSERT_NO, "评论失败", null);
+            return new ResultVO<>(StatusVO.INSERT_NO, "评论失败", null);
         }
     }
 
@@ -70,9 +69,9 @@ public class CommentsServiceImpl implements CommentsService {
     public ResultVO<String> changeComment(Comments comments) {
         int i = commentsDao.updateCommentById(comments);
         if (i > 0) {
-            return new ResultVO(StatusVO.INSERT_OK, "更新成功", null);
+            return new ResultVO<>(StatusVO.INSERT_OK, "更新成功", null);
         } else {
-            return new ResultVO(StatusVO.INSERT_NO, "更新失败", null);
+            return new ResultVO<>(StatusVO.INSERT_NO, "更新失败", null);
         }
     }
 
@@ -85,9 +84,9 @@ public class CommentsServiceImpl implements CommentsService {
     public ResultVO<String> delComment(Integer commentId) {
         int i = commentsDao.deleteCommentByid(commentId);
         if (i > 0) {
-            return new ResultVO(StatusVO.INSERT_OK, "删除成功", null);
+            return new ResultVO<>(StatusVO.INSERT_OK, "删除成功", null);
         } else {
-            return new ResultVO(StatusVO.INSERT_NO, "删除失败", null);
+            return new ResultVO<>(StatusVO.INSERT_NO, "删除失败", null);
         }
     }
 
