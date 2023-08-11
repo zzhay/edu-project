@@ -10,7 +10,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @Author zzhay
  * @Date 2023/8/5/005
  */
-//todo
 @Configuration
 public class InterceptorConfig implements WebMvcConfigurer {
 
@@ -27,9 +26,8 @@ public class InterceptorConfig implements WebMvcConfigurer {
                         "/stuCourses/**",
                         "/course/**",
                         "/comments/**",
-                        "/assignment/**"
-                        //todo
-                        //, "/alioss/**"
+                        "/assignment/**",
+                        "/alioss/**"
                 )
                 //放行的url
                 .excludePathPatterns("/user/login", "/user/regist", "/user/getCaptcha", "/user/checkCaptcha", "/user/getUser",

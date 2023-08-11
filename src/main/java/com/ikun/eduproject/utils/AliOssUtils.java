@@ -2,6 +2,7 @@ package com.ikun.eduproject.utils;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
+import com.aliyun.oss.model.PutObjectResult;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Random;
 
 /**
  * @Author zzhay
@@ -34,12 +36,20 @@ public class AliOssUtils {
         // 获取上传的文件的输入流
         InputStream inputStream = multipartFile.getInputStream();
 
+        Random random = new Random();
+        int i = random.nextInt(9000) + 1000;
+        // 获取文件扩展名
+        String originalFilename = multipartFile.getOriginalFilename();
+        String fileExtension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+        // 将随机数和文件扩展名连接在一起
+        String newFilename = i + "." + fileExtension;
+
         // 避免文件覆盖
-        String fileName = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss")) + multipartFile.getOriginalFilename();
+        String fileName = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss")) + newFilename;
         // 初始化OSS客户端
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
         //上传文件到 OSS
-        ossClient.putObject(bucketName, fileName, inputStream);
+        PutObjectResult object = ossClient.putObject(bucketName, fileName, inputStream);
 
         //文件访问路径
         String url = "https://" + bucketName + "." + endpoint + "/" + fileName;

@@ -5,6 +5,7 @@ import com.ikun.eduproject.dao.UserDao;
 import com.ikun.eduproject.error.AliOSSDeleteException;
 import com.ikun.eduproject.error.UpdateCreditException;
 import com.ikun.eduproject.pojo.Assignments;
+import com.ikun.eduproject.pojo.User;
 import com.ikun.eduproject.service.AssignmentsService;
 import com.ikun.eduproject.utils.AliOssUtils;
 import com.ikun.eduproject.vo.AssignmentNumVO;
@@ -41,6 +42,7 @@ public class AssignmentsServiceImpl implements AssignmentsService {
      * @return ResultVO
      */
     @Override
+    @Transactional(rollbackFor = RuntimeException.class)
     public ResultVO<String> addAssignments(Assignments assignments) {
         //判断是否重复提交
         Assignments assignment = assignmentsDao.selectByUidAndCid(assignments.getUserId(), assignments.getCourseId());
@@ -75,7 +77,9 @@ public class AssignmentsServiceImpl implements AssignmentsService {
         Integer userId = assignmentsDao.selectByAssignmentId(assignmentId);
         try {
             //更新学分
-            int i1 = userDao.updateCreditByUserId(userId, credit);
+            User user = userDao.selectByUserId(userId);
+            BigDecimal credit1 = user.getCredit().add(credit);
+            int i1 = userDao.updateCreditByUserId(userId, credit1);
             if (i1 > 0) {
                 return new ResultVO<>(StatusVO.UPDATE_OK, "批改成功", null);
             } else {
@@ -143,6 +147,7 @@ public class AssignmentsServiceImpl implements AssignmentsService {
      * @return ResultVO
      */
     @Override
+    @Transactional(rollbackFor = RuntimeException.class)
     public ResultVO<String> updateAssignment(Assignments assignments) {
         //查出原作业信息
         Assignments assignments1 = assignmentsDao.selectByUidAndCid(assignments.getUserId(), assignments.getCourseId());

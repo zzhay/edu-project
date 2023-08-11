@@ -9,6 +9,7 @@ import com.ikun.eduproject.vo.CommentsVO;
 import com.ikun.eduproject.vo.ResultVO;
 import com.ikun.eduproject.vo.StatusVO;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.text.DecimalFormat;
@@ -36,6 +37,7 @@ public class CommentsServiceImpl implements CommentsService {
      * @return ResultVO
      */
     @Override
+    @Transactional(rollbackFor = RuntimeException.class)
     public ResultVO<Set<String>> addComment(Comments comments) {
         //权限校验，是否购买该课程
         Integer i = stuCoursesDao.selectByUidAndCid(comments.getUserId(), comments.getCourseId());
@@ -66,6 +68,7 @@ public class CommentsServiceImpl implements CommentsService {
      * @return ResultVO
      */
     @Override
+    @Transactional(rollbackFor = RuntimeException.class)
     public ResultVO<String> changeComment(Comments comments) {
         int i = commentsDao.updateCommentById(comments);
         if (i > 0) {
@@ -81,6 +84,7 @@ public class CommentsServiceImpl implements CommentsService {
      * @return ResultVO
      */
     @Override
+    @Transactional(rollbackFor = RuntimeException.class)
     public ResultVO<String> delComment(Integer commentId) {
         int i = commentsDao.deleteCommentByid(commentId);
         if (i > 0) {

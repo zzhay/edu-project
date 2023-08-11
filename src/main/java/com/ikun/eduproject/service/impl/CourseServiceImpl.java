@@ -197,6 +197,7 @@ public class CourseServiceImpl implements CourseService {
      * @return ResultVO
      */
     @Override
+    @Transactional(rollbackFor = RuntimeException.class)
     public ResultVO<String> updateCourse(Course course) {
         //获取原课程信息
         Course courseAudit = courseAuditDao.selectByCoursrId(course.getCourseId());
@@ -233,6 +234,7 @@ public class CourseServiceImpl implements CourseService {
      * @return ResultVO
      */
     @Override
+    @Transactional(rollbackFor = RuntimeException.class)
     public ResultVO<String> updateCheckNo(Course course) {
         //判断课程名重复
         Integer courseId = courseDao.selectByUIdAndName(course.getUserId(), course.getName());

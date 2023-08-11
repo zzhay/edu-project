@@ -73,7 +73,6 @@ public class UserServiceImpl implements UserService {
             throw new EmailException("邮箱异常");
         }
         return new ResultVO<>(StatusVO.REGIST_OK, "注册成功", null);
-
     }
 
     /**
@@ -118,6 +117,7 @@ public class UserServiceImpl implements UserService {
      * @return ResultVO
      */
     @Override
+    @Transactional(rollbackFor =RuntimeException.class )
     public ResultVO<String> updateInformation(ChangeInfoVO changeInfoVO) {
         int i = userDao.updateByUsername(changeInfoVO);
         if (i > 0) {
@@ -134,6 +134,7 @@ public class UserServiceImpl implements UserService {
      * @return ResultVO
      */
     @Override
+    @Transactional(rollbackFor =RuntimeException.class )
     public ResultVO<String> updatePassword(ChangePwdVO changePwdVO) {
         //根据邮箱查询用户信息
         User user1 = userDao.selectByEmail(changePwdVO.getEmail());
@@ -196,6 +197,7 @@ public class UserServiceImpl implements UserService {
      * @return ResultVO
      */
     @Override
+    @Transactional(rollbackFor =RuntimeException.class )
     public ResultVO<String> updateStatu(String username, Integer statu) {
         int i = userDao.updateStatu(username, statu);
         if (i > 0) {
@@ -222,6 +224,7 @@ public class UserServiceImpl implements UserService {
      * @return ResultVO
      */
     @Override
+    @Transactional(rollbackFor =RuntimeException.class )
     public ResultVO<String> checkTeacher(String username, Integer statu) {
         User user = userDao.selectByUsername(username);
         if (statu == 3) {

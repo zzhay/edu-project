@@ -13,7 +13,8 @@
     <select id="selectByCourseId" resultType="com.ikun.eduproject.pojo.Assignments">
         select *
         from assignments
-        where course_id = #{courseId};
+        where course_id = #{courseId}
+          and statu = 0;
     </select>
     <!--根据作业id查userId-->
     <select id="selectByAssignmentId" resultType="java.lang.Integer">
@@ -36,7 +37,8 @@
     <!--更新作业状态和学分-->
     <update id="updateAssignmentStatu">
         update assignments
-        set credit=#{credit},statu = 1
+        set credit=#{credit},
+            statu = 1
         where assignment_id = #{assignmentId};
     </update>
     <!--更新作业-->
@@ -63,17 +65,13 @@
     </select>
     <!--根据用户id查看未审批作业数量-->
     <select id="selectNumByUserId" resultMap="AssignmentNumMap">
-        SELECT
-            c.course_id,
-            c.name,
-            COUNT(a.assignment_id) AS num_of_assignments
-        FROM
-            course c
-                LEFT JOIN assignments a ON c.course_id = a.course_id
-        WHERE
-            c.user_id = #{userId}
+        SELECT c.course_id,
+               c.name,
+               COUNT(a.assignment_id) AS num_of_assignments
+        FROM course c
+                 LEFT JOIN assignments a ON c.course_id = a.course_id
+        WHERE c.user_id = #{userId}
           and a.statu = 0
-        GROUP BY
-            c.course_id, c.name;
+        GROUP BY c.course_id, c.name;
     </select>
 </mapper>
