@@ -9,6 +9,7 @@ import com.ikun.eduproject.vo.GetCourseCheckedVO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 import java.util.List;
 
@@ -16,13 +17,10 @@ import java.util.List;
 @SpringBootTest
 public class EduProjectApplicationTests {
 
-    @Autowired
-    private CourseAuditDao courseAuditDao;
 
     @Test
     public void test1() {
-        List<GetCourseCheckedVO> li = courseAuditDao.selectAllCheck();
-        System.out.println(li);
+
     }
 
 }

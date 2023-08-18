@@ -119,7 +119,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor =RuntimeException.class )
     public ResultVO<User> updateInformation(ChangeInfoVO changeInfoVO) {
+        //更新数据
         int i = userDao.updateByUsername(changeInfoVO);
+        //返回新数据
         User user = userDao.selectByUsername(changeInfoVO.getUsername());
         if (i > 0) {
             return new ResultVO<>(StatusVO.UPDATE_OK, "更新成功", user);
@@ -255,7 +257,6 @@ public class UserServiceImpl implements UserService {
      * @return ResultVO
      */
     @Override
-    //开始事务,抛出 AliOSSDeleteException
     @Transactional(rollbackFor = AliOSSDeleteException.class)
     public ResultVO<String> updateImage(String username, String url) {
         User user = userDao.selectByUsername(username);
@@ -357,6 +358,5 @@ public class UserServiceImpl implements UserService {
             return new ResultVO<>(StatusVO.UPDATE_NO, "注销失败", null);
         }
     }
-
 
 }
