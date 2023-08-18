@@ -5,8 +5,8 @@ import java.util.Random;
 /**
  * @Author zzhay
  * @Date 2023/7/31/031
+ * 生成验证码
  */
-//生成验证码
 public class GenerateCaptchaUtil {
     public static String generateCaptcha() {
         // 定义随机数的字符源

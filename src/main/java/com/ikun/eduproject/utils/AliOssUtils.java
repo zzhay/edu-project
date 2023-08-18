@@ -2,8 +2,11 @@ package com.ikun.eduproject.utils;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
+import com.aliyun.oss.model.GetObjectRequest;
 import com.aliyun.oss.model.PutObjectResult;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,6 +19,7 @@ import java.util.Random;
 /**
  * @Author zzhay
  * @Date 2023/7/27/027
+ * 阿里OSS工具类
  */
 @Component
 public class AliOssUtils {
@@ -78,6 +82,5 @@ public class AliOssUtils {
             ossClient.shutdown();
         }
     }
-
 
 }

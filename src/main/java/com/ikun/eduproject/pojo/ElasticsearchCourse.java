@@ -1,6 +1,7 @@
 package com.ikun.eduproject.pojo;
 
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -28,10 +29,13 @@ public class ElasticsearchCourse{
     private String description;
     private String subName;
     private String subCategory;
+    private Integer periodAll;
+    private Integer periods;
     private String imageUrl;
     private String contentUrl;
     private Integer statu;
     private Integer checked;
+    private Date endTime;
     private Date creatTime;
     private Date updateTime;
     private Integer searchFrequency;
@@ -46,12 +50,15 @@ public class ElasticsearchCourse{
         esCourse.setPrice(course.getPrice());
         esCourse.setDescription(course.getDescription());
         esCourse.setSubName(course.getSubName());
+        esCourse.setPeriodAll(course.getPeriodAll());
+        esCourse.setPeriods(course.getPeriods());
         esCourse.setImageUrl(course.getImageUrl());
         esCourse.setContentUrl(course.getContentUrl());
         esCourse.setStatu(course.getStatu());
         esCourse.setChecked(course.getChecked());
         esCourse.setCreatTime(course.getCreateTime());
         esCourse.setUpdateTime(course.getUpdateTime());
+        esCourse.setEndTime(course.getEndTime());
         return esCourse;
     }
 }

@@ -6,6 +6,7 @@ import com.ikun.eduproject.vo.AssignmentVO;
 import com.ikun.eduproject.vo.ResultVO;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author zzhay
@@ -35,14 +36,14 @@ public interface AssignmentsService {
      * @param courseId 课程id
      * @return ResultVO
      */
-    ResultVO<List<AssignmentVO>> getByCourseIdNO(Integer courseId);
+    ResultVO<Map<Integer, List<AssignmentVO>>> getByCourseIdNO(Integer courseId);
 
     /**
      * 教师根据课程查看已批改作业
      * @param courseId 课程id
      * @return ResultVO
      */
-    ResultVO<List<AssignmentVO>> getByCourseIdOK(Integer courseId);
+    ResultVO<Map<Integer, List<AssignmentVO>>> getByCourseIdOK(Integer courseId);
 
     /**
      * 教师根据课程查看待批改作业数量
@@ -57,7 +58,7 @@ public interface AssignmentsService {
      * @param courseId 课程id
      * @return ResultVO
      */
-    ResultVO<Assignments> getByCourseId(Integer userId,Integer courseId);
+    ResultVO<Map<Integer, Assignments>> getByCourseId(Integer userId,Integer courseId);
 
     /**
      * 学生更新作业

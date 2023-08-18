@@ -39,7 +39,7 @@ public interface UserService {
      * @param changeInfoVO 更改信息传入对象
      * @return ResultVO
      */
-    ResultVO<String> updateInformation(ChangeInfoVO changeInfoVO);
+    ResultVO<User> updateInformation(ChangeInfoVO changeInfoVO);
 
     /**
      * 修改密码

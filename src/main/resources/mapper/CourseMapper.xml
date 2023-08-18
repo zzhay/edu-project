@@ -6,11 +6,13 @@
 
     <!--添加课程-->
     <insert id="insertCourse" parameterType="com.ikun.eduproject.pojo.Course">
-        insert into course(user_id, name, author, price, description, sub_name, image_url, content_url)
-        values (#{userId}, #{name}, #{author}, #{price}, #{description}, #{subName}, #{imageUrl}, #{contentUrl});
+        insert into course(user_id, name, author, price, description, sub_name, period_all, periods, image_url,
+                           content_url,end_time)
+        values (#{userId}, #{name}, #{author}, #{price}, #{description}, #{subName}, #{periodAll}, #{periods},
+                #{imageUrl}, #{contentUrl},#{endTime});
     </insert>
     <!--按照教师id和课程名查询课程id-->
-    <select id="selectByUIdAndName"  resultType="int">
+    <select id="selectByUIdAndName" resultType="int">
         select course_id
         from course
         where user_id = #{userId}
@@ -42,12 +44,14 @@
             price=#{price},
             description= #{description},
             sub_name=#{subName},
+            period_all=#{periodAll},
+            periods=#{periods},
             image_url=#{imageUrl},
             content_url=#{contentUrl},
             statu=#{statu},
             checked=#{checked}
         where course_id =
-        #{courseId};
+              #{courseId};
     </update>
     <!--更新课程状态-->
     <update id="updateStatu" parameterType="integer">
@@ -63,7 +67,20 @@
     </delete>
     <!--按照课程id查询-->
     <select id="selectByCourseId" parameterType="integer" resultType="com.ikun.eduproject.pojo.Course">
-        select course_id,user_id,author,name,price,statu,checked,sub_name,image_url,content_url
+        select course_id,
+               user_id,
+               author,
+               name,
+               price,
+               statu,
+               checked,
+               sub_name,
+               description,
+               period_all,
+               periods,
+               image_url,
+               content_url,
+               end_time
         from course
         where course_id = #{courseId};
     </select>
@@ -95,6 +112,12 @@
         FROM user u
                  JOIN course c ON u.user_id = c.user_id
         WHERE c.course_id = #{courseId};
+    </select>
+    <!--按课程id查询总课时-->
+    <select id="selectPeriodAll" resultType="java.lang.Integer">
+        select period_all
+        from course
+        where course_id = #{courseId};
     </select>
 
 </mapper>

@@ -1,15 +1,9 @@
 package com.ikun.eduproject.service.impl;
 
-import com.ikun.eduproject.dao.AssignmentsDao;
-import com.ikun.eduproject.dao.CourseAuditDao;
-import com.ikun.eduproject.dao.CourseDao;
-import com.ikun.eduproject.dao.SubjectDao;
+import com.ikun.eduproject.dao.*;
 import com.ikun.eduproject.error.*;
 import com.ikun.eduproject.es.EsCourseRepository;
-import com.ikun.eduproject.pojo.Assignments;
-import com.ikun.eduproject.pojo.Course;
-import com.ikun.eduproject.pojo.CourseAudit;
-import com.ikun.eduproject.pojo.ElasticsearchCourse;
+import com.ikun.eduproject.pojo.*;
 import com.ikun.eduproject.service.CourseService;
 import com.ikun.eduproject.utils.AliOssUtils;
 import com.ikun.eduproject.utils.EmailUtil;
@@ -36,8 +30,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -59,6 +55,8 @@ public class CourseServiceImpl implements CourseService {
     private AssignmentsDao assignmentsDao;
     @Resource
     private SubjectDao subjectDao;
+    @Resource
+    private PeriodDao periodDao;
 
     @Resource
     private EsCourseRepository esCourseRepository;
@@ -85,6 +83,7 @@ public class CourseServiceImpl implements CourseService {
         if (courseId != null || courseId1 != null) {
             return new ResultVO<>(StatusVO.INSERT_NO, "课程名已经存在", null);
         }
+
         //新增课程
         int i = courseDao.insertCourse(course);
         if (i <= 0) {
@@ -96,6 +95,7 @@ public class CourseServiceImpl implements CourseService {
         //将课程信息存到课程审核版本表
         try {
             int i1 = courseAuditDao.insertCourseAudit(course);
+
             if (i1 > 0) {
                 return new ResultVO<>(StatusVO.INSERT_OK, "添加成功，请等待审核", null);
             } else {
@@ -347,17 +347,48 @@ public class CourseServiceImpl implements CourseService {
     @Transactional(rollbackFor = UpdateCourseException.class)
     public ResultVO<String> updateChecked(Integer courseId, Integer checked, String reason) {
         int i1 = courseAuditDao.updateCheck(courseId, checked);
-        if (i1 < 0) {
+        if (i1 <= 0) {
             return new ResultVO<>(StatusVO.UPDATE_NO, "审核失败", null);
         }
         String email = courseDao.selectEmailByCourseId(courseId);
         Course courseAudit = courseAuditDao.selectByCoursrId(courseId);
         //审核通过
         if (checked == 1) {
-            //获取原图片和附件url
+            //课程信息
             Course course = courseDao.selectByCourseId(courseId);
+            //获取原图片和附件url
             String imageUrl = course.getImageUrl();
             String contentUrl = course.getContentUrl();
+            //设置课程课时属性
+            Periods periods = new Periods();
+            periods.setCourseId(courseId);
+            periods.setPeriods(courseAudit.getPeriods());
+            periods.setContentUrl(courseAudit.getContentUrl());
+
+            //查询该课程课时信息
+            List<Periods> periods1 = periodDao.selectByCourseId(courseId);
+            //判断是普通修改还是课时修改或新增（没有课时信息）
+            if (!Objects.equals(course.getPeriods(), courseAudit.getPeriods()) || periods1.size()==0) {
+                //修改课时或新增（没有课时信息）
+                try {
+                    int i = periodDao.insert(periods);
+                    if (i <= 0) {
+                        throw new UpdateCourseException("课程更新失败");
+                    }
+                } catch (AliOSSDeleteException e) {
+                    return new ResultVO<>(StatusVO.UPDATE_NO, "审核失败", null);
+                }
+            } else if (Objects.equals(course.getPeriods(), courseAudit.getPeriods())) {
+                //普通修改
+                try {
+                    int i = periodDao.update(periods);
+                    if (i <= 0) {
+                        throw new UpdateCourseException("课程更新失败");
+                    }
+                } catch (AliOSSDeleteException e) {
+                    return new ResultVO<>(StatusVO.UPDATE_NO, "审核失败", null);
+                }
+            }
             //比较url是否相同，不同则删除原url
             try {
                 if (!Objects.equals(imageUrl, courseAudit.getImageUrl())) {
@@ -373,8 +404,9 @@ public class CourseServiceImpl implements CourseService {
                     }
                 }
             } catch (AliOSSDeleteException e) {
-                return new ResultVO<>(StatusVO.UPDATE_NO, "删除失败", null);
+                return new ResultVO<>(StatusVO.UPDATE_NO, "审核失败", null);
             }
+            //设置课程状态属性
             courseAudit.setStatu(1);
             courseAudit.setChecked(1);
             try {
@@ -386,6 +418,7 @@ public class CourseServiceImpl implements CourseService {
             } catch (UpdateCourseException e) {
                 return new ResultVO<>(StatusVO.UPDATE_NO, "审核失败", null);
             }
+
             // 审核通过时，添加课程到Elasticsearch
             //将Course类对象转换为ElasticsearchCourse对象
             ElasticsearchCourse esCourse = ElasticsearchCourse.fromCourse(courseAudit);
@@ -563,7 +596,11 @@ public class CourseServiceImpl implements CourseService {
         return new ResultVO<>(StatusVO.SELECT_OK, "获取成功", lists);
     }
 
-    // 获取每小时的seed
+    /**
+     * 获取每小时的seed
+     *
+     * @return
+     */
     private long getHourSeed() {
         // 获取当前时间的小时部分
         LocalDateTime currentTime = LocalDateTime.now();

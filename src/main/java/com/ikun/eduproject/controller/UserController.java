@@ -60,7 +60,7 @@ public class UserController {
      */
     @ApiOperation("更新基础信息接口")
     @PostMapping("/updateInfo")
-    public ResultVO<String> updateInfo(@RequestBody @Valid ChangeInfoVO changeInfoVO) {
+    public ResultVO<User> updateInfo(@RequestBody @Valid ChangeInfoVO changeInfoVO) {
         return userService.updateInformation(changeInfoVO);
     }
 

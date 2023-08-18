@@ -9,6 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /**
  * @Author zzhay
  * @Date 2023/8/5/005
+ * 拦截器配置类，用于配置Spring MVC的拦截器
  */
 @Configuration
 public class InterceptorConfig implements WebMvcConfigurer {

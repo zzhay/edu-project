@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ikun.eduproject.dao.PeriodDao">
+
+    <!--课时新增-->
+    <insert id="insert" parameterType="com.ikun.eduproject.pojo.Periods">
+        insert into periods(course_id, periods, content_url)
+        values (#{courseId}, #{periods}, #{contentUrl});
+    </insert>
+    <!--修改课时-->
+    <update id="update" parameterType="com.ikun.eduproject.pojo.Periods">
+        update periods
+        set content_url=#{contentUrl}
+        where course_id = #{courseId}
+          and periods = #{periods};
+    </update>
+    <!--根据课程id查询-->
+    <select id="selectByCourseId" resultType="com.ikun.eduproject.pojo.Periods">
+        select *
+        from periods
+        where course_id = #{courseId};
+    </select>
+</mapper>

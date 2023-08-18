@@ -98,6 +98,9 @@ public class StuCoursesServiceImpl implements StuCoursesService {
     public ResultVO<String> checkPwd(LoginVO loginVO) {
         //根据用户名获取用户信息
         User user = userDao.selectByUsername(loginVO.getUsername());
+        if (user == null) {
+            return new ResultVO<>(StatusVO.SELECT_NO, "用户名或密码错误", null);
+        }
         //验证密码是否相同
         String md5 = MD5Utils.md5(loginVO.getPassword());
         if (Objects.equals(md5, user.getPassword())) {

@@ -10,6 +10,8 @@ import java.util.List;
 /**
  * @Author zzhay
  * @Date 2023/8/1/001
+ * CourseAuditDao是用于访问和操作课程审核数据的数据访问对象
+ * 该类提供了对课程审核数据的增删改查操作。
  */
 public interface CourseAuditDao {
     /**

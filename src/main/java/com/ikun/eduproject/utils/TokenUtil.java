@@ -8,6 +8,7 @@ import java.util.Date;
 /**
  * @Author zzhay
  * @Date 2023/8/5/005
+ * token生成工具类
  */
 public class TokenUtil {
     // 密钥

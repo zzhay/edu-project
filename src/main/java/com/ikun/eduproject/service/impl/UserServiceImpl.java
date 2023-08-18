@@ -118,10 +118,11 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional(rollbackFor =RuntimeException.class )
-    public ResultVO<String> updateInformation(ChangeInfoVO changeInfoVO) {
+    public ResultVO<User> updateInformation(ChangeInfoVO changeInfoVO) {
         int i = userDao.updateByUsername(changeInfoVO);
+        User user = userDao.selectByUsername(changeInfoVO.getUsername());
         if (i > 0) {
-            return new ResultVO<>(StatusVO.UPDATE_OK, "更新成功", null);
+            return new ResultVO<>(StatusVO.UPDATE_OK, "更新成功", user);
         } else {
             return new ResultVO<>(StatusVO.UPDATE_NO, "更新失败", null);
         }

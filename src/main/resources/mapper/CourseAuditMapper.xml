@@ -11,16 +11,19 @@
         <result property="price" column="price"/>
         <result property="description" column="description"/>
         <result property="subName" column="sub_name"/>
+        <result property="periodAll" column="period_all"/>
+        <result property="periods" column="periods"/>
         <result property="imageUrl" column="image_url"/>
         <result property="contentUrl" column="content_url"/>
+        <result property="endTime" column="end_time"/>
         <result property="updateTime" column="update_time"/>
     </resultMap>
     <!--新增课程审核版本-->
     <insert id="insertCourseAudit" parameterType="com.ikun.eduproject.pojo.CourseAudit">
-        insert into course_audit (course_id, user_id, name, author, price, description, sub_name, image_url,
-                                  content_url)
-        values (#{courseId}, #{userId}, #{name}, #{author}, #{price}, #{description}, #{subName}, #{imageUrl},
-                #{contentUrl});
+        insert into course_audit (course_id, user_id, name, author, price, description, sub_name, period_all, periods,
+                                  image_url, content_url,end_time)
+        values (#{courseId}, #{userId}, #{name}, #{author}, #{price}, #{description}, #{subName}, #{periodAll},
+                #{periods}, #{imageUrl}, #{contentUrl},#{endTime});
     </insert>
     <!--更新课程审核版本信息-->
     <update id="updateCourseAudit" parameterType="com.ikun.eduproject.pojo.Course">
@@ -29,8 +32,11 @@
             author= #{author},
             price=#{price},
             description= #{description},
+            period_all=#{periodAll},
+            periods=#{periods},
             image_url=#{imageUrl},
             content_url=#{contentUrl},
+            end_time=#{endTime},
             statu=2,
             checked=0
         where course_id = #{courseId};
@@ -42,8 +48,11 @@
             author= #{author},
             price=#{price},
             description= #{description},
+            period_all=#{periodAll},
+            periods=#{periods},
             image_url=#{imageUrl},
             content_url=#{contentUrl},
+            end_time=#{endTime},
             statu=#{statu},
             checked=#{checked}
         where course_id = #{courseId};
@@ -87,9 +96,12 @@
                c.price,
                c.description,
                c.sub_name,
+               c.period_all,
+               c.periods,
                c.image_url,
                c.content_url,
-               c.update_time
+               c.update_time,
+               c.end_time
         from user u
                  join course_audit c on u.user_id = c.user_id
         where c.statu = 2

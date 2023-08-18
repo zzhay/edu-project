@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * @Author zzhay
@@ -43,11 +44,22 @@ public class GetCourseCheckedVO implements Serializable {
     @NotNull(message = "学科名不能为空")
     private String subName;
 
+    @ApiModelProperty(dataType = "Integer",required = true,value = "总课时")
+    //@NotNull(message = "总课时不能为空")
+    private Integer periodAll;
+
+    @ApiModelProperty(dataType = "Integer",required = true,value = "第几课时")
+    //@NotNull(message = "课时不能为空")
+    private Integer periods;
+
     @ApiModelProperty(dataType = "String",required = true,value = "头像url")
     private String imageUrl;
 
     @ApiModelProperty(dataType = "String",required = true,value = "课程内容url")
     private String contentUrl;
+
+    @ApiModelProperty(dataType = "Date",required = true,value = "结束时间")
+    private Date endTime;
 
     @ApiModelProperty(dataType = "Timestamp",required = false,value = "更新时间")
     private Timestamp updateTime;

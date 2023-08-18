@@ -104,5 +104,11 @@ public interface CourseDao {
      */
     String selectEmailByCourseId(Integer courseId);
 
+    /**
+     * 按课程id查询总课时
+     * @param courseId 课程id
+     * @return Integer
+     */
+    Integer selectPeriodAll(Integer courseId);
 
 }

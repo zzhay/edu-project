@@ -39,6 +39,10 @@ public class Assignments implements Serializable {
     @NotNull
     private String assignmentUrl;
 
+    @ApiModelProperty(dataType = "Integer",required = true,value = "第几课时")
+    @NotNull(message = "课时不能为空")
+    private Integer periods;
+
     @ApiModelProperty(dataType = "BigDecimal", required = false, value = "获得的kun分")
     private BigDecimal credit;
 

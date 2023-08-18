@@ -14,6 +14,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author zzhay
@@ -60,7 +61,7 @@ public class AssignmentsController {
      */
     @ApiOperation("教师根据课程查看未批改作业")
     @GetMapping("/getByCourseIdNO")
-    public ResultVO<List<AssignmentVO>> getByCourseIdNO(@RequestParam("courseId") @NotNull Integer courseId) {
+    public ResultVO<Map<Integer, List<AssignmentVO>>> getByCourseIdNO(@RequestParam("courseId") @NotNull Integer courseId) {
         return assignmentsService.getByCourseIdNO(courseId);
     }
 
@@ -72,7 +73,7 @@ public class AssignmentsController {
      */
     @ApiOperation("教师根据课程查看已批改作业")
     @GetMapping("/getByCourseIdOK")
-    public ResultVO<List<AssignmentVO>> getByCourseIdOK(@RequestParam("courseId") @NotNull Integer courseId) {
+    public ResultVO<Map<Integer, List<AssignmentVO>>> getByCourseIdOK(@RequestParam("courseId") @NotNull Integer courseId) {
         return assignmentsService.getByCourseIdOK(courseId);
     }
 
@@ -97,7 +98,7 @@ public class AssignmentsController {
      */
     @ApiOperation("学生根据课程查看自己作业")
     @GetMapping("/getByCourseId")
-    public ResultVO<Assignments> getByCourseId(@RequestParam("userId") @NotNull Integer userId,
+    public ResultVO<Map<Integer, Assignments>> getByCourseId(@RequestParam("userId") @NotNull Integer userId,
                                                @RequestParam("courseId") @NotNull Integer courseId) {
         return assignmentsService.getByCourseId(userId, courseId);
     }

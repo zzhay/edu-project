@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * @Author zzhay
@@ -49,6 +50,12 @@ public class CourseAudit implements Serializable {
     @NotNull(message = "学科名不能为空")
     private String subName;
 
+    @ApiModelProperty(dataType = "Integer",required = true,value = "总课时")
+    private Integer periodAll;
+
+    @ApiModelProperty(dataType = "Integer",required = true,value = "第几课时")
+    private Integer periods;
+
     @ApiModelProperty(dataType = "String",required = true,value = "头像url")
     private String imageUrl;
 
@@ -60,6 +67,9 @@ public class CourseAudit implements Serializable {
 
     @ApiModelProperty(dataType = "Integer",required = false,value = "是否审核（0：待审核，1：审核通过，2：未通过）")
     private Integer checked;
+
+    @ApiModelProperty(dataType = "Date",required = false,value = "结束时间")
+    private Date endTime;
 
     @ApiModelProperty(dataType = "Timestamp",required = false,value = "创建时间")
     private Timestamp createTime;

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 /**
  * @Author zzhay
@@ -27,4 +28,8 @@ public class Subject implements Serializable {
 
     @ApiModelProperty(dataType = "String",required = false,value = "学科类别")
     private String subCategory;
+
+    @ApiModelProperty(dataType = "Timestamp",required = false,value = "创建时间")
+    private Timestamp createTime;
+
 }

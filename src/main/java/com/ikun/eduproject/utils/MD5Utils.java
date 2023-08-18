@@ -7,6 +7,7 @@ import java.security.NoSuchAlgorithmException;
 /**
  * @Author zzhay
  * @Date 2023/7/26/026
+ * MD5密码加密工具类
  */
 public class MD5Utils {
     public static String md5(String password){

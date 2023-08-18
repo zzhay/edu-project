@@ -1,6 +1,7 @@
 package com.ikun.eduproject.service.impl;
 
 import com.ikun.eduproject.dao.AssignmentsDao;
+import com.ikun.eduproject.dao.CourseDao;
 import com.ikun.eduproject.dao.UserDao;
 import com.ikun.eduproject.error.AliOSSDeleteException;
 import com.ikun.eduproject.error.UpdateCreditException;
@@ -17,7 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author zzhay
@@ -31,9 +34,11 @@ public class AssignmentsServiceImpl implements AssignmentsService {
     private AssignmentsDao assignmentsDao;
     @Resource
     private UserDao userDao;
+    @Resource
+    private CourseDao courseDao;
 
     @Resource
-    private AliOssUtils aliOSSUtils;
+    private AliOssUtils aliOssUtils;
 
     /**
      * 提交作业
@@ -45,11 +50,12 @@ public class AssignmentsServiceImpl implements AssignmentsService {
     @Transactional(rollbackFor = RuntimeException.class)
     public ResultVO<String> addAssignments(Assignments assignments) {
         //判断是否重复提交
-        Assignments assignment = assignmentsDao.selectByUidAndCid(assignments.getUserId(), assignments.getCourseId());
-        if (assignment != null) {
-            return new ResultVO<>(StatusVO.INSERT_NO, "作业已提交过", null);
+        Assignments assignment1 = assignmentsDao.selectByUidAndCid(assignments.getUserId(),
+                assignments.getCourseId(), assignments.getPeriods());
+        if (assignment1 != null) {
+            return new ResultVO<>(StatusVO.INSERT_NO, "当前课时作业已提交过", null);
         }
-
+        //新增
         int i = assignmentsDao.insertAssignment(assignments);
         if (i > 0) {
             return new ResultVO<>(StatusVO.INSERT_OK, "提交成功", null);
@@ -98,9 +104,16 @@ public class AssignmentsServiceImpl implements AssignmentsService {
      * @return ResultVO
      */
     @Override
-    public ResultVO<List<AssignmentVO>> getByCourseIdNO(Integer courseId) {
-        List<AssignmentVO> assignmentVOS = assignmentsDao.selectByCourseIdNO(courseId);
-        return new ResultVO<>(StatusVO.SELECT_OK, "获取成功", assignmentVOS);
+    public ResultVO<Map<Integer, List<AssignmentVO>>> getByCourseIdNO(Integer courseId) {
+        Map<Integer, List<AssignmentVO>> map = new HashMap<>();
+        //获取总课时
+        Integer periodAll = courseDao.selectPeriodAll(courseId);
+        for (Integer i = 1; i <= periodAll; i++) {
+            //查询该课时下的作业
+            List<AssignmentVO> assignmentVOS = assignmentsDao.selectByCourseIdAndPeriodNO(courseId, i);
+            map.put(i, assignmentVOS);
+        }
+        return new ResultVO<>(StatusVO.SELECT_OK, "获取成功", map);
     }
 
     /**
@@ -110,9 +123,16 @@ public class AssignmentsServiceImpl implements AssignmentsService {
      * @return ResultVO
      */
     @Override
-    public ResultVO<List<AssignmentVO>> getByCourseIdOK(Integer courseId) {
-        List<AssignmentVO> assignmentVOS = assignmentsDao.selectByCourseIdOK(courseId);
-        return new ResultVO<>(StatusVO.SELECT_OK, "获取成功", assignmentVOS);
+    public ResultVO<Map<Integer, List<AssignmentVO>>> getByCourseIdOK(Integer courseId) {
+        Map<Integer, List<AssignmentVO>> map = new HashMap<>();
+        //获取总课时
+        Integer periodAll = courseDao.selectPeriodAll(courseId);
+        for (Integer i = 1; i <= periodAll; i++) {
+            //查询该课时下的作业
+            List<AssignmentVO> assignmentVOS = assignmentsDao.selectByCourseIdAndPeriodOK(courseId, i);
+            map.put(i, assignmentVOS);
+        }
+        return new ResultVO<>(StatusVO.SELECT_OK, "获取成功", map);
     }
 
     /**
@@ -135,9 +155,17 @@ public class AssignmentsServiceImpl implements AssignmentsService {
      * @return ResultVO
      */
     @Override
-    public ResultVO<Assignments> getByCourseId(Integer userId, Integer courseId) {
-        Assignments assignments = assignmentsDao.selectByUidAndCid(userId, courseId);
-        return new ResultVO<>(StatusVO.SELECT_OK, "获取成功", assignments);
+    public ResultVO<Map<Integer, Assignments>> getByCourseId(Integer userId, Integer courseId) {
+        Map<Integer, Assignments> map = new HashMap<>();
+        //总课时
+        Integer periodAll = courseDao.selectPeriodAll(courseId);
+        for (int i = 1; i <= periodAll; i++) {
+            //当前课时的作业
+            Assignments assignments = assignmentsDao.selectByUidAndCid(userId, courseId,i);
+            map.put(i, assignments);
+        }
+
+        return new ResultVO<>(StatusVO.SELECT_OK, "获取成功", map);
     }
 
     /**
@@ -150,7 +178,8 @@ public class AssignmentsServiceImpl implements AssignmentsService {
     @Transactional(rollbackFor = RuntimeException.class)
     public ResultVO<String> updateAssignment(Assignments assignments) {
         //查出原作业信息
-        Assignments assignments1 = assignmentsDao.selectByUidAndCid(assignments.getUserId(), assignments.getCourseId());
+        Assignments assignments1 = assignmentsDao.selectByUidAndCidAndPeriod(assignments.getUserId(),
+                assignments.getCourseId(), assignments.getPeriods());
         //判断作业是否批改
         if (assignments1.getStatu().equals(1)) {
             return new ResultVO<>(StatusVO.UPDATE_NO, "作业已批改，无法修改", null);
@@ -163,7 +192,7 @@ public class AssignmentsServiceImpl implements AssignmentsService {
         }
         try {
             //删除aliOSS中原文件
-            boolean b = aliOSSUtils.deleteImageByUrl(assignments1.getAssignmentUrl());
+            boolean b = aliOssUtils.deleteImageByUrl(assignments1.getAssignmentUrl());
             if (!b) {
                 throw new AliOSSDeleteException("原文件删除失败");
             }

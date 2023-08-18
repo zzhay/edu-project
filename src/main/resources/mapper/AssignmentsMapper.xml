@@ -24,15 +24,24 @@
     </select>
     <!--添加作业-->
     <insert id="insertAssignment" parameterType="com.ikun.eduproject.pojo.Assignments">
-        insert into assignments(user_id, course_id, assignment_url)
-        values (#{userId}, #{courseId}, #{assignmentUrl});
+        insert into assignments(user_id, course_id, assignment_url, periods)
+        values (#{userId}, #{courseId}, #{assignmentUrl}, #{periods});
     </insert>
     <!--根据学生id和课程id查询作业-->
     <select id="selectByUidAndCid" resultType="com.ikun.eduproject.pojo.Assignments">
         select *
         from assignments
         where user_id = #{userId}
-          and course_id = #{courseId};
+          and course_id = #{courseId}
+          and periods = #{period};
+    </select>
+    <!--根据学生id和课程id和课时查询作业-->
+    <select id="selectByUidAndCidAndPeriod" resultType="com.ikun.eduproject.pojo.Assignments">
+        select *
+        from assignments
+        where user_id = #{userId}
+          and course_id = #{courseId}
+          and periods = #{period};
     </select>
     <!--更新作业状态和学分-->
     <update id="updateAssignmentStatu">
@@ -48,19 +57,21 @@
         where assignment_id = #{assignmentId};
     </update>
     <!--根据课程id获取未批改作业-->
-    <select id="selectByCourseIdNO" resultType="com.ikun.eduproject.vo.AssignmentVO">
+    <select id="selectByCourseIdAndPeriodNO" resultType="com.ikun.eduproject.vo.AssignmentVO">
         select a.assignment_id, u.username, a.assignment_url, a.course_id, a.time
         from assignments a
                  join user u on a.user_id = u.user_id
         where course_id = #{courseId}
+          and periods = #{period}
           and a.statu = 0;
     </select>
     <!--根据课程id获取已批改作业-->
-    <select id="selectByCourseIdOK" resultType="com.ikun.eduproject.vo.AssignmentVO">
+    <select id="selectByCourseIdAndPeriodOK" resultType="com.ikun.eduproject.vo.AssignmentVO">
         select a.assignment_id, u.username, a.assignment_url, a.course_id, a.credit, a.time
         from assignments a
                  join user u on a.user_id = u.user_id
         where course_id = #{courseId}
+          and periods = #{period}
           and a.statu = 1;
     </select>
     <!--根据用户id查看未审批作业数量-->
