@@ -31,5 +31,4 @@ public class PeriodServiceImpl implements PeriodService {
         List<Periods> periods = periodDao.selectByCourseId(courseId);
         return new ResultVO<>(StatusVO.SELECT_OK, "获取成功", periods);
     }
-
 }

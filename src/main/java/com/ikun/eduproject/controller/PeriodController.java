@@ -39,5 +39,4 @@ public class PeriodController {
     public ResultVO<List<Periods>> getOwnCourse(@RequestParam("courseId") @NotNull(message = "课程id不能为空") Integer courseId) {
         return periodService.getByCourseId(courseId);
     }
-
 }
