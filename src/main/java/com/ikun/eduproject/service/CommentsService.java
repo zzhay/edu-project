@@ -27,7 +27,7 @@ public interface CommentsService {
      * @param comments 评论信息
      * @return ResultVO
      */
-    ResultVO<String> changeComment(Comments comments);
+    ResultVO<Set<String>> changeComment(Comments comments);
 
     /**
      * 删除评论

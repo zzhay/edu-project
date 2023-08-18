@@ -59,7 +59,7 @@ public class CommentsController {
      */
     @ApiOperation("更新评论接口")
     @PostMapping("/changeComment")
-    public ResultVO<String> changeComment(@RequestBody @Valid Comments comments) {
+    public ResultVO<Set<String>> changeComment(@RequestBody @Valid Comments comments) {
         return commentsService.changeComment(comments);
     }
 

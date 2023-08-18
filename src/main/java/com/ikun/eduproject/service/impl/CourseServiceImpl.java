@@ -76,7 +76,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @Transactional(rollbackFor = AddCourseException.class)
     public ResultVO<String> addCourse(Course course) {
-        //根据教师id和课程名查出课程id（课程表和课程审核版本表）
+        //根据教师id和课程名查出课程id（课程主表和课程审核版本表）
         Integer courseId = courseDao.selectByUIdAndName(course.getUserId(), course.getName());
         Integer courseId1 = courseAuditDao.selectByUIdAndName(course.getUserId(), course.getName());
         //如果id存在，则该教师名下已有该课程名称，报冲突
@@ -95,7 +95,6 @@ public class CourseServiceImpl implements CourseService {
         //将课程信息存到课程审核版本表
         try {
             int i1 = courseAuditDao.insertCourseAudit(course);
-
             if (i1 > 0) {
                 return new ResultVO<>(StatusVO.INSERT_OK, "添加成功，请等待审核", null);
             } else {

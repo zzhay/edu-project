@@ -69,7 +69,13 @@ public class CommentsServiceImpl implements CommentsService {
      */
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
-    public ResultVO<String> changeComment(Comments comments) {
+    public ResultVO<Set<String>> changeComment(Comments comments) {
+        //敏感词判断
+        SensitivewordFilter filter = new SensitivewordFilter();
+        Set<String> set = filter.getSensitiveWord(comments.getText(), 2);
+        if (set.size() != 0) {
+            return new ResultVO<>(StatusVO.INSERT_NO, "评论中包含敏感词", set);
+        }
         int i = commentsDao.updateCommentById(comments);
         if (i > 0) {
             return new ResultVO<>(StatusVO.INSERT_OK, "更新成功", null);
