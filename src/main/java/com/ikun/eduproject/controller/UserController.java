@@ -36,7 +36,6 @@ public class UserController {
     @ApiOperation("注册接口")
     @PostMapping("/regist")
     public ResultVO<String> regist(@RequestBody @Valid User user) {
-        //todo 注册时绑定邮箱
         return userService.regist(user);
     }
 

@@ -50,13 +50,10 @@ public class Course implements Serializable {
     @NotNull(message = "学科名不能为空")
     private String subName;
 
-    //todo
     @ApiModelProperty(dataType = "Integer",required = true,value = "总课时")
-    @NotNull(message = "总课时不能为空")
     private Integer periodAll;
 
     @ApiModelProperty(dataType = "Integer",required = true,value = "第几课时")
-    @NotNull(message = "课时不能为空")
     private Integer periods;
 
     @ApiModelProperty(dataType = "String",required = true,value = "头像url")
